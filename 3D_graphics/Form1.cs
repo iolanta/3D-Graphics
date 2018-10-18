@@ -71,6 +71,39 @@ namespace _3D_graphics
             return multiply_matrix(transform_matrix, scaleMatrix);
         }
 
+        private float[,] orthographic_projection_X(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 0, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+        private float[,] orthographic_projection_Y(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+        private float[,] orthographic_projection_Z(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+        private float[,] isometric_projection(float[,] transform_matrix)
+        {
+            float a = (float)Math.Asin(Math.Tan(30 * Math.PI / 180));
+            float b = 45 * (float)Math.PI / 180;
+            float[,] transposeRotationMatrixY = new float[,] { { (float)Math.Cos(b), 0, (float)Math.Sin(b) }, { 0, 1, 0 }, { -(float)Math.Sin(b), 0, (float)Math.Cos(b) } };
+            float[,] transposeRotationMatrixX = new float[,] { { 1, 0, 0 }, { 0, (float)Math.Cos(a), -(float)Math.Sin(a) }, { 0, (float)Math.Sin(a), (float)Math.Cos(a) } };
+            float[,] ortMatrix = new float[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } };
+
+            float[,] mt1 = multiply_matrix(transform_matrix, transposeRotationMatrixY);
+            float[,] mt2 = multiply_matrix(mt1, transposeRotationMatrixX);
+            return multiply_matrix(mt2, ortMatrix);
+        }
+
+
+
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
 
