@@ -12,13 +12,15 @@ namespace _3D_graphics
 {
     public partial class Form1 : Form
     {
-
+        public List<Figure> scene = new List<Figure>();
 
         public Form1()
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
+            scene.Add(Figure.get_Hexahedron(100));
+            
         }
 
         private float[,] multiply_matrix(float[,] m1, float[,] m2)
@@ -106,7 +108,17 @@ namespace _3D_graphics
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
+            var g = e.Graphics;
+            g.TranslateTransform(pictureBox1.Width / 2, pictureBox1.Height / 2);
+            g.ScaleTransform(1, -1);
 
+            List<Figure> view = new List<Figure>(scene);
+
+            foreach (Figure f in view) {
+                f.apply_matrix(orthographic_projection_X(f.get_matrix()));
+                foreach (Edge ed in f.edges)
+                    g.DrawLine(new Pen(Color.Black), new PointF(ed.p1.y, ed.p1.z), new PointF(ed.p2.y, ed.p2.z));
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -115,7 +127,7 @@ namespace _3D_graphics
         }
     }
 
-    class Point3D
+    public class Point3D
     {
         public float x, y, z;
 
@@ -144,7 +156,7 @@ namespace _3D_graphics
 
     }
 
-    class Segment3D {
+    public class Segment3D {
         public Point3D p1, p2;
         public Segment3D(Point3D _p1, Point3D _p2) {
             p1 = _p1;
@@ -158,12 +170,18 @@ namespace _3D_graphics
         }
     }
 
-    class Side {
+    public class Side {
         public Figure host = null;
         public List<int> edges = new List<int>();
 
         public Side(Figure host = null) {
         }
+        public Side(Side s) {
+            edges = new List<int>(edges);
+            host = s.host;
+        }
+
+
 
         public Edge get_edge(int i) {
             if (host == null)
@@ -182,7 +200,7 @@ namespace _3D_graphics
 
     }
 
-    class Edge
+    public class Edge
     {
         public Figure host = null;
         public int ind_p1, ind_p2;
@@ -192,6 +210,13 @@ namespace _3D_graphics
             ind_p2 = i2;
             host = h;
         }
+
+        public Edge(Edge e) {
+            ind_p1 = e.ind_p1;
+            ind_p2 = e.ind_p1;
+            host = e.host;
+        }
+
         public Point3D p1
         {
             get
@@ -228,7 +253,7 @@ namespace _3D_graphics
     }
 
 
-    class Figure
+    public class Figure
     {
         
         public List<Point3D> points = new List<Point3D>(); // точки 
@@ -236,9 +261,23 @@ namespace _3D_graphics
         public List<Side> sides = new List<Side>(); // стороны
 
         public Figure() { }
-  
 
+        public Figure(Figure f) {
+            foreach (Point3D p in f.points) {
+                points.Add(new Point3D(p));
+            }
+            foreach(Edge e in f.edges)
+            {
+                edges.Add(new Edge(e));
+                edges.Last().host = this;
+            }
+            foreach (Side s in f.sides)
+            {
+                sides.Add(new Side(s));
+                sides.Last().host = this;
+            }
 
+        }
 
         public float[,] get_matrix()
         {
