@@ -38,7 +38,38 @@ namespace _3D_graphics
            
         }
 
+        private float[,] apply_offset(float [,] transform_matrix, float offset_x, float offset_y, float offset_z)
+        {
+            float[,] translationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { offset_x, offset_y, offset_z, 1 } };
+            return multiply_matrix(transform_matrix, translationMatrix);
+        }
 
+        private float[,] apply_rotation_X(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, (float)Math.Cos(angle), (float)Math.Sin(angle), 0 },
+                { 0, -(float)Math.Sin(angle), (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_rotation_Y(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), 0, -(float)Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { (float)Math.Sin(angle), 0, (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_rotation_Z(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), (float)Math.Sin(angle), 0, 0 }, { -(float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0 },
+                { 0, 0, 1, 0 }, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_scale(float[,] transform_matrix, float scale_x, float scale_y, float scale_z)
+        {
+            float[,] scaleMatrix = new float[,] { { scale_x, 0, 0, 0 }, { 0, scale_y, 0, 0 }, { 0, 0, scale_z, 0}, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, scaleMatrix);
+        }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
