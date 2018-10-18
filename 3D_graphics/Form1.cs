@@ -44,24 +44,40 @@ namespace _3D_graphics
         {
 
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+        
+        }
     }
 
     class Point3D
     {
         public float x, y, z;
+
         public Point3D() {
             x = 0;
             y = 0;
             z = 0;
-
+            
         }
         public Point3D(float _x, float _y, float _z)
         {
             x = _x;
             y = _y;
             z = _z;
-
         }
+
+        public Point3D(Point3D p)
+        {
+            x = p.x;
+            y = p.y;
+            z = p.z;
+        }
+
+
+
+
     }
 
     class Segment3D {
@@ -70,5 +86,48 @@ namespace _3D_graphics
             p1 = _p1;
             p2 = _p2;
         }
+        public Segment3D(Segment3D s)
+        {
+            p1 = s.p1;
+            p2 = s.p2;
+
+        }
+    }
+
+    class Polygon
+    {
+        public List<Segment3D> segments = new List<Segment3D>();
+       
+        public Polygon() {
+        }
+
+        public Polygon(List<Point3D> pnts)
+        {
+            for (int i = 0; i < pnts.Count-1; i++) {
+                segments.Add(new Segment3D(pnts[i],pnts[i+1]));
+            }
+            if (pnts.Count > 1)
+                segments.Add(new Segment3D(pnts.Last(), pnts.First()));
+            
+        }
+    }
+
+    class figure
+    {
+        public HashSet<Point3D> points = new HashSet<Point3D>();
+        public List<Polygon> edges = new List<Polygon>();
+        
+        public figure() { }
+        public figure(List<Polygon> plgn) {
+            edges = new List<Polygon>(plgn);
+            foreach (var p in edges)
+                foreach (var s in p.segments)
+                    points.Add(s.p1);
+                   
+        }
+
+
+
+
     }
 }
