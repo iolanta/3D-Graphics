@@ -125,40 +125,145 @@ namespace _3D_graphics
         }
     }
 
-    class Polygon
-    {
-        public List<Segment3D> segments = new List<Segment3D>();
-       
-        public Polygon() {
+    class Side {
+        public Figure host = null;
+        public List<int> edges = new List<int>();
+
+        public Side(Figure host = null) {
         }
 
-        public Polygon(List<Point3D> pnts)
+        public Edge get_edge(int i) {
+            if (host == null)
+                return null;
+            return host.edges[i];
+        }
+
+        public void add_edge(Edge e) {
+            if (host == null)
+                return;
+            int res = host.edges.FindIndex(x => e == x);
+            if(res>=0)
+                edges.Add(res);
+        }
+
+
+    }
+
+    class Edge
+    {
+        public Figure host = null;
+        public int ind_p1, ind_p2;
+
+        public Edge(int i1, int i2, Figure h = null) {
+            ind_p1 = i1;
+            ind_p2 = i2;
+            host = h;
+        }
+        public Point3D p1
         {
-            for (int i = 0; i < pnts.Count-1; i++) {
-                segments.Add(new Segment3D(pnts[i],pnts[i+1]));
+            get
+            {
+                if(host != null)
+                return new Point3D(host.points[ind_p1]);
+                return null;
             }
-            if (pnts.Count > 1)
-                segments.Add(new Segment3D(pnts.Last(), pnts.First()));
-            
+            set
+            {
+                if (host !=null)
+                {
+                    host.points[ind_p1] = value;
+                }
+            }
+        }
+
+        public Point3D p2
+        {
+            get
+            {
+                if (host != null)
+                    return new Point3D(host.points[ind_p2]);
+                return null;
+            }
+            set
+            {
+                if (host != null)
+                {
+                    host.points[ind_p2] = value;
+                }
+            }
         }
     }
 
-    class figure
+
+    class Figure
     {
-        public HashSet<Point3D> points = new HashSet<Point3D>();
-        public List<Polygon> edges = new List<Polygon>();
         
-        public figure() { }
-        public figure(List<Polygon> plgn) {
-            edges = new List<Polygon>(plgn);
-            foreach (var p in edges)
-                foreach (var s in p.segments)
-                    points.Add(s.p1);
-                   
+        public List<Point3D> points = new List<Point3D>(); // точки 
+        public List<Edge> edges = new List<Edge>(); // ребра 
+        public List<Side> sides = new List<Side>(); // стороны
+
+        public Figure() { }
+  
+
+
+
+        public float[,] get_matrix()
+        {
+            var res = new float[points.Count, 4];
+            for (int i = 0; i < points.Count; i++)
+            {
+                res[i, 0] = points[i].x;
+                res[i, 1] = points[i].y;
+                res[i, 2] = points[i].z;
+                res[i, 3] = 1;
+            }
+            return res;
+        }
+
+        public void apply_matrix(float[,] matrix) {
+            for (int i = 0; i < points.Count; i++)
+            {
+                points[i].x=matrix[i, 0];
+                points[i].y = matrix[i, 1];
+                points[i].z = matrix[i, 2];
+                
+            }
+        }
+
+        static public Figure get_Hexahedron(float sz)
+        {
+            Figure res = new Figure();
+            res.points.Add(new Point3D(sz / 2, sz / 2, sz / 2)); // 0 
+            res.edges.Add(new Edge(0, 1, res));
+            res.points.Add(new Point3D(sz / 2, -sz / 2, sz / 2)); // 1
+            res.edges.Add(new Edge(0, 2, res));
+            res.points.Add(new Point3D(-sz / 2, sz / 2, sz / 2)); // 2
+            res.edges.Add(new Edge(0, 3, res));
+            res.points.Add(new Point3D(sz / 2, sz / 2, -sz / 2)); //3
+
+            res.points.Add(new Point3D(-sz / 2, -sz / 2, -sz / 2)); // 4
+            res.edges.Add(new Edge(4, 5, res));
+            res.points.Add(new Point3D(-sz / 2, sz / 2, -sz / 2)); //5
+            res.edges.Add(new Edge(4, 6, res));
+            res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); //6
+            res.edges.Add(new Edge(4, 7, res));
+            res.points.Add(new Point3D(-sz / 2, -sz / 2, sz / 2)); //7
+
+            res.edges.Add(new Edge(2, 5, res)); // 
+            res.edges.Add(new Edge(5, 3, res)); // 
+            res.edges.Add(new Edge(3, 6, res)); // 
+            res.edges.Add(new Edge(6, 1, res)); // 
+            res.edges.Add(new Edge(7, 1, res)); // 
+            res.edges.Add(new Edge(7, 2, res)); // 
+
+            
+            
+            return res;
         }
 
 
-
-
     }
+
+
+
 }
