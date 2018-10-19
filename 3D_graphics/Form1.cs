@@ -152,7 +152,11 @@ namespace _3D_graphics
         }
 
 
-
+        public static Point3D norm(Point3D p)
+        {
+            float z = (float)Math.Sqrt((float)(p.x * p.x + p.y * p.y + p.z * p.z));
+            return new Point3D(p.x / z, p.y / z, p.z / z);
+        }
 
     }
 
@@ -250,6 +254,8 @@ namespace _3D_graphics
                 }
             }
         }
+
+   
     }
 
 
@@ -328,6 +334,23 @@ namespace _3D_graphics
             pnts = apply_offset(pnts, p.x, p.y, p.z);
             apply_matrix(pnts);
         }
+
+
+        
+
+        /// <summary>
+        ///  rotate this figure around line(beg,end) by angle 
+        /// </summary>
+        /// <param name="beg"></param>
+        /// <param name="end"></param>
+        /// <param name="angle"> in degrees</param>
+        private void rotate_around(Point3D beg, Point3D end, float angle) {
+            end = Point3D.norm(end);
+            angle = angle * (float)Math.PI / 180;     
+            apply_matrix(rotate_around_line(get_matrix(), beg, end, angle));
+        }
+
+
         /// <summary>
         ///  rotating around line 
         /// </summary>
