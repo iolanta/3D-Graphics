@@ -302,6 +302,113 @@ namespace _3D_graphics
             }
         }
 
+
+        private Point3D get_center() {
+            Point3D res = new Point3D(0,0,0);
+            foreach (Point3D p in points)
+            {
+                res.x += p.x;
+                res.y += p.y;
+                res.z += p.z;
+
+            }
+            res.x /= points.Count();
+            res.y /= points.Count();
+            res.z /= points.Count();
+            return res;
+        }
+
+
+
+        private void scale_around_center(float xs, float ys, float zs) {
+            float[,] pnts = get_matrix();
+            Point3D p = get_center();
+            pnts = apply_offset(pnts, -p.x, -p.y, -p.z);
+            pnts = apply_scale(pnts, xs, ys, zs);
+            pnts = apply_offset(pnts, p.x, p.y, p.z);
+            apply_matrix(pnts);
+        }
+        /// <summary>
+        ///  rotating around line 
+        /// </summary>
+        /// <param name="start">X Y Z</param>
+        /// <param name="dir"> l m n</param>
+        /// <param name="angle"> in radians</param>
+        private void rotate_around_line(Point3D start, Point3D dir, float angle) {
+            
+        }
+
+
+
+        private float[,] multiply_matrix(float[,] m1, float[,] m2)
+        {
+            float[,] res = new float[m1.GetLength(0), m2.GetLength(1)];
+            for (int i = 0; i < m1.GetLength(0); i++)
+            {
+                for (int j = 0; j < m2.GetLength(1); j++)
+                {
+                    for (int k = 0; k < m2.GetLength(0); k++)
+                    {
+                        res[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+            }
+            return res;
+
+        }
+
+        private float[,] apply_offset(float[,] transform_matrix, float offset_x, float offset_y, float offset_z)
+        {
+            float[,] translationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { offset_x, offset_y, offset_z, 1 } };
+            return multiply_matrix(transform_matrix, translationMatrix);
+        }
+
+        private float[,] apply_rotation_X(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, (float)Math.Cos(angle), (float)Math.Sin(angle), 0 },
+                { 0, -(float)Math.Sin(angle), (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_rotation_Y(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), 0, -(float)Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
+                { (float)Math.Sin(angle), 0, (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_rotation_Z(float[,] transform_matrix, float angle)
+        {
+            float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), (float)Math.Sin(angle), 0, 0 }, { -(float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0 },
+                { 0, 0, 1, 0 }, { 0, 0, 0, 1} };
+            return multiply_matrix(transform_matrix, rotationMatrix);
+        }
+
+        private float[,] apply_scale(float[,] transform_matrix, float scale_x, float scale_y, float scale_z)
+        {
+            float[,] scaleMatrix = new float[,] { { scale_x, 0, 0, 0 }, { 0, scale_y, 0, 0 }, { 0, 0, scale_z, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, scaleMatrix);
+        }
+
+        private float[,] orthographic_projection_X(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 0, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+        private float[,] orthographic_projection_Y(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+        private float[,] orthographic_projection_Z(float[,] transform_matrix)
+        {
+            float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(transform_matrix, projMatrix);
+        }
+
+
         static public Figure get_Hexahedron(float sz)
         {
             Figure res = new Figure();
@@ -332,7 +439,6 @@ namespace _3D_graphics
             
             return res;
         }
-
 
     }
 
