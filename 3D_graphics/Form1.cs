@@ -334,13 +334,14 @@ namespace _3D_graphics
         /// <param name="start">X Y Z</param>
         /// <param name="dir"> l m n</param>
         /// <param name="angle"> in radians</param>
-        private void rotate_around_line(Point3D start, Point3D dir, float angle) {
+        private static float[,] rotate_around_line(float[,] transform_matrix, Point3D start, Point3D dir, float angle) {
             
+
         }
 
 
 
-        private float[,] multiply_matrix(float[,] m1, float[,] m2)
+        private static float[,] multiply_matrix(float[,] m1, float[,] m2)
         {
             float[,] res = new float[m1.GetLength(0), m2.GetLength(1)];
             for (int i = 0; i < m1.GetLength(0); i++)
@@ -357,52 +358,52 @@ namespace _3D_graphics
 
         }
 
-        private float[,] apply_offset(float[,] transform_matrix, float offset_x, float offset_y, float offset_z)
+        private static float[,] apply_offset(float[,] transform_matrix, float offset_x, float offset_y, float offset_z)
         {
             float[,] translationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { offset_x, offset_y, offset_z, 1 } };
             return multiply_matrix(transform_matrix, translationMatrix);
         }
 
-        private float[,] apply_rotation_X(float[,] transform_matrix, float angle)
+        private static float[,] apply_rotation_X(float[,] transform_matrix, float angle)
         {
             float[,] rotationMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, (float)Math.Cos(angle), (float)Math.Sin(angle), 0 },
                 { 0, -(float)Math.Sin(angle), (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
             return multiply_matrix(transform_matrix, rotationMatrix);
         }
 
-        private float[,] apply_rotation_Y(float[,] transform_matrix, float angle)
+        private static float[,] apply_rotation_Y(float[,] transform_matrix, float angle)
         {
             float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), 0, -(float)Math.Sin(angle), 0 }, { 0, 1, 0, 0 },
                 { (float)Math.Sin(angle), 0, (float)Math.Cos(angle), 0}, { 0, 0, 0, 1} };
             return multiply_matrix(transform_matrix, rotationMatrix);
         }
 
-        private float[,] apply_rotation_Z(float[,] transform_matrix, float angle)
+        private static float[,] apply_rotation_Z(float[,] transform_matrix, float angle)
         {
             float[,] rotationMatrix = new float[,] { { (float)Math.Cos(angle), (float)Math.Sin(angle), 0, 0 }, { -(float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0 },
                 { 0, 0, 1, 0 }, { 0, 0, 0, 1} };
             return multiply_matrix(transform_matrix, rotationMatrix);
         }
 
-        private float[,] apply_scale(float[,] transform_matrix, float scale_x, float scale_y, float scale_z)
+        private static float[,] apply_scale(float[,] transform_matrix, float scale_x, float scale_y, float scale_z)
         {
             float[,] scaleMatrix = new float[,] { { scale_x, 0, 0, 0 }, { 0, scale_y, 0, 0 }, { 0, 0, scale_z, 0 }, { 0, 0, 0, 1 } };
             return multiply_matrix(transform_matrix, scaleMatrix);
         }
 
-        private float[,] orthographic_projection_X(float[,] transform_matrix)
+        private static float[,] orthographic_projection_X(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 0, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
             return multiply_matrix(transform_matrix, projMatrix);
         }
 
-        private float[,] orthographic_projection_Y(float[,] transform_matrix)
+        private static float[,] orthographic_projection_Y(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
             return multiply_matrix(transform_matrix, projMatrix);
         }
 
-        private float[,] orthographic_projection_Z(float[,] transform_matrix)
+        private static float[,] orthographic_projection_Z(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
             return multiply_matrix(transform_matrix, projMatrix);
