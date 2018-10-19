@@ -335,8 +335,19 @@ namespace _3D_graphics
         /// <param name="dir"> l m n</param>
         /// <param name="angle"> in radians</param>
         private static float[,] rotate_around_line(float[,] transform_matrix, Point3D start, Point3D dir, float angle) {
-            
-
+            float cos_angle = (float)Math.Cos(angle);
+            float sin_angle = (float)Math.Sin(angle);
+            float val00 = dir.x * dir.x + cos_angle * (1 - dir.x * dir.x);
+            float val01 = dir.x * (1 - cos_angle) * dir.y + dir.z * sin_angle;
+            float val02 = dir.x * (1 - cos_angle) * dir.z - dir.y * sin_angle;
+            float val10 = dir.x * (1 - cos_angle) * dir.y - dir.z * sin_angle;
+            float val11 = dir.y * dir.y + cos_angle * (1 - dir.y * dir.y);
+            float val12 = dir.y * (1 - cos_angle) * dir.z + dir.x * sin_angle;
+            float val20 = dir.x * (1 - cos_angle) * dir.z + dir.y * sin_angle;
+            float val21 = dir.y * (1 - cos_angle) * dir.z - dir.x * sin_angle;
+            float val22 = dir.z * dir.z + cos_angle * (1 - dir.z * dir.z);
+            float[,] rotateMatrix = new float[,] { { val00, val01, val02, 0 }, { val10, val11, val12, 0 }, { val20, val21, val22, 0 }, { 0, 0, 0, 1 } };
+            return multiply_matrix(rotateMatrix, transform_matrix);
         }
 
 
