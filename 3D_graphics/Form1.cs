@@ -19,6 +19,7 @@ namespace _3D_graphics
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
+            ControlType.SelectedIndex = 0;
             scene.Add(Figure.get_Hexahedron(100));
             
         }
@@ -121,9 +122,67 @@ namespace _3D_graphics
             }
         }
 
+        private void rotatefigure(Figure f, float ang, string type) {
+            switch (type)
+            {
+                case "CenterX":
+                    f.rotate_around(ang, "CX");
+                    break;
+                case "CenterY":
+                    f.rotate_around(ang, "CY");
+                    break;
+                case "CenterZ":
+                    f.rotate_around(ang, "CZ");
+                    break;
+                case "X axis":
+                    f.rotate_around(ang, "X");
+                    break;
+                case "Y axis":
+                    f.rotate_around(ang, "Y");
+                    break;
+                case "Z asix":
+                    f.rotate_around(ang, "Z");
+                    break;
+                case "Custom Line":
+
+                default:
+                    break;
+            }
+
+        }
+
+        private void apply_transforms() {
+            float ox = (float)ControlOffsetX.Value;
+            float oy = (float)ControlOffsetY.Value;
+            float oz = (float)ControlOffsetZ.Value;
+            float sx = (float)ControlScaleX.Value;
+            float sy = (float)ControlScaleY.Value;
+            float sz = (float)ControlScaleZ.Value;
+            float an = (float)ControlAngle.Value;
+            foreach (Figure f in scene)
+            {
+
+                rotatefigure(f, an, ControlType.Text);
+                if (ControlType.SelectedIndex == 0) { // center 
+                    
+                    f.scale_around_center(sx, sy, sz);
+
+                }
+                f.offset(ox, oy, oz);
+            }
+            
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
         
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+            apply_transforms();
+            pictureBox1.Invalidate();
         }
     }
 
@@ -318,9 +377,46 @@ namespace _3D_graphics
             return res;
         }
 
+        public void rotate_around(float angle,string type) {
+            float[,] mt = get_matrix();
+            Point3D center = get_center();
+            switch (type)
+            {
+                case "CX":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "CY":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "CZ":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "X":
+                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);                    
+                    break;
+                case "Y":
+                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    break;
+                case "Z":
+                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    break;                 
+                default:
+                    break;
+            }
+            apply_matrix(mt);
+        }
 
 
-        private void scale_around_center(float xs, float ys, float zs) {
+        public void offset(float xs, float ys, float zs) {
+            apply_matrix(apply_offset(get_matrix(),xs,ys,zs));
+        }
+        public void scale_around_center(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
             Point3D p = get_center();
             pnts = apply_offset(pnts, -p.x, -p.y, -p.z);
