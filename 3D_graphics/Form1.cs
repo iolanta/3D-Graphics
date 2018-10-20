@@ -113,12 +113,15 @@ namespace _3D_graphics
             g.TranslateTransform(pictureBox1.Width / 2, pictureBox1.Height / 2);
             g.ScaleTransform(1, -1);
 
-            List<Figure> view = new List<Figure>(scene);
+            //List<Figure> view = scene.ConvertAll(f => new Figure(f)).ToList();
+            // List<Figure> view = new List<Figure>(scene);
 
+            List<Figure> view = scene.Select(f => new Figure(f)).ToList();
+                
             foreach (Figure f in view) {
-                f.apply_matrix(orthographic_projection_X(f.get_matrix()));
+                f.apply_matrix(isometric_projection(f.get_matrix()));
                 foreach (Edge ed in f.edges)
-                    g.DrawLine(new Pen(Color.Black), new PointF(ed.p1.y, ed.p1.z), new PointF(ed.p2.y, ed.p2.z));
+                    g.DrawLine(new Pen(Color.Black), new PointF(ed.p1.x, ed.p1.y), new PointF(ed.p2.x, ed.p2.y));
             }
         }
 
@@ -144,7 +147,9 @@ namespace _3D_graphics
                     f.rotate_around(ang, "Z");
                     break;
                 case "Custom Line":
-
+                    f.line_rotate(ang, new Point3D((float)ControlCustom1X.Value, (float)ControlCustom1Y.Value, (float)ControlCustom1Z.Value),
+                                        new Point3D((float)ControlCustom2X.Value, (float)ControlCustom2Y.Value, (float)ControlCustom2Z.Value));
+                    break;
                 default:
                     break;
             }
@@ -211,7 +216,10 @@ namespace _3D_graphics
         }
 
 
-
+        static public Point3D norm(Point3D p) {
+            float z = (float)Math.Sqrt((float)(p.x * p.x + p.y * p.y + p.z * p.z));
+            return new Point3D(p.x / z, p.y / z, p.z / z);
+        }
 
     }
 
@@ -272,7 +280,7 @@ namespace _3D_graphics
 
         public Edge(Edge e) {
             ind_p1 = e.ind_p1;
-            ind_p2 = e.ind_p1;
+            ind_p2 = e.ind_p2;
             host = e.host;
         }
 
@@ -424,12 +432,23 @@ namespace _3D_graphics
             pnts = apply_offset(pnts, p.x, p.y, p.z);
             apply_matrix(pnts);
         }
+
+        public void line_rotate(float ang, Point3D p1, Point3D p2) {
+            ang = ang * (float)Math.PI / 180;
+            p2 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+            p2 = Point3D.norm(p2);
+
+            float[,] mt = get_matrix();
+            apply_matrix(rotate_around_line(mt, p1, p2, ang));
+        }
+
         /// <summary>
         ///  rotating around line 
         /// </summary>
         /// <param name="start">X Y Z</param>
         /// <param name="dir"> l m n</param>
         /// <param name="angle"> in radians</param>
+       
         private static float[,] rotate_around_line(float[,] transform_matrix, Point3D start, Point3D dir, float angle) {
             float cos_angle = (float)Math.Cos(angle);
             float sin_angle = (float)Math.Sin(angle);
