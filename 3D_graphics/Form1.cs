@@ -77,13 +77,25 @@ namespace _3D_graphics
         private float[,] orthographic_projection_X(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 0, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(transform_matrix, projMatrix);
+            float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
+            for(int i = 0; i < res_mt.GetLength(0); ++i)
+            {
+                res_mt[i, 0] = res_mt[i, 2];
+                res_mt[i, 2] = 0;
+            }
+            return res_mt;
         }
 
         private float[,] orthographic_projection_Y(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(transform_matrix, projMatrix);
+            float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
+            for (int i = 0; i < res_mt.GetLength(0); ++i)
+            {
+                res_mt[i, 1] = res_mt[i, 2];
+                res_mt[i, 2] = 0;
+            }
+            return res_mt;
         }
 
         private float[,] orthographic_projection_Z(float[,] transform_matrix)
@@ -119,7 +131,7 @@ namespace _3D_graphics
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
                 
             foreach (Figure f in view) {
-                f.apply_matrix(isometric_projection(f.get_matrix()));
+                f.apply_matrix(orthographic_projection_Z(f.get_matrix()));
                 foreach (Edge ed in f.edges)
                     g.DrawLine(new Pen(Color.Black), new PointF(ed.p1.x, ed.p1.y), new PointF(ed.p2.x, ed.p2.y));
             }
