@@ -39,19 +39,34 @@
             System.Windows.Forms.Label label10;
             System.Windows.Forms.Label label11;
             System.Windows.Forms.Label label12;
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            System.Windows.Forms.Label label9;
+            System.Windows.Forms.Label label13;
+            System.Windows.Forms.Label label14;
+            System.Windows.Forms.Label label15;
+            System.Windows.Forms.Label label16;
+            System.Windows.Forms.Label label17;
+            System.Windows.Forms.Label label18;
+            this.ControlOffsetX = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown10 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom2Z = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom2Y = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom2X = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom1Z = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom1Y = new System.Windows.Forms.NumericUpDown();
+            this.ControlCustom1X = new System.Windows.Forms.NumericUpDown();
+            this.ControlType = new System.Windows.Forms.ComboBox();
+            this.ControlAngle = new System.Windows.Forms.NumericUpDown();
+            this.ControlScaleZ = new System.Windows.Forms.NumericUpDown();
+            this.ControlScaleY = new System.Windows.Forms.NumericUpDown();
+            this.ControlScaleX = new System.Windows.Forms.NumericUpDown();
+            this.ControlOffsetZ = new System.Windows.Forms.NumericUpDown();
+            this.ControlOffsetY = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -63,16 +78,28 @@
             label10 = new System.Windows.Forms.Label();
             label11 = new System.Windows.Forms.Label();
             label12 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            label9 = new System.Windows.Forms.Label();
+            label13 = new System.Windows.Forms.Label();
+            label14 = new System.Windows.Forms.Label();
+            label15 = new System.Windows.Forms.Label();
+            label16 = new System.Windows.Forms.Label();
+            label17 = new System.Windows.Forms.Label();
+            label18 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Z)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1Z)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlAngle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
@@ -151,20 +178,20 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(176, 73);
+            label10.Location = new System.Drawing.Point(147, 71);
             label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(24, 13);
+            label10.Size = new System.Drawing.Size(31, 13);
             label10.TabIndex = 18;
-            label10.Text = "ZY:";
+            label10.Text = "Type";
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(41, 73);
+            label11.Location = new System.Drawing.Point(40, 71);
             label11.Name = "label11";
-            label11.Size = new System.Drawing.Size(24, 13);
+            label11.Size = new System.Drawing.Size(33, 13);
             label11.TabIndex = 16;
-            label11.Text = "XY:";
+            label11.Text = "angle";
             // 
             // label12
             // 
@@ -175,22 +202,85 @@
             label12.TabIndex = 15;
             label12.Text = "Turn";
             // 
-            // numericUpDown1
+            // label9
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(70, 17);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(175, 128);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(17, 13);
+            label9.TabIndex = 26;
+            label9.Text = "Z:";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new System.Drawing.Point(93, 130);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(17, 13);
+            label13.TabIndex = 24;
+            label13.Text = "Y:";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new System.Drawing.Point(5, 128);
+            label14.Name = "label14";
+            label14.Size = new System.Drawing.Size(17, 13);
+            label14.TabIndex = 22;
+            label14.Text = "X:";
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new System.Drawing.Point(175, 152);
+            label15.Name = "label15";
+            label15.Size = new System.Drawing.Size(17, 13);
+            label15.TabIndex = 32;
+            label15.Text = "Z:";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new System.Drawing.Point(93, 154);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(17, 13);
+            label16.TabIndex = 30;
+            label16.Text = "Y:";
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new System.Drawing.Point(5, 152);
+            label17.Name = "label17";
+            label17.Size = new System.Drawing.Size(17, 13);
+            label17.TabIndex = 28;
+            label17.Text = "X:";
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Location = new System.Drawing.Point(5, 102);
+            label18.Name = "label18";
+            label18.Size = new System.Drawing.Size(68, 13);
+            label18.TabIndex = 33;
+            label18.Text = "Custom Line:";
+            // 
+            // ControlOffsetX
+            // 
+            this.ControlOffsetX.Location = new System.Drawing.Point(70, 17);
+            this.ControlOffsetX.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.ControlOffsetX.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown1.TabIndex = 0;
+            this.ControlOffsetX.Name = "ControlOffsetX";
+            this.ControlOffsetX.Size = new System.Drawing.Size(62, 20);
+            this.ControlOffsetX.TabIndex = 0;
             // 
             // pictureBox1
             // 
@@ -204,156 +294,279 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.numericUpDown8);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.button2);
+            this.groupBox1.Controls.Add(label18);
+            this.groupBox1.Controls.Add(label15);
+            this.groupBox1.Controls.Add(this.ControlCustom2Z);
+            this.groupBox1.Controls.Add(label16);
+            this.groupBox1.Controls.Add(this.ControlCustom2Y);
+            this.groupBox1.Controls.Add(label17);
+            this.groupBox1.Controls.Add(this.ControlCustom2X);
+            this.groupBox1.Controls.Add(label9);
+            this.groupBox1.Controls.Add(this.ControlCustom1Z);
+            this.groupBox1.Controls.Add(label13);
+            this.groupBox1.Controls.Add(this.ControlCustom1Y);
+            this.groupBox1.Controls.Add(label14);
+            this.groupBox1.Controls.Add(this.ControlCustom1X);
+            this.groupBox1.Controls.Add(this.ControlType);
             this.groupBox1.Controls.Add(label10);
             this.groupBox1.Controls.Add(label11);
             this.groupBox1.Controls.Add(label12);
-            this.groupBox1.Controls.Add(this.numericUpDown10);
+            this.groupBox1.Controls.Add(this.ControlAngle);
             this.groupBox1.Controls.Add(label5);
-            this.groupBox1.Controls.Add(this.numericUpDown5);
+            this.groupBox1.Controls.Add(this.ControlScaleZ);
             this.groupBox1.Controls.Add(label6);
-            this.groupBox1.Controls.Add(this.numericUpDown6);
+            this.groupBox1.Controls.Add(this.ControlScaleY);
             this.groupBox1.Controls.Add(label7);
             this.groupBox1.Controls.Add(label8);
-            this.groupBox1.Controls.Add(this.numericUpDown7);
+            this.groupBox1.Controls.Add(this.ControlScaleX);
             this.groupBox1.Controls.Add(label4);
-            this.groupBox1.Controls.Add(this.numericUpDown3);
+            this.groupBox1.Controls.Add(this.ControlOffsetZ);
             this.groupBox1.Controls.Add(label3);
-            this.groupBox1.Controls.Add(this.numericUpDown4);
+            this.groupBox1.Controls.Add(this.ControlOffsetY);
             this.groupBox1.Controls.Add(this.numericUpDown2);
             this.groupBox1.Controls.Add(label2);
             this.groupBox1.Controls.Add(label1);
-            this.groupBox1.Controls.Add(this.numericUpDown1);
-            this.groupBox1.Location = new System.Drawing.Point(643, 319);
+            this.groupBox1.Controls.Add(this.ControlOffsetX);
+            this.groupBox1.Location = new System.Drawing.Point(643, 108);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(330, 129);
+            this.groupBox1.Size = new System.Drawing.Size(330, 213);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Aphine Transforms";
             // 
-            // numericUpDown8
+            // ControlCustom2Z
             // 
-            this.numericUpDown8.Location = new System.Drawing.Point(206, 69);
-            this.numericUpDown8.Maximum = new decimal(new int[] {
+            this.ControlCustom2Z.Location = new System.Drawing.Point(198, 150);
+            this.ControlCustom2Z.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom2Z.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom2Z.Name = "ControlCustom2Z";
+            this.ControlCustom2Z.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom2Z.TabIndex = 31;
+            // 
+            // ControlCustom2Y
+            // 
+            this.ControlCustom2Y.Location = new System.Drawing.Point(107, 150);
+            this.ControlCustom2Y.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom2Y.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom2Y.Name = "ControlCustom2Y";
+            this.ControlCustom2Y.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom2Y.TabIndex = 29;
+            // 
+            // ControlCustom2X
+            // 
+            this.ControlCustom2X.Location = new System.Drawing.Point(28, 150);
+            this.ControlCustom2X.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom2X.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom2X.Name = "ControlCustom2X";
+            this.ControlCustom2X.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom2X.TabIndex = 27;
+            // 
+            // ControlCustom1Z
+            // 
+            this.ControlCustom1Z.Location = new System.Drawing.Point(198, 126);
+            this.ControlCustom1Z.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom1Z.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom1Z.Name = "ControlCustom1Z";
+            this.ControlCustom1Z.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom1Z.TabIndex = 25;
+            // 
+            // ControlCustom1Y
+            // 
+            this.ControlCustom1Y.Location = new System.Drawing.Point(107, 126);
+            this.ControlCustom1Y.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom1Y.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom1Y.Name = "ControlCustom1Y";
+            this.ControlCustom1Y.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom1Y.TabIndex = 23;
+            // 
+            // ControlCustom1X
+            // 
+            this.ControlCustom1X.Location = new System.Drawing.Point(28, 126);
+            this.ControlCustom1X.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ControlCustom1X.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.ControlCustom1X.Name = "ControlCustom1X";
+            this.ControlCustom1X.Size = new System.Drawing.Size(62, 20);
+            this.ControlCustom1X.TabIndex = 21;
+            // 
+            // ControlType
+            // 
+            this.ControlType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ControlType.FormattingEnabled = true;
+            this.ControlType.Items.AddRange(new object[] {
+            "CenterX",
+            "CenterY",
+            "CenterZ",
+            "X axis",
+            "Y axis",
+            "Z asix",
+            "Custom Line"});
+            this.ControlType.Location = new System.Drawing.Point(182, 69);
+            this.ControlType.Margin = new System.Windows.Forms.Padding(2);
+            this.ControlType.Name = "ControlType";
+            this.ControlType.Size = new System.Drawing.Size(92, 21);
+            this.ControlType.TabIndex = 20;
+            // 
+            // ControlAngle
+            // 
+            this.ControlAngle.Location = new System.Drawing.Point(79, 69);
+            this.ControlAngle.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
-            this.numericUpDown8.Name = "numericUpDown8";
-            this.numericUpDown8.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown8.TabIndex = 19;
+            this.ControlAngle.Name = "ControlAngle";
+            this.ControlAngle.Size = new System.Drawing.Size(62, 20);
+            this.ControlAngle.TabIndex = 14;
             // 
-            // numericUpDown10
+            // ControlScaleZ
             // 
-            this.numericUpDown10.Location = new System.Drawing.Point(90, 69);
-            this.numericUpDown10.Maximum = new decimal(new int[] {
-            360,
-            0,
-            0,
-            0});
-            this.numericUpDown10.Name = "numericUpDown10";
-            this.numericUpDown10.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown10.TabIndex = 14;
-            // 
-            // numericUpDown5
-            // 
-            this.numericUpDown5.Location = new System.Drawing.Point(240, 44);
-            this.numericUpDown5.Maximum = new decimal(new int[] {
+            this.ControlScaleZ.Location = new System.Drawing.Point(240, 44);
+            this.ControlScaleZ.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown5.Minimum = new decimal(new int[] {
+            this.ControlScaleZ.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             -2147483648});
-            this.numericUpDown5.Name = "numericUpDown5";
-            this.numericUpDown5.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown5.TabIndex = 12;
-            this.numericUpDown5.Value = new decimal(new int[] {
+            this.ControlScaleZ.Name = "ControlScaleZ";
+            this.ControlScaleZ.Size = new System.Drawing.Size(62, 20);
+            this.ControlScaleZ.TabIndex = 12;
+            this.ControlScaleZ.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // numericUpDown6
+            // ControlScaleY
             // 
-            this.numericUpDown6.Location = new System.Drawing.Point(149, 44);
-            this.numericUpDown6.Maximum = new decimal(new int[] {
+            this.ControlScaleY.Location = new System.Drawing.Point(149, 44);
+            this.ControlScaleY.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown6.Minimum = new decimal(new int[] {
+            this.ControlScaleY.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             -2147483648});
-            this.numericUpDown6.Name = "numericUpDown6";
-            this.numericUpDown6.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown6.TabIndex = 10;
-            this.numericUpDown6.Value = new decimal(new int[] {
+            this.ControlScaleY.Name = "ControlScaleY";
+            this.ControlScaleY.Size = new System.Drawing.Size(62, 20);
+            this.ControlScaleY.TabIndex = 10;
+            this.ControlScaleY.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // numericUpDown7
+            // ControlScaleX
             // 
-            this.numericUpDown7.Location = new System.Drawing.Point(70, 44);
-            this.numericUpDown7.Maximum = new decimal(new int[] {
+            this.ControlScaleX.Location = new System.Drawing.Point(70, 44);
+            this.ControlScaleX.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown7.Minimum = new decimal(new int[] {
+            this.ControlScaleX.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             -2147483648});
-            this.numericUpDown7.Name = "numericUpDown7";
-            this.numericUpDown7.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown7.TabIndex = 7;
-            this.numericUpDown7.Value = new decimal(new int[] {
+            this.ControlScaleX.Name = "ControlScaleX";
+            this.ControlScaleX.Size = new System.Drawing.Size(62, 20);
+            this.ControlScaleX.TabIndex = 7;
+            this.ControlScaleX.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // numericUpDown3
+            // ControlOffsetZ
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(240, 17);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
+            this.ControlOffsetZ.Location = new System.Drawing.Point(240, 17);
+            this.ControlOffsetZ.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown3.Minimum = new decimal(new int[] {
+            this.ControlOffsetZ.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown3.TabIndex = 5;
+            this.ControlOffsetZ.Name = "ControlOffsetZ";
+            this.ControlOffsetZ.Size = new System.Drawing.Size(62, 20);
+            this.ControlOffsetZ.TabIndex = 5;
             // 
-            // numericUpDown4
+            // ControlOffsetY
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(149, 17);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
+            this.ControlOffsetY.Location = new System.Drawing.Point(149, 17);
+            this.ControlOffsetY.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown4.Minimum = new decimal(new int[] {
+            this.ControlOffsetY.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown4.TabIndex = 3;
+            this.ControlOffsetY.Name = "ControlOffsetY";
+            this.ControlOffsetY.Size = new System.Drawing.Size(62, 20);
+            this.ControlOffsetY.TabIndex = 3;
             // 
             // numericUpDown2
             // 
@@ -374,6 +587,7 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "Central",
@@ -385,9 +599,11 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 3;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // comboBox2
             // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
             "Cube",
@@ -397,6 +613,28 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 4;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 182);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(120, 26);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Apply Transforms";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(170, 182);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(132, 24);
+            this.button2.TabIndex = 34;
+            this.button2.Text = "Reset ";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -410,17 +648,22 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Z)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1Z)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlCustom1X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlAngle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlScaleX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ControlOffsetY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
 
@@ -428,19 +671,27 @@
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown ControlOffsetX;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.NumericUpDown ControlOffsetZ;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.NumericUpDown numericUpDown5;
-        private System.Windows.Forms.NumericUpDown numericUpDown6;
-        private System.Windows.Forms.NumericUpDown numericUpDown7;
-        private System.Windows.Forms.NumericUpDown numericUpDown8;
-        private System.Windows.Forms.NumericUpDown numericUpDown10;
+        private System.Windows.Forms.NumericUpDown ControlOffsetY;
+        private System.Windows.Forms.NumericUpDown ControlScaleZ;
+        private System.Windows.Forms.NumericUpDown ControlScaleY;
+        private System.Windows.Forms.NumericUpDown ControlScaleX;
+        private System.Windows.Forms.NumericUpDown ControlAngle;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.NumericUpDown ControlCustom2Z;
+        private System.Windows.Forms.NumericUpDown ControlCustom2Y;
+        private System.Windows.Forms.NumericUpDown ControlCustom2X;
+        private System.Windows.Forms.NumericUpDown ControlCustom1Z;
+        private System.Windows.Forms.NumericUpDown ControlCustom1Y;
+        private System.Windows.Forms.NumericUpDown ControlCustom1X;
+        private System.Windows.Forms.ComboBox ControlType;
+        private System.Windows.Forms.Button button2;
     }
 }
 

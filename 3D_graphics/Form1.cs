@@ -19,7 +19,8 @@ namespace _3D_graphics
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
-            scene.Add(Figure.get_Hexahedron(100));
+            ControlType.SelectedIndex = 0;
+            
             
         }
 
@@ -73,16 +74,36 @@ namespace _3D_graphics
             return multiply_matrix(transform_matrix, scaleMatrix);
         }
 
+        private float[,] perspective_projection(float[,] transform_matrix)
+        {
+            float center = 10;     
+            float[,] projMatrix = new float[,] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 0, -1/center}, { 0, 0, 0, 1} };
+            float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
+            return res_mt;
+        }
+
         private float[,] orthographic_projection_X(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 0, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(transform_matrix, projMatrix);
+            float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
+            for(int i = 0; i < res_mt.GetLength(0); ++i)
+            {
+                res_mt[i, 0] = res_mt[i, 2];
+                res_mt[i, 2] = 0;
+            }
+            return res_mt;
         }
 
         private float[,] orthographic_projection_Y(float[,] transform_matrix)
         {
             float[,] projMatrix = new float[,] { { 1, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(transform_matrix, projMatrix);
+            float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
+            for (int i = 0; i < res_mt.GetLength(0); ++i)
+            {
+                res_mt[i, 1] = res_mt[i, 2];
+                res_mt[i, 2] = 0;
+            }
+            return res_mt;
         }
 
         private float[,] orthographic_projection_Z(float[,] transform_matrix)
@@ -111,19 +132,150 @@ namespace _3D_graphics
             var g = e.Graphics;
             g.TranslateTransform(pictureBox1.Width / 2, pictureBox1.Height / 2);
             g.ScaleTransform(1, -1);
-
-            List<Figure> view = new List<Figure>(scene);
-
+            List<Figure> view = scene.Select(f => new Figure(f)).ToList();   
             foreach (Figure f in view) {
-                f.apply_matrix(orthographic_projection_X(f.get_matrix()));
+                switch (comboBox1.Text)
+                {
+                    case "Central":
+                        f.apply_matrix(perspective_projection(f.get_matrix()));
+                        break;
+                    case "Isometric":
+                        f.apply_matrix(isometric_projection(f.get_matrix()));
+                        break;
+                    case "Ortographic(XY)":
+                        f.apply_matrix(orthographic_projection_Z(f.get_matrix()));
+                        break;
+                    case "Ortographic(XZ)":
+                        f.apply_matrix(orthographic_projection_Y(f.get_matrix()));
+                        break;
+                    case "Ortographic(YZ)":
+                        f.apply_matrix(orthographic_projection_X(f.get_matrix()));
+                        break;
+                    default:
+                        break;
+                }
                 foreach (Edge ed in f.edges)
-                    g.DrawLine(new Pen(Color.Black), new PointF(ed.p1.y, ed.p1.z), new PointF(ed.p2.y, ed.p2.z));
+                    g.DrawLine(new Pen(ed.clr), new PointF(ed.p1.x, ed.p1.y), new PointF(ed.p2.x, ed.p2.y));
             }
+        }
+
+        private void rotatefigure(Figure f, float ang, string type) {
+            switch (type)
+            {
+                case "CenterX":
+                    f.rotate_around(ang, "CX");
+                    break;
+                case "CenterY":
+                    f.rotate_around(ang, "CY");
+                    break;
+                case "CenterZ":
+                    f.rotate_around(ang, "CZ");
+                    break;
+                case "X axis":
+                    f.rotate_around(ang, "X");
+                    break;
+                case "Y axis":
+                    f.rotate_around(ang, "Y");
+                    break;
+                case "Z asix":
+                    f.rotate_around(ang, "Z");
+                    break;
+                case "Custom Line":
+                    f.line_rotate(ang, new Point3D((float)ControlCustom1X.Value, (float)ControlCustom1Y.Value, (float)ControlCustom1Z.Value),
+                                        new Point3D((float)ControlCustom2X.Value, (float)ControlCustom2Y.Value, (float)ControlCustom2Z.Value));
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void apply_transforms() {
+            float ox = (float)ControlOffsetX.Value;
+            float oy = (float)ControlOffsetY.Value;
+            float oz = (float)ControlOffsetZ.Value;
+            float sx = (float)ControlScaleX.Value;
+            float sy = (float)ControlScaleY.Value;
+            float sz = (float)ControlScaleZ.Value;
+            float an = (float)ControlAngle.Value;
+            Figure f = scene[2];
+            
+
+                rotatefigure(f, an, ControlType.Text);
+                if (ControlType.SelectedIndex == 0) { // center 
+                    
+                    f.scale_around_center(sx, sy, sz);
+
+                }
+                f.offset(ox, oy, oz);
+            
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
         
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+            apply_transforms();
+            pictureBox1.Invalidate();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pictureBox1.Invalidate();
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            scene.Clear();
+            scene.Add(Figure.get_Coordinates());
+            scene.Add(gen_line());
+            switch (comboBox2.Text)
+            {
+                case "Cube":
+                    scene.Add(Figure.get_Hexahedron(100));
+                    break;
+                case "Tetrahedron":
+                    scene.Add(Figure.get_Tetrahedron(100));
+                    break;
+                case "Octahedron":
+                    scene.Add(Figure.get_Octahedron(100));
+                    break;
+                default:
+                    break;
+              
+            }
+            pictureBox1.Invalidate();
+            reset_controls();
+
+        }
+
+        private void reset_controls() {
+            ControlOffsetX.Value = 0;
+            ControlOffsetY.Value = 0;
+            ControlOffsetZ.Value = 0;
+            ControlScaleX.Value = 1;
+            ControlScaleY.Value = 1;
+            ControlScaleZ.Value = 1;
+            ControlAngle.Value = 0;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            reset_controls();
+        }
+
+        private Figure gen_line() {
+            Figure res = new Figure();
+            res.points.Add(new Point3D((float)ControlCustom1X.Value, (float)ControlCustom1Y.Value, (float)ControlCustom1Z.Value));
+            res.points.Add(new Point3D((float)ControlCustom2X.Value, (float)ControlCustom2Y.Value, (float)ControlCustom2Z.Value));
+            res.edges.Add(new Edge(0, 1,res));
+            res.edges.Last().clr = Color.DarkOrange;
+            return res;
         }
     }
 
@@ -208,6 +360,7 @@ namespace _3D_graphics
     {
         public Figure host = null;
         public int ind_p1, ind_p2;
+        public Color clr = Color.Black;
 
         public Edge(int i1, int i2, Figure h = null) {
             ind_p1 = i1;
@@ -217,8 +370,9 @@ namespace _3D_graphics
 
         public Edge(Edge e) {
             ind_p1 = e.ind_p1;
-            ind_p2 = e.ind_p1;
+            ind_p2 = e.ind_p2;
             host = e.host;
+            clr = e.clr; 
         }
 
         public Point3D p1
@@ -254,6 +408,8 @@ namespace _3D_graphics
                 }
             }
         }
+
+
 
    
     }
@@ -324,9 +480,46 @@ namespace _3D_graphics
             return res;
         }
 
+        public void rotate_around(float angle,string type) {
+            float[,] mt = get_matrix();
+            Point3D center = get_center();
+            switch (type)
+            {
+                case "CX":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "CY":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "CZ":
+                    mt = apply_offset(mt, -center.x, -center.y, -center.z);
+                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    mt = apply_offset(mt, center.x, center.y, center.z);
+                    break;
+                case "X":
+                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);                    
+                    break;
+                case "Y":
+                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    break;
+                case "Z":
+                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    break;                 
+                default:
+                    break;
+            }
+            apply_matrix(mt);
+        }
 
 
-        private void scale_around_center(float xs, float ys, float zs) {
+        public void offset(float xs, float ys, float zs) {
+            apply_matrix(apply_offset(get_matrix(),xs,ys,zs));
+        }
+        public void scale_around_center(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
             Point3D p = get_center();
             pnts = apply_offset(pnts, -p.x, -p.y, -p.z);
@@ -336,27 +529,15 @@ namespace _3D_graphics
         }
 
 
-        
+        public void line_rotate(float ang, Point3D p1, Point3D p2) {
+            ang = ang * (float)Math.PI / 180;
+            p2 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+            p2 = Point3D.norm(p2);
 
-        /// <summary>
-        ///  rotate this figure around line(beg,end) by angle 
-        /// </summary>
-        /// <param name="beg"></param>
-        /// <param name="end"></param>
-        /// <param name="angle"> in degrees</param>
-        private void rotate_around(Point3D beg, Point3D end, float angle) {
-            end = Point3D.norm(end);
-            angle = angle * (float)Math.PI / 180;     
-            apply_matrix(rotate_around_line(get_matrix(), beg, end, angle));
+            float[,] mt = get_matrix();
+            apply_matrix(rotate_around_line(mt, p1, p2, ang));
         }
 
-
-        /// <summary>
-        ///  rotating around line 
-        /// </summary>
-        /// <param name="start">X Y Z</param>
-        /// <param name="dir"> l m n</param>
-        /// <param name="angle"> in radians</param>
         private static float[,] rotate_around_line(float[,] transform_matrix, Point3D start, Point3D dir, float angle) {
             float cos_angle = (float)Math.Cos(angle);
             float sin_angle = (float)Math.Sin(angle);
@@ -370,7 +551,7 @@ namespace _3D_graphics
             float val21 = dir.y * (1 - cos_angle) * dir.z - dir.x * sin_angle;
             float val22 = dir.z * dir.z + cos_angle * (1 - dir.z * dir.z);
             float[,] rotateMatrix = new float[,] { { val00, val01, val02, 0 }, { val10, val11, val12, 0 }, { val20, val21, val22, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(rotateMatrix, transform_matrix);
+            return multiply_matrix(transform_matrix, rotateMatrix);
         }
 
 
@@ -475,7 +656,67 @@ namespace _3D_graphics
             return res;
         }
 
+        static public Figure get_Coordinates() {
+            Figure res = new Figure();
+            res.points.Add(new Point3D(0,0,0));
+
+            res.points.Add(new Point3D(0, 100, 0));
+            res.points.Add(new Point3D(100, 0, 0));
+            res.points.Add(new Point3D(0, 0, 100));
+
+            res.edges.Add(new Edge(0, 1, res)); // y
+            res.edges.Last().clr = Color.Green;
+            res.edges.Add(new Edge(0, 2, res)); // x
+            res.edges.Last().clr = Color.Red;
+            res.edges.Add(new Edge(0, 3, res)); //z
+            res.edges.Last().clr = Color.Blue;
+            return res;
+        }
+
+        static public Figure get_Tetrahedron(float sz) {
+            Figure res = new Figure();
+            sz = sz / 2;
+            res.points.Add(new Point3D(sz,sz,sz));
+            res.points.Add(new Point3D(-sz, -sz, sz));
+            res.points.Add(new Point3D(sz, -sz, -sz));
+            res.points.Add(new Point3D(-sz, sz, -sz));
+            for (int i = 0; i < res.points.Count; ++i)
+                for (int j = i + 1; j < res.points.Count; ++j)
+                    res.edges.Add(new Edge(i, j, res));
+            return res;
+        }
+
+       static public Figure get_Octahedron(float sz)
+        {
+            Figure res = new Figure();
+            res.points.Add(new Point3D(sz / 2,0,0)); //0
+            res.points.Add(new Point3D(-sz / 2, 0, 0)); //1
+            res.points.Add(new Point3D(0, sz / 2, 0)); //2
+            res.points.Add(new Point3D(0, -sz / 2, 0));//3
+            res.points.Add(new Point3D(0, 0, sz / 2));//4
+            res.points.Add(new Point3D(0, 0, -sz / 2));//5
+
+            res.edges.Add(new Edge(0, 2, res));
+            res.edges.Add(new Edge(0, 3, res));
+            res.edges.Add(new Edge(0, 4, res));
+            res.edges.Add(new Edge(0, 5, res));
+
+
+            res.edges.Add(new Edge(1, 2, res));
+            res.edges.Add(new Edge(1, 3, res));
+            res.edges.Add(new Edge(1, 4, res));
+            res.edges.Add(new Edge(1, 5, res));
+
+
+            res.edges.Add(new Edge(2, 4, res));
+            res.edges.Add(new Edge(4, 3, res));
+            res.edges.Add(new Edge(3, 5, res));
+            res.edges.Add(new Edge(5, 2, res));
+            return res;
+        }
     }
+
+
 
 
 
