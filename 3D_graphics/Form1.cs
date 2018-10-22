@@ -76,7 +76,7 @@ namespace _3D_graphics
 
         private float[,] perspective_projection(float[,] transform_matrix)
         {
-            float center = 10;     
+            float center = 200;     
             float[,] projMatrix = new float[,] { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 0, -1/center}, { 0, 0, 0, 1} };
             float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
             return res_mt;
@@ -457,9 +457,9 @@ namespace _3D_graphics
         public void apply_matrix(float[,] matrix) {
             for (int i = 0; i < points.Count; i++)
             {
-                points[i].x=matrix[i, 0];
-                points[i].y = matrix[i, 1];
-                points[i].z = matrix[i, 2];
+                points[i].x=matrix[i, 0]/matrix[i,3];
+                points[i].y = matrix[i, 1] / matrix[i, 3];
+                points[i].z = matrix[i, 2] / matrix[i, 3];
                 
             }
         }
