@@ -620,7 +620,8 @@
             this.comboBox2.Items.AddRange(new object[] {
             "Cube",
             "Tetrahedron",
-            "Octahedron"});
+            "Octahedron",
+            "Icosahedron"});
             this.comboBox2.Location = new System.Drawing.Point(643, 60);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 21);

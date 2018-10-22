@@ -227,6 +227,9 @@ namespace _3D_graphics
                 case "Octahedron":
                     scene.Add(Figure.get_Octahedron(100));
                     break;
+                case "Icosahedron":
+                    scene.Add(Figure.get_Icosahedron(100));
+                    break;
                 default:
                     break;
               
@@ -650,18 +653,6 @@ namespace _3D_graphics
             return res;
         }
 
-        static public Figure get_Tetrahedron(float sz) {
-            Figure res = new Figure();
-            sz = sz / 2;
-            res.points.Add(new Point3D(sz,sz,sz));
-            res.points.Add(new Point3D(-sz, -sz, sz));
-            res.points.Add(new Point3D(sz, -sz, -sz));
-            res.points.Add(new Point3D(-sz, sz, -sz));
-            for (int i = 0; i < res.points.Count; ++i)
-                for (int j = i + 1; j < res.points.Count; ++j)
-                    res.edges.Add(new Edge(i, j, res));
-            return res;
-        }
 
        static public Figure get_Octahedron(float sz)
         {
@@ -691,7 +682,46 @@ namespace _3D_graphics
             res.edges.Add(new Edge(5, 2, res));
             return res;
         }
+
+        static public Figure get_Icosahedron(float sz) {
+            Figure res = new Figure();
+            float ang = 36 * (float)Math.PI / 180;
+
+            bool is_upper = true;
+            int ind = 0;
+            for (float a = 0; a <= (float) 2*Math.PI; a += ang) {
+                res.points.Add(new Point3D((float)Math.Cos((float)a), (float)Math.Sin((float)a), is_upper ? (float)0.5 : (float)-0.5));
+                if(ind > 0)
+                    res.edges.Add(new Edge(ind, ind - 1, res));
+                is_upper = !is_upper;
+                ind++;
+            }
+            res.edges.Add(new Edge(ind-1, 0, res));
+            res.points.Add(new Point3D(0, 0, (float)Math.Sqrt(5) / 2)); // ind
+            res.points.Add(new Point3D(0, 0, -(float)Math.Sqrt(5) / 2)); // ind+1
+            for(int i = 0; i< ind; i++)
+            {
+                var next = i + 2;
+                if (next < ind)
+                    res.edges.Add(new Edge(i, next, res));
+                else
+                    res.edges.Add(new Edge(i, next % ind, res));
+            }
+
+            for (int i = 0; i < ind; i++)
+            {
+                if (i % 2 == 0)
+                    res.edges.Add(new Edge(i, ind, res));
+                else
+                    res.edges.Add(new Edge(i, ind+1, res));
+            }
+
+            res.scale_around_center(sz, sz, sz);
+
+            return res;
+        }
     }
+
 
 
 
