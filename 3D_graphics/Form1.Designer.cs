@@ -49,6 +49,8 @@
             this.ControlOffsetX = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.ControlCustom2Z = new System.Windows.Forms.NumericUpDown();
             this.ControlCustom2Y = new System.Windows.Forms.NumericUpDown();
             this.ControlCustom2X = new System.Windows.Forms.NumericUpDown();
@@ -65,8 +67,6 @@
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -336,6 +336,27 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Aphine Transforms";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 182);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(120, 26);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Apply Transforms";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(170, 182);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(132, 24);
+            this.button2.TabIndex = 34;
+            this.button2.Text = "Reset ";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // ControlCustom2Z
             // 
             this.ControlCustom2Z.Location = new System.Drawing.Point(198, 150);
@@ -352,6 +373,7 @@
             this.ControlCustom2Z.Name = "ControlCustom2Z";
             this.ControlCustom2Z.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2Z.TabIndex = 31;
+            this.ControlCustom2Z.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom2Y
             // 
@@ -369,6 +391,7 @@
             this.ControlCustom2Y.Name = "ControlCustom2Y";
             this.ControlCustom2Y.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2Y.TabIndex = 29;
+            this.ControlCustom2Y.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom2X
             // 
@@ -386,6 +409,7 @@
             this.ControlCustom2X.Name = "ControlCustom2X";
             this.ControlCustom2X.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2X.TabIndex = 27;
+            this.ControlCustom2X.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1Z
             // 
@@ -403,6 +427,7 @@
             this.ControlCustom1Z.Name = "ControlCustom1Z";
             this.ControlCustom1Z.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1Z.TabIndex = 25;
+            this.ControlCustom1Z.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1Y
             // 
@@ -420,6 +445,7 @@
             this.ControlCustom1Y.Name = "ControlCustom1Y";
             this.ControlCustom1Y.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1Y.TabIndex = 23;
+            this.ControlCustom1Y.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1X
             // 
@@ -437,6 +463,7 @@
             this.ControlCustom1X.Name = "ControlCustom1X";
             this.ControlCustom1X.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1X.TabIndex = 21;
+            this.ControlCustom1X.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlType
             // 
@@ -471,13 +498,8 @@
             // ControlScaleZ
             // 
             this.ControlScaleZ.Location = new System.Drawing.Point(240, 44);
-            this.ControlScaleZ.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.ControlScaleZ.Minimum = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             -2147483648});
@@ -485,7 +507,7 @@
             this.ControlScaleZ.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleZ.TabIndex = 12;
             this.ControlScaleZ.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -493,13 +515,8 @@
             // ControlScaleY
             // 
             this.ControlScaleY.Location = new System.Drawing.Point(149, 44);
-            this.ControlScaleY.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.ControlScaleY.Minimum = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             -2147483648});
@@ -507,7 +524,7 @@
             this.ControlScaleY.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleY.TabIndex = 10;
             this.ControlScaleY.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -515,13 +532,8 @@
             // ControlScaleX
             // 
             this.ControlScaleX.Location = new System.Drawing.Point(70, 44);
-            this.ControlScaleX.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.ControlScaleX.Minimum = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             -2147483648});
@@ -529,7 +541,7 @@
             this.ControlScaleX.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleX.TabIndex = 7;
             this.ControlScaleX.Value = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -614,27 +626,6 @@
             this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 4;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(12, 182);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 26);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Apply Transforms";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(170, 182);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(132, 24);
-            this.button2.TabIndex = 34;
-            this.button2.Text = "Reset ";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 

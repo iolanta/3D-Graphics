@@ -162,22 +162,36 @@ namespace _3D_graphics
             float ox = (float)ControlOffsetX.Value;
             float oy = (float)ControlOffsetY.Value;
             float oz = (float)ControlOffsetZ.Value;
-            float sx = (float)ControlScaleX.Value;
-            float sy = (float)ControlScaleY.Value;
-            float sz = (float)ControlScaleZ.Value;
+            float sx = (float)ControlScaleX.Value/10;
+            float sy = (float)ControlScaleY.Value / 10;
+            float sz = (float)ControlScaleZ.Value / 10;
             float an = (float)ControlAngle.Value;
             Figure f = scene[2];
-            
 
-                rotatefigure(f, an, ControlType.Text);
-                if (ControlType.SelectedIndex == 0) { // center 
-                    
-                    f.scale_around_center(sx, sy, sz);
 
-                }
+            rotatefigure(f, an, ControlType.Text);
+            scalefigure(f, sx, sy, sz, ControlType.Text);   
                 f.offset(ox, oy, oz);
             
             
+        }
+
+        private void scalefigure(Figure f, float sx, float sy, float sz, string type) {
+            switch (type)
+            {
+                case "CenterX":
+                case "CenterY":
+                case "CenterZ":
+                    f.scale_around_center(sx,sy,sz);
+                    break;
+                case "X axis":
+                case "Y axis":
+                case "Z axis":
+                    f.scale_axis(sx, sy, sz);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -226,9 +240,9 @@ namespace _3D_graphics
             ControlOffsetX.Value = 0;
             ControlOffsetY.Value = 0;
             ControlOffsetZ.Value = 0;
-            ControlScaleX.Value = 1;
-            ControlScaleY.Value = 1;
-            ControlScaleZ.Value = 1;
+            ControlScaleX.Value = 10;
+            ControlScaleY.Value = 10;
+            ControlScaleZ.Value = 10;
             ControlAngle.Value = 0;
         }
 
@@ -244,6 +258,12 @@ namespace _3D_graphics
             res.edges.Add(new Edge(0, 1,res));
             res.edges.Last().clr = Color.DarkOrange;
             return res;
+        }
+
+        private void ControlCustom1X_ValueChanged(object sender, EventArgs e)
+        {
+            scene[1] = gen_line();
+            pictureBox1.Invalidate();
         }
     }
 
@@ -481,6 +501,12 @@ namespace _3D_graphics
                     break;
             }
             apply_matrix(mt);
+        }
+
+        public void scale_axis(float xs,float ys, float zs) {
+            float[,] pnts = get_matrix();
+            pnts = apply_scale(pnts, xs, ys, zs);
+            apply_matrix(pnts);
         }
 
 
