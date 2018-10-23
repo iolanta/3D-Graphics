@@ -185,8 +185,8 @@ namespace _3D_graphics
                     f.scale_around_center(sx,sy,sz);
                     break;
                 case "X axis":
-                case "Y axis":
-                case "Z axis":
+                case "Y axis":                
+                case "Z asix":
                     f.scale_axis(sx, sy, sz);
                     break;
                 default:
@@ -448,7 +448,7 @@ namespace _3D_graphics
         public void apply_matrix(float[,] matrix) {
             for (int i = 0; i < points.Count; i++)
             {
-                points[i].x=matrix[i, 0]/matrix[i,3];
+                points[i].x = matrix[i, 0]/matrix[i,3];
                 points[i].y = matrix[i, 1] / matrix[i, 3];
                 points[i].z = matrix[i, 2] / matrix[i, 3];
                 
@@ -548,7 +548,7 @@ namespace _3D_graphics
             float val21 = dir.y * (1 - cos_angle) * dir.z - dir.x * sin_angle;
             float val22 = dir.z * dir.z + cos_angle * (1 - dir.z * dir.z);
             float[,] rotateMatrix = new float[,] { { val00, val01, val02, 0 }, { val10, val11, val12, 0 }, { val20, val21, val22, 0 }, { 0, 0, 0, 1 } };
-            return multiply_matrix(transform_matrix, rotateMatrix);
+            return apply_offset(multiply_matrix(apply_offset(transform_matrix, -start.x, -start.y, -start.z), rotateMatrix), start.x, start.y, start.z);
         }
 
 
@@ -680,6 +680,20 @@ namespace _3D_graphics
             res.edges.Add(new Edge(4, 3, res));
             res.edges.Add(new Edge(3, 5, res));
             res.edges.Add(new Edge(5, 2, res));
+            return res;
+        }
+
+        static public Figure get_Tetrahedron(float sz)
+        {
+            Figure res = new Figure();
+            sz = sz / 2;
+            res.points.Add(new Point3D(sz, sz, sz));
+            res.points.Add(new Point3D(-sz, -sz, sz));
+            res.points.Add(new Point3D(sz, -sz, -sz));
+            res.points.Add(new Point3D(-sz, sz, -sz));
+            for (int i = 0; i < res.points.Count; ++i)
+                for (int j = i + 1; j < res.points.Count; ++j)
+                    res.edges.Add(new Edge(i, j, res));
             return res;
         }
 
