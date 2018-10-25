@@ -52,7 +52,9 @@ namespace _3D_graphics
                         break;
                 }
                 foreach (Side s in f.sides) {
-                     
+                    for (int i = 0; i < s.points.Count; i++) {
+                        s.get_point(i)
+                    }
                 }
                  
             }
@@ -262,7 +264,7 @@ namespace _3D_graphics
         }
         public Point3D get_point(int ind) {
             if (host != null)
-                return host.points[ind];
+                return host.points[points[ind]];
             return null;
         }
 
