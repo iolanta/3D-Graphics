@@ -205,56 +205,6 @@ namespace _3D_graphics
             pictureBox1.Invalidate();
         }
 
-        private Figure parse_figure(string filename)
-        {
-            Figure res = new Figure();
-            List<string> lines = System.IO.File.ReadLines(filename).ToList();
-            int count_points = Int32.Parse(lines[0]);
-            Dictionary<string, int> pnts = new Dictionary<string, int>();
-
-            for (int i = 0; i < count_points; ++i)
-            {
-                string[] str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                res.points.Add(new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3])));
-                pnts.Add(str[0], i);
-            }
-
-            int count_sides = Int32.Parse(lines[count_points + 1]);
-            for(int i = count_points+2; i < lines.Count(); ++i)
-            {
-                Side s = new Side(res);
-                List<string> str = lines[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                foreach(var id in str)
-                   s.points.Add(pnts[id]);
-                res.sides.Add(s); 
-            }
-
-            return res;
-        }
-
-        private void save_figure(Figure fig, string filename)
-        {
-            List<string> lines = new List<string>();
-            Dictionary<int, string> pnts = new Dictionary<int, string>();
-            lines.Add(fig.points.Count().ToString());
-            for(int i = 0; i < fig.points.Count(); ++i)
-            {
-                string ind = "p" + i.ToString();
-                pnts.Add(i, ind);
-                lines.Add(ind + ' ' + fig.points[i].x.ToString() + ' ' + fig.points[i].y.ToString() + ' ' + fig.points[i].z.ToString());
-            }
-            lines.Add(fig.sides.Count().ToString());
-            for(int i = 0; i < fig.sides.Count(); ++i)
-            {
-                string side_points = "";
-                foreach (int s in fig.sides[i].points) {
-                    side_points += pnts[s] + ' ';
-                }
-                lines.Add(side_points);
-            }
-            System.IO.File.WriteAllLines(filename, lines);
-        }
-
         private void loadButton_Click(object sender, EventArgs e)
         {
             comboBox2.SelectedIndex = 4;
@@ -263,7 +213,7 @@ namespace _3D_graphics
             string filename = openFileDialog1.FileName; 
             if (!System.IO.File.Exists(filename))
                 return;
-            scene[2] = parse_figure(filename);
+            scene[2] = Figure.parse_figure(filename);
             pictureBox1.Invalidate();
         }
 
@@ -272,7 +222,7 @@ namespace _3D_graphics
             if (saveFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             string filename = saveFileDialog1.FileName;
-            save_figure(scene[2], filename);
+            Figure.save_figure(scene[2], filename);
         }
     }
 
@@ -406,7 +356,7 @@ namespace _3D_graphics
 
     public class Figure
     {
-        
+
         public List<Point3D> points = new List<Point3D>(); // точки 
         public List<Edge> edges = new List<Edge>(); // ребра 
         public List<Side> sides = new List<Side>(); // стороны
@@ -417,7 +367,7 @@ namespace _3D_graphics
             foreach (Point3D p in f.points) {
                 points.Add(new Point3D(p));
             }
-            foreach(Edge e in f.edges)
+            foreach (Edge e in f.edges)
             {
                 edges.Add(new Edge(e));
                 edges.Last().host = this;
@@ -451,14 +401,14 @@ namespace _3D_graphics
         public void apply_matrix(float[,] matrix) {
             for (int i = 0; i < points.Count; i++)
             {
-                points[i].x = matrix[i, 0]/matrix[i,3];
+                points[i].x = matrix[i, 0] / matrix[i, 3];
                 points[i].y = matrix[i, 1] / matrix[i, 3];
                 points[i].z = matrix[i, 2] / matrix[i, 3];
-                
+
             }
         }
         private Point3D get_center() {
-            Point3D res = new Point3D(0,0,0);
+            Point3D res = new Point3D(0, 0, 0);
             foreach (Point3D p in points)
             {
                 res.x += p.x;
@@ -477,7 +427,7 @@ namespace _3D_graphics
         /// ----------------------------- APHINE METHODS --------------------------------
         ///
 
-        public void rotate_around(float angle,string type) {
+        public void rotate_around(float angle, string type) {
             float[,] mt = get_matrix();
             Point3D center = get_center();
             switch (type)
@@ -498,26 +448,26 @@ namespace _3D_graphics
                     mt = apply_offset(mt, center.x, center.y, center.z);
                     break;
                 case "X":
-                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);                    
+                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);
                     break;
                 case "Y":
                     mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
                     break;
                 case "Z":
                     mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
-                    break;                 
+                    break;
                 default:
                     break;
             }
             apply_matrix(mt);
         }
-        public void scale_axis(float xs,float ys, float zs) {
+        public void scale_axis(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
             pnts = apply_scale(pnts, xs, ys, zs);
             apply_matrix(pnts);
         }
         public void offset(float xs, float ys, float zs) {
-            apply_matrix(apply_offset(get_matrix(),xs,ys,zs));
+            apply_matrix(apply_offset(get_matrix(), xs, ys, zs));
         }
         public void scale_around_center(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
@@ -674,6 +624,86 @@ namespace _3D_graphics
         ///
         /// ---------------------------------------------------------------------------------------
         ///
+
+        public static Figure parse_figure(string filename)
+        {
+            Figure res = new Figure();
+            List<string> lines = System.IO.File.ReadLines(filename).ToList();
+            var st = lines[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (st[0] == "rotation")
+                return parse_rotation(lines);
+            else
+            {
+                int count_points = Int32.Parse(st[0]);
+                Dictionary<string, int> pnts = new Dictionary<string, int>();
+
+                for (int i = 0; i < count_points; ++i)
+                {
+                    string[] str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    res.points.Add(new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3])));
+                    pnts.Add(str[0], i);
+                }
+
+                int count_sides = Int32.Parse(lines[count_points + 1]);
+                for (int i = count_points + 2; i < lines.Count(); ++i)
+                {
+                    Side s = new Side(res);
+                    List<string> str = lines[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    foreach (var id in str)
+                        s.points.Add(pnts[id]);
+                    res.sides.Add(s);
+                }
+
+                return res;
+            }
+        }
+
+        public static Figure parse_rotation(List<string> lines)
+        {
+            Figure res = new Figure();
+            string[] cnt = lines[1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            int count_points = Int32.Parse(cnt[0]);
+            int count_divs = Int32.Parse(cnt[1]);
+
+            List<Point3D> pnts = new List<Point3D>();
+            for (int i = 2; i < count_points + 2; ++i)
+            {
+                string[] s = lines[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                pnts.Add(new Point3D(float.Parse(s[1]), float.Parse(s[2]), float.Parse(s[3])));
+            }
+
+            string[] str = lines[count_points + 2].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            Point3D axis1 = new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3]));
+            str = lines[count_points + 3].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            Point3D axis2 = new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3]));
+               
+
+            return res;
+        }
+
+        public static void save_figure(Figure fig, string filename)
+        {
+            List<string> lines = new List<string>();
+            Dictionary<int, string> pnts = new Dictionary<int, string>();
+            lines.Add(fig.points.Count().ToString());
+            for (int i = 0; i < fig.points.Count(); ++i)
+            {
+                string ind = "p" + i.ToString();
+                pnts.Add(i, ind);
+                lines.Add(ind + ' ' + fig.points[i].x.ToString() + ' ' + fig.points[i].y.ToString() + ' ' + fig.points[i].z.ToString());
+            }
+            lines.Add(fig.sides.Count().ToString());
+            for (int i = 0; i < fig.sides.Count(); ++i)
+            {
+                string side_points = "";
+                foreach (int s in fig.sides[i].points)
+                {
+                    side_points += pnts[s] + ' ';
+                }
+                lines.Add(side_points);
+            }
+            System.IO.File.WriteAllLines(filename, lines);
+        }
 
         ///
         /// ------------------------STATIC READY FIGURES-----------------------------
