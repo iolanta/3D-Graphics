@@ -220,7 +220,7 @@ namespace _3D_graphics
             for(int i = count_points+2; i < lines.Count(); ++i)
             {
                 Side s = new Side(res);
-                List<string> str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> str = lines[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 foreach(var id in str)
                    s.points.Add(pnts[id]);
                 res.sides.Add(s); 
@@ -231,7 +231,44 @@ namespace _3D_graphics
 
         private void save_figure(Figure fig, string filename)
         {
-            
+            List<string> lines = new List<string>();
+            Dictionary<int, string> pnts = new Dictionary<int, string>();
+            lines.Add(fig.points.Count().ToString());
+            for(int i = 0; i < fig.points.Count(); ++i)
+            {
+                string ind = "p" + i.ToString();
+                pnts.Add(i, ind);
+                lines.Add(ind + ' ' + fig.points[i].x.ToString() + ' ' + fig.points[i].y.ToString() + ' ' + fig.points[i].z.ToString());
+            }
+            lines.Add(fig.sides.Count().ToString());
+            for(int i = 0; i < fig.sides.Count(); ++i)
+            {
+                string side_points = "";
+                foreach (int s in fig.sides[i].points) {
+                    side_points += pnts[s] + ' ';
+                }
+                lines.Add(side_points);
+            }
+            System.IO.File.WriteAllLines(filename, lines);
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+            string filename = openFileDialog1.FileName; 
+            if (!System.IO.File.Exists(filename))
+                return;
+            scene[2] = parse_figure(filename);
+            pictureBox1.Invalidate();
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+            string filename = saveFileDialog1.FileName;
+            save_figure(scene[2], filename);
         }
     }
 
