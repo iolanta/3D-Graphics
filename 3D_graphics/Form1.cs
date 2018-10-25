@@ -162,6 +162,9 @@ namespace _3D_graphics
                 case "Icosahedron":
                     scene.Add(Figure.get_Icosahedron(100));
                     break;
+                case "Custom":
+                    scene.Add(new Figure());
+                    break;
                 default:
                     break;
               
@@ -254,6 +257,7 @@ namespace _3D_graphics
 
         private void loadButton_Click(object sender, EventArgs e)
         {
+            comboBox2.SelectedIndex = 4;
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             string filename = openFileDialog1.FileName; 
