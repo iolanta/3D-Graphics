@@ -749,22 +749,40 @@ namespace _3D_graphics
             res.points.Add(new Point3D(0, 0, sz / 2));//4
             res.points.Add(new Point3D(0, 0, -sz / 2));//5
 
-            res.edges.Add(new Edge(0, 2, res));
-            res.edges.Add(new Edge(0, 3, res));
-            res.edges.Add(new Edge(0, 4, res));
-            res.edges.Add(new Edge(0, 5, res));
+            Side s = new Side(res);
+            s.points.AddRange(new int[] {0,3,4 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 0, 2,4 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 1, 2, 4 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 1, 3, 4 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 0, 2, 5 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 1, 2, 5 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 0, 3, 5 });
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 1, 3, 5 });
+            res.sides.Add(s);
 
 
-            res.edges.Add(new Edge(1, 2, res));
-            res.edges.Add(new Edge(1, 3, res));
-            res.edges.Add(new Edge(1, 4, res));
-            res.edges.Add(new Edge(1, 5, res));
 
-
-            res.edges.Add(new Edge(2, 4, res));
-            res.edges.Add(new Edge(4, 3, res));
-            res.edges.Add(new Edge(3, 5, res));
-            res.edges.Add(new Edge(5, 2, res));
             return res;
         }
 
