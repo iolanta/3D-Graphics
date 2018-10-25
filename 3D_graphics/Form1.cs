@@ -642,30 +642,41 @@ namespace _3D_graphics
         {
             Figure res = new Figure();
             res.points.Add(new Point3D(sz / 2, sz / 2, sz / 2)); // 0 
-            res.edges.Add(new Edge(0, 1, res));
-            res.points.Add(new Point3D(sz / 2, -sz / 2, sz / 2)); // 1
-            res.edges.Add(new Edge(0, 2, res));
-            res.points.Add(new Point3D(-sz / 2, sz / 2, sz / 2)); // 2
-            res.edges.Add(new Edge(0, 3, res));
+            res.points.Add(new Point3D(-sz / 2, sz / 2, sz / 2)); // 1
+            res.points.Add(new Point3D(-sz / 2, sz / 2, -sz / 2)); // 2
             res.points.Add(new Point3D(sz / 2, sz / 2, -sz / 2)); //3
 
-            res.points.Add(new Point3D(-sz / 2, -sz / 2, -sz / 2)); // 4
-            res.edges.Add(new Edge(4, 5, res));
-            res.points.Add(new Point3D(-sz / 2, sz / 2, -sz / 2)); //5
-            res.edges.Add(new Edge(4, 6, res));
-            res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); //6
-            res.edges.Add(new Edge(4, 7, res));
-            res.points.Add(new Point3D(-sz / 2, -sz / 2, sz / 2)); //7
-
-            res.edges.Add(new Edge(2, 5, res)); // 
-            res.edges.Add(new Edge(5, 3, res)); // 
-            res.edges.Add(new Edge(3, 6, res)); // 
-            res.edges.Add(new Edge(6, 1, res)); // 
-            res.edges.Add(new Edge(7, 1, res)); // 
-            res.edges.Add(new Edge(7, 2, res)); // 
-
+            res.points.Add(new Point3D(sz / 2, -sz / 2, sz / 2)); // 4
+            res.points.Add(new Point3D(-sz / 2, -sz / 2, sz / 2)); //5
+            res.points.Add(new Point3D(-sz / 2, -sz / 2, -sz / 2)); // 6
+            res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); // 7
+   
             
-            
+
+            Side s = new Side(res);
+            s.points.AddRange(new int[] { 0, 1 , 2, 3});
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 4, 5, 6, 7});
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] {1,5,6,2});
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 0,4,7,3});
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 0,4,5,1});
+            res.sides.Add(s);
+
+            s = new Side(res);
+            s.points.AddRange(new int[] { 2,3,7,6});
+            res.sides.Add(s);
+
             return res;
         }
 
