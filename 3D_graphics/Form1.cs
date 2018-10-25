@@ -201,6 +201,38 @@ namespace _3D_graphics
             scene[1] = gen_line();
             pictureBox1.Invalidate();
         }
+
+        private Figure parse_figure(string filename)
+        {
+            Figure res = new Figure();
+            List<string> lines = System.IO.File.ReadLines(filename).ToList();
+            int count_points = Int32.Parse(lines[0]);
+            Dictionary<string, int> pnts = new Dictionary<string, int>();
+
+            for (int i = 0; i < count_points; ++i)
+            {
+                string[] str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                res.points.Add(new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3])));
+                pnts.Add(str[0], i);
+            }
+
+            int count_sides = Int32.Parse(lines[count_points + 1]);
+            for(int i = count_points+2; i < lines.Count(); ++i)
+            {
+                Side s = new Side(res);
+                List<string> str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                foreach(var id in str)
+                   // s.points.Add(pnts[id]);
+                res.sides.Add(s); 
+            }
+
+            return res;
+        }
+
+        private void save_figure(Figure fig, string filename)
+        {
+            
+        }
     }
 
     public class Point3D
