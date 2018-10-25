@@ -52,9 +52,8 @@ namespace _3D_graphics
                         break;
                 }
                 foreach (Side s in f.sides) {
-                    for (int i = 0; i < s.points.Count; i++) {
-                        s.get_point(i)
-                    }
+                    g.DrawLines(s.drawing_pen, s.points.Select(i => new PointF(f.points[i].x, f.points[i].y)).ToArray());
+                    g.DrawLine(s.drawing_pen, new PointF(f.points[s.points.First()].x, f.points[s.points.First()].y), new PointF(f.points[s.points.Last()].x, f.points[s.points.Last()].y));
                 }
                  
             }
