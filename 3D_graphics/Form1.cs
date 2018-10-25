@@ -817,29 +817,35 @@ namespace _3D_graphics
             int ind = 0;
             for (float a = 0; a <= (float) 2*Math.PI; a += ang) {
                 res.points.Add(new Point3D((float)Math.Cos((float)a), (float)Math.Sin((float)a), is_upper ? (float)0.5 : (float)-0.5));
-                if(ind > 0)
-                    res.edges.Add(new Edge(ind, ind - 1, res));
                 is_upper = !is_upper;
                 ind++;
             }
-            res.edges.Add(new Edge(ind-1, 0, res));
+            Side s;
+            for (int i = 1; i < ind-1; i++) {
+                 s = new Side(res);
+                s.points.AddRange(new int[] {i-1,i,i+1});
+                res.sides.Add(s);
+            }
+            s = new Side(res);
+            s.points.AddRange(new int[] { ind-1, 0, 1 });
+            res.sides.Add(s);
+
+
+            
             res.points.Add(new Point3D(0, 0, (float)Math.Sqrt(5) / 2)); // ind
             res.points.Add(new Point3D(0, 0, -(float)Math.Sqrt(5) / 2)); // ind+1
-            for(int i = 0; i< ind; i++)
+            for(int i = 0; i< ind; i+=2)
             {
-                var next = i + 2;
-                if (next < ind)
-                    res.edges.Add(new Edge(i, next, res));
-                else
-                    res.edges.Add(new Edge(i, next % ind, res));
+                s = new Side(res);
+                s.points.AddRange(new int[] { i, ind, (i + 2) % ind });
+                res.sides.Add(s);
             }
 
-            for (int i = 0; i < ind; i++)
+            for (int i = 1; i < ind; i += 2)
             {
-                if (i % 2 == 0)
-                    res.edges.Add(new Edge(i, ind, res));
-                else
-                    res.edges.Add(new Edge(i, ind+1, res));
+                s = new Side(res);
+                s.points.AddRange(new int[] { i, ind+1, (i + 2) % ind });
+                res.sides.Add(s);
             }
 
             res.scale_around_center(sz, sz, sz);
