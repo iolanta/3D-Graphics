@@ -110,187 +110,168 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(8, 23);
-            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Location = new System.Drawing.Point(6, 19);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(46, 17);
+            label1.Size = new System.Drawing.Size(35, 13);
             label1.TabIndex = 1;
             label1.Text = "Offset";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(63, 23);
-            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Location = new System.Drawing.Point(47, 19);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(21, 17);
+            label2.Size = new System.Drawing.Size(17, 13);
             label2.TabIndex = 2;
             label2.Text = "X:";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(180, 26);
-            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Location = new System.Drawing.Point(135, 21);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(21, 17);
+            label3.Size = new System.Drawing.Size(17, 13);
             label3.TabIndex = 4;
             label3.Text = "Y:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(289, 23);
-            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Location = new System.Drawing.Point(217, 19);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(21, 17);
+            label4.Size = new System.Drawing.Size(17, 13);
             label4.TabIndex = 6;
             label4.Text = "Z:";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(289, 57);
-            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Location = new System.Drawing.Point(217, 46);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(21, 17);
+            label5.Size = new System.Drawing.Size(17, 13);
             label5.TabIndex = 13;
             label5.Text = "Z:";
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(180, 59);
-            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Location = new System.Drawing.Point(135, 48);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(21, 17);
+            label6.Size = new System.Drawing.Size(17, 13);
             label6.TabIndex = 11;
             label6.Text = "Y:";
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(63, 57);
-            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Location = new System.Drawing.Point(47, 46);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(21, 17);
+            label7.Size = new System.Drawing.Size(17, 13);
             label7.TabIndex = 9;
             label7.Text = "X:";
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(8, 57);
-            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Location = new System.Drawing.Point(6, 46);
             label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(43, 17);
+            label8.Size = new System.Drawing.Size(34, 13);
             label8.TabIndex = 8;
             label8.Text = "Scale";
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(196, 87);
-            label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label10.Location = new System.Drawing.Point(147, 71);
             label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(40, 17);
+            label10.Size = new System.Drawing.Size(31, 13);
             label10.TabIndex = 18;
             label10.Text = "Type";
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(53, 87);
-            label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label11.Location = new System.Drawing.Point(40, 71);
             label11.Name = "label11";
-            label11.Size = new System.Drawing.Size(43, 17);
+            label11.Size = new System.Drawing.Size(33, 13);
             label11.TabIndex = 16;
             label11.Text = "angle";
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(8, 87);
-            label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label12.Location = new System.Drawing.Point(6, 71);
             label12.Name = "label12";
-            label12.Size = new System.Drawing.Size(38, 17);
+            label12.Size = new System.Drawing.Size(29, 13);
             label12.TabIndex = 15;
             label12.Text = "Turn";
             // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new System.Drawing.Point(233, 158);
-            label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label9.Location = new System.Drawing.Point(175, 128);
             label9.Name = "label9";
-            label9.Size = new System.Drawing.Size(21, 17);
+            label9.Size = new System.Drawing.Size(17, 13);
             label9.TabIndex = 26;
             label9.Text = "Z:";
             // 
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(124, 160);
-            label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label13.Location = new System.Drawing.Point(93, 130);
             label13.Name = "label13";
-            label13.Size = new System.Drawing.Size(21, 17);
+            label13.Size = new System.Drawing.Size(17, 13);
             label13.TabIndex = 24;
             label13.Text = "Y:";
             // 
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new System.Drawing.Point(7, 158);
-            label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label14.Location = new System.Drawing.Point(5, 128);
             label14.Name = "label14";
-            label14.Size = new System.Drawing.Size(21, 17);
+            label14.Size = new System.Drawing.Size(17, 13);
             label14.TabIndex = 22;
             label14.Text = "X:";
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new System.Drawing.Point(233, 187);
-            label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label15.Location = new System.Drawing.Point(175, 152);
             label15.Name = "label15";
-            label15.Size = new System.Drawing.Size(21, 17);
+            label15.Size = new System.Drawing.Size(17, 13);
             label15.TabIndex = 32;
             label15.Text = "Z:";
             // 
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new System.Drawing.Point(124, 190);
-            label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label16.Location = new System.Drawing.Point(93, 154);
             label16.Name = "label16";
-            label16.Size = new System.Drawing.Size(21, 17);
+            label16.Size = new System.Drawing.Size(17, 13);
             label16.TabIndex = 30;
             label16.Text = "Y:";
             // 
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new System.Drawing.Point(7, 187);
-            label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label17.Location = new System.Drawing.Point(5, 152);
             label17.Name = "label17";
-            label17.Size = new System.Drawing.Size(21, 17);
+            label17.Size = new System.Drawing.Size(17, 13);
             label17.TabIndex = 28;
             label17.Text = "X:";
             // 
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new System.Drawing.Point(7, 126);
-            label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label18.Location = new System.Drawing.Point(5, 102);
             label18.Name = "label18";
-            label18.Size = new System.Drawing.Size(90, 17);
+            label18.Size = new System.Drawing.Size(68, 13);
             label18.TabIndex = 33;
             label18.Text = "Custom Line:";
             // 
             // ControlOffsetX
             // 
-            this.ControlOffsetX.Location = new System.Drawing.Point(93, 21);
-            this.ControlOffsetX.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlOffsetX.Location = new System.Drawing.Point(70, 17);
             this.ControlOffsetX.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -302,16 +283,15 @@
             0,
             -2147483648});
             this.ControlOffsetX.Name = "ControlOffsetX";
-            this.ControlOffsetX.Size = new System.Drawing.Size(83, 22);
+            this.ControlOffsetX.Size = new System.Drawing.Size(62, 20);
             this.ControlOffsetX.TabIndex = 0;
             // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
-            this.pictureBox1.Location = new System.Drawing.Point(17, 16);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Location = new System.Drawing.Point(13, 13);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(832, 535);
+            this.pictureBox1.Size = new System.Drawing.Size(624, 435);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -353,21 +333,19 @@
             this.groupBox1.Controls.Add(label2);
             this.groupBox1.Controls.Add(label1);
             this.groupBox1.Controls.Add(this.ControlOffsetX);
-            this.groupBox1.Location = new System.Drawing.Point(857, 133);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(643, 108);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(440, 262);
+            this.groupBox1.Size = new System.Drawing.Size(330, 213);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Aphine Transforms";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(16, 224);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Location = new System.Drawing.Point(12, 182);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 32);
+            this.button1.Size = new System.Drawing.Size(120, 26);
             this.button1.TabIndex = 5;
             this.button1.Text = "Apply Transforms";
             this.button1.UseVisualStyleBackColor = true;
@@ -375,10 +353,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(227, 224);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
+            this.button2.Location = new System.Drawing.Point(170, 182);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(176, 30);
+            this.button2.Size = new System.Drawing.Size(132, 24);
             this.button2.TabIndex = 34;
             this.button2.Text = "Reset ";
             this.button2.UseVisualStyleBackColor = true;
@@ -386,8 +363,7 @@
             // 
             // ControlCustom2Z
             // 
-            this.ControlCustom2Z.Location = new System.Drawing.Point(264, 185);
-            this.ControlCustom2Z.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom2Z.Location = new System.Drawing.Point(198, 150);
             this.ControlCustom2Z.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -399,14 +375,13 @@
             0,
             -2147483648});
             this.ControlCustom2Z.Name = "ControlCustom2Z";
-            this.ControlCustom2Z.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom2Z.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2Z.TabIndex = 31;
             this.ControlCustom2Z.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom2Y
             // 
-            this.ControlCustom2Y.Location = new System.Drawing.Point(143, 185);
-            this.ControlCustom2Y.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom2Y.Location = new System.Drawing.Point(107, 150);
             this.ControlCustom2Y.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -418,14 +393,13 @@
             0,
             -2147483648});
             this.ControlCustom2Y.Name = "ControlCustom2Y";
-            this.ControlCustom2Y.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom2Y.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2Y.TabIndex = 29;
             this.ControlCustom2Y.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom2X
             // 
-            this.ControlCustom2X.Location = new System.Drawing.Point(37, 185);
-            this.ControlCustom2X.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom2X.Location = new System.Drawing.Point(28, 150);
             this.ControlCustom2X.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -437,14 +411,13 @@
             0,
             -2147483648});
             this.ControlCustom2X.Name = "ControlCustom2X";
-            this.ControlCustom2X.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom2X.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom2X.TabIndex = 27;
             this.ControlCustom2X.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1Z
             // 
-            this.ControlCustom1Z.Location = new System.Drawing.Point(264, 155);
-            this.ControlCustom1Z.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom1Z.Location = new System.Drawing.Point(198, 126);
             this.ControlCustom1Z.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -456,14 +429,13 @@
             0,
             -2147483648});
             this.ControlCustom1Z.Name = "ControlCustom1Z";
-            this.ControlCustom1Z.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom1Z.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1Z.TabIndex = 25;
             this.ControlCustom1Z.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1Y
             // 
-            this.ControlCustom1Y.Location = new System.Drawing.Point(143, 155);
-            this.ControlCustom1Y.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom1Y.Location = new System.Drawing.Point(107, 126);
             this.ControlCustom1Y.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -475,14 +447,13 @@
             0,
             -2147483648});
             this.ControlCustom1Y.Name = "ControlCustom1Y";
-            this.ControlCustom1Y.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom1Y.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1Y.TabIndex = 23;
             this.ControlCustom1Y.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
             // ControlCustom1X
             // 
-            this.ControlCustom1X.Location = new System.Drawing.Point(37, 155);
-            this.ControlCustom1X.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlCustom1X.Location = new System.Drawing.Point(28, 126);
             this.ControlCustom1X.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -494,7 +465,7 @@
             0,
             -2147483648});
             this.ControlCustom1X.Name = "ControlCustom1X";
-            this.ControlCustom1X.Size = new System.Drawing.Size(83, 22);
+            this.ControlCustom1X.Size = new System.Drawing.Size(62, 20);
             this.ControlCustom1X.TabIndex = 21;
             this.ControlCustom1X.ValueChanged += new System.EventHandler(this.ControlCustom1X_ValueChanged);
             // 
@@ -510,36 +481,34 @@
             "Y axis",
             "Z asix",
             "Custom Line"});
-            this.ControlType.Location = new System.Drawing.Point(243, 85);
-            this.ControlType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ControlType.Location = new System.Drawing.Point(182, 69);
+            this.ControlType.Margin = new System.Windows.Forms.Padding(2);
             this.ControlType.Name = "ControlType";
-            this.ControlType.Size = new System.Drawing.Size(121, 24);
+            this.ControlType.Size = new System.Drawing.Size(92, 21);
             this.ControlType.TabIndex = 20;
             // 
             // ControlAngle
             // 
-            this.ControlAngle.Location = new System.Drawing.Point(105, 85);
-            this.ControlAngle.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlAngle.Location = new System.Drawing.Point(79, 69);
             this.ControlAngle.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
             this.ControlAngle.Name = "ControlAngle";
-            this.ControlAngle.Size = new System.Drawing.Size(83, 22);
+            this.ControlAngle.Size = new System.Drawing.Size(62, 20);
             this.ControlAngle.TabIndex = 14;
             // 
             // ControlScaleZ
             // 
-            this.ControlScaleZ.Location = new System.Drawing.Point(320, 54);
-            this.ControlScaleZ.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlScaleZ.Location = new System.Drawing.Point(240, 44);
             this.ControlScaleZ.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.ControlScaleZ.Name = "ControlScaleZ";
-            this.ControlScaleZ.Size = new System.Drawing.Size(83, 22);
+            this.ControlScaleZ.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleZ.TabIndex = 12;
             this.ControlScaleZ.Value = new decimal(new int[] {
             10,
@@ -549,15 +518,14 @@
             // 
             // ControlScaleY
             // 
-            this.ControlScaleY.Location = new System.Drawing.Point(199, 54);
-            this.ControlScaleY.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlScaleY.Location = new System.Drawing.Point(149, 44);
             this.ControlScaleY.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.ControlScaleY.Name = "ControlScaleY";
-            this.ControlScaleY.Size = new System.Drawing.Size(83, 22);
+            this.ControlScaleY.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleY.TabIndex = 10;
             this.ControlScaleY.Value = new decimal(new int[] {
             10,
@@ -567,15 +535,14 @@
             // 
             // ControlScaleX
             // 
-            this.ControlScaleX.Location = new System.Drawing.Point(93, 54);
-            this.ControlScaleX.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlScaleX.Location = new System.Drawing.Point(70, 44);
             this.ControlScaleX.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.ControlScaleX.Name = "ControlScaleX";
-            this.ControlScaleX.Size = new System.Drawing.Size(83, 22);
+            this.ControlScaleX.Size = new System.Drawing.Size(62, 20);
             this.ControlScaleX.TabIndex = 7;
             this.ControlScaleX.Value = new decimal(new int[] {
             10,
@@ -585,8 +552,7 @@
             // 
             // ControlOffsetZ
             // 
-            this.ControlOffsetZ.Location = new System.Drawing.Point(320, 21);
-            this.ControlOffsetZ.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlOffsetZ.Location = new System.Drawing.Point(240, 17);
             this.ControlOffsetZ.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -598,13 +564,12 @@
             0,
             -2147483648});
             this.ControlOffsetZ.Name = "ControlOffsetZ";
-            this.ControlOffsetZ.Size = new System.Drawing.Size(83, 22);
+            this.ControlOffsetZ.Size = new System.Drawing.Size(62, 20);
             this.ControlOffsetZ.TabIndex = 5;
             // 
             // ControlOffsetY
             // 
-            this.ControlOffsetY.Location = new System.Drawing.Point(199, 21);
-            this.ControlOffsetY.Margin = new System.Windows.Forms.Padding(4);
+            this.ControlOffsetY.Location = new System.Drawing.Point(149, 17);
             this.ControlOffsetY.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -616,13 +581,12 @@
             0,
             -2147483648});
             this.ControlOffsetY.Name = "ControlOffsetY";
-            this.ControlOffsetY.Size = new System.Drawing.Size(83, 22);
+            this.ControlOffsetY.Size = new System.Drawing.Size(62, 20);
             this.ControlOffsetY.TabIndex = 3;
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(199, 23);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(4);
+            this.numericUpDown2.Location = new System.Drawing.Point(149, 19);
             this.numericUpDown2.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -634,7 +598,7 @@
             0,
             -2147483648});
             this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(83, 22);
+            this.numericUpDown2.Size = new System.Drawing.Size(62, 20);
             this.numericUpDown2.TabIndex = 3;
             // 
             // comboBox1
@@ -647,10 +611,9 @@
             "Ortographic(XY)",
             "Ortographic(XZ)",
             "Ortographic(YZ)"});
-            this.comboBox1.Location = new System.Drawing.Point(857, 16);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBox1.Location = new System.Drawing.Point(643, 13);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(160, 24);
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 3;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -662,19 +625,20 @@
             "Cube",
             "Tetrahedron",
             "Octahedron",
-            "Icosahedron"});
-            this.comboBox2.Location = new System.Drawing.Point(857, 74);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(4);
+            "Icosahedron",
+            "Custom"});
+            this.comboBox2.Location = new System.Drawing.Point(643, 60);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(160, 24);
+            this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 4;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // loadButton
             // 
-            this.loadButton.Location = new System.Drawing.Point(1212, 12);
+            this.loadButton.Location = new System.Drawing.Point(909, 10);
+            this.loadButton.Margin = new System.Windows.Forms.Padding(2);
             this.loadButton.Name = "loadButton";
-            this.loadButton.Size = new System.Drawing.Size(137, 28);
+            this.loadButton.Size = new System.Drawing.Size(103, 23);
             this.loadButton.TabIndex = 5;
             this.loadButton.Text = "Load";
             this.loadButton.UseVisualStyleBackColor = true;
@@ -682,9 +646,10 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(1212, 70);
+            this.saveButton.Location = new System.Drawing.Point(909, 57);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(137, 28);
+            this.saveButton.Size = new System.Drawing.Size(103, 23);
             this.saveButton.TabIndex = 6;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -696,16 +661,15 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1361, 566);
+            this.ClientSize = new System.Drawing.Size(1021, 460);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pictureBox1);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
