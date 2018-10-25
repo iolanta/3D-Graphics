@@ -190,8 +190,9 @@ namespace _3D_graphics
             Figure res = new Figure();
             res.points.Add(new Point3D((float)ControlCustom1X.Value, (float)ControlCustom1Y.Value, (float)ControlCustom1Z.Value));
             res.points.Add(new Point3D((float)ControlCustom2X.Value, (float)ControlCustom2Y.Value, (float)ControlCustom2Z.Value));
-            res.edges.Add(new Edge(0, 1,res));
-            res.edges.Last().clr = Color.DarkOrange;
+            res.sides.Add(new Side(res));
+            res.sides.First().points =new List<int> {0,1};
+
             return res;
         }
 
@@ -221,7 +222,7 @@ namespace _3D_graphics
                 Side s = new Side(res);
                 List<string> str = lines[i + 1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 foreach(var id in str)
-                   // s.points.Add(pnts[id]);
+                   s.points.Add(pnts[id]);
                 res.sides.Add(s); 
             }
 
@@ -287,11 +288,12 @@ namespace _3D_graphics
         public Pen drawing_pen = new Pen(Color.Black);
 
         public Side(Figure h = null) {
-            h = host;
+            host = h;
         }
         public Side(Side s) {
             points = new List<int>(s.points);
             host = s.host;
+            drawing_pen = s.drawing_pen.Clone() as Pen;
         }
         public Point3D get_point(int ind) {
             if (host != null)
