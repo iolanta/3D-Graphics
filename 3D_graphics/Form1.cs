@@ -148,6 +148,7 @@ namespace _3D_graphics
             scene.Clear();
             scene.Add(Figure.get_Coordinates());
             scene.Add(gen_line());
+            groupBox2.Enabled = false;
             switch (comboBox2.Text)
             {
                 case "Cube":
@@ -167,6 +168,7 @@ namespace _3D_graphics
                     break;
                 case "Curve":
                     scene.Add(curve());
+                    groupBox2.Enabled = true;
                     break;
                 default:
                     break;
@@ -181,15 +183,21 @@ namespace _3D_graphics
             Func<float, float, float> f;
             switch (curveType.Text)
             {
-                case "z = sin(x) * cos(y)":
-                    f = (float x, float y) => (float)(Math.Sin(x) * Math.Cos(y));
-                    break;
-                case "z = 5 * cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1":
+                case "f(x, y) = 5 * cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1":
                     f = (float x, float y) => (float)(5 * (float)Math.Cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1);
                     break;
+                case "f(x, y) = cos(x * x + y * y) / (x * x + y * y + 1)":
+                    f = (float x, float y) => (float)(Math.Cos(x * x + y * y) / (x * x + y * y + 1));
+                    break;
+                case "f(x, y) = sin(x) * cos(y)":
+                    f = (float x, float y) => (float)(Math.Sin(x) * Math.Cos(y));
+                    break;
+                case "f(x, y) = sin(x) + cos(y)":
+                    f = (float x, float y) => (float)(Math.Sin(x) + Math.Cos(y));
+                    break;
                 default:
-                case "z = 1 - sqrt(x * x + y * y)":
-                    f = (float x, float y) => 1 - (float)Math.Sqrt(x*x + y*y);
+                case "f(x, y) = x * x + y * y*":
+                    f = (float x, float y) => x * x + y * y;
                     break;
             }
 
