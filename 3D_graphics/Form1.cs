@@ -20,7 +20,7 @@ namespace _3D_graphics
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
             ControlType.SelectedIndex = 0;
-            
+            curveType.SelectedIndex = 0;
             
         }
 
@@ -165,6 +165,9 @@ namespace _3D_graphics
                 case "Custom":
                     scene.Add(new Figure());
                     break;
+                case "Curve":
+                    scene.Add(curve());
+                    break;
                 default:
                     break;
               
@@ -172,6 +175,50 @@ namespace _3D_graphics
             pictureBox1.Invalidate();
             reset_controls();
 
+        }
+
+        private Figure curve() {
+            Func<float, float, float> f;
+            switch (curveType.Text)
+            {
+                case "z = sin(x) * cos(y)":
+                    f = (float x, float y) => (float)(Math.Sin(x) * Math.Cos(y));
+                    break;
+                case "z = 5 * cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1":
+                    f = (float x, float y) => (float)(5 * (float)Math.Cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1);
+                    break;
+                default:
+                case "z = 1 - sqrt(x * x + y * y)":
+                    f = (float x, float y) => 1 - (float)Math.Sqrt(x*x + y*y);
+                    break;
+            }
+
+            float x0 = (float)curveX0.Value;
+            float x1 = (float)curveX1.Value;
+            float y0 = (float)curveY0.Value;
+            float y1 = (float)curveY1.Value;
+
+            if (x0 == x1 || y0 == y1)
+                return new Figure();
+
+            if(x1 < x0)
+            {
+                float t = x1;
+                x1 = x0;
+                x0 = t;
+            }
+
+            if (y1 < y0)
+            {
+                float t = y1;
+                y1 = y0;
+                y0 = t;
+            }
+
+            int n_x = (int)curveNX.Value;
+            int n_y = (int)curveNY.Value;
+
+            return Figure.get_curve(x0, x1, y0, y1, n_x, n_y, f);
         }
 
         private void reset_controls() {
@@ -224,6 +271,18 @@ namespace _3D_graphics
             string filename = saveFileDialog1.FileName;
             Figure.save_figure(scene[2], filename);
         }
+
+        private void curve_params_change(object sender, EventArgs e)
+        {
+            if (comboBox2.Text != "Curve")
+                return;
+            groupBox2.Enabled = false;
+            scene[2] = curve();
+            reset_controls();
+            pictureBox1.Invalidate();
+            groupBox2.Enabled = true;
+        }
+
     }
 
     public class Point3D
@@ -883,6 +942,39 @@ namespace _3D_graphics
             return res;
         }
 
+        public static Figure get_curve(float x0, float x1, float y0, float y1, int n_x, int n_y, Func<float, float, float> f)
+        {
+            float step_x = (x1 - x0) / n_x;
+            float step_y = (y1 - y0) / n_y;
+            Figure res = new Figure();
+
+            float x = x0;
+            float y = y0;
+
+            for (int i = 0; i <= n_x; ++i)
+            {
+                y = y0;
+                for (int j = 0; j <= n_y; ++j)
+                {
+                    res.points.Add(new Point3D(x, y, f(x, y)));
+                    y += step_y;
+                }
+                x += step_x;
+            }
+
+            for(int i = 0; i < res.points.Count; ++i)
+            {
+                if ((i + 1) % (n_y + 1) == 0)
+                    continue;
+                if (i / (n_y + 1) == n_x)
+                    break;
+
+                Side s = new Side(res);
+                s.points.AddRange(new int[] { i, i + 1, i + n_y + 2, i + n_y + 1 });
+                res.sides.Add(s);
+            }
+            return res;
+        }
         ///
         /// ---------------------------------------------------------------------------------------
         ///
