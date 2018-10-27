@@ -53,6 +53,8 @@
             System.Windows.Forms.Label label23;
             System.Windows.Forms.Label label25;
             System.Windows.Forms.Label label26;
+            System.Windows.Forms.Label label27;
+            System.Windows.Forms.Label label24;
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -78,10 +80,8 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label27 = new System.Windows.Forms.Label();
             this.curveNY = new System.Windows.Forms.NumericUpDown();
             this.curveNX = new System.Windows.Forms.NumericUpDown();
-            this.label24 = new System.Windows.Forms.Label();
             this.curveY1 = new System.Windows.Forms.NumericUpDown();
             this.curveX1 = new System.Windows.Forms.NumericUpDown();
             this.curveY0 = new System.Windows.Forms.NumericUpDown();
@@ -112,6 +112,8 @@
             label23 = new System.Windows.Forms.Label();
             label25 = new System.Windows.Forms.Label();
             label26 = new System.Windows.Forms.Label();
+            label27 = new System.Windows.Forms.Label();
+            label24 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Z)).BeginInit();
@@ -362,6 +364,24 @@
             label26.TabIndex = 22;
             label26.Text = "X:";
             // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Location = new System.Drawing.Point(275, 92);
+            label27.Name = "label27";
+            label27.Size = new System.Drawing.Size(49, 13);
+            label27.TabIndex = 25;
+            label27.Text = "Divisions";
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new System.Drawing.Point(76, 90);
+            label24.Name = "label24";
+            label24.Size = new System.Drawing.Size(39, 13);
+            label24.TabIndex = 20;
+            label24.Text = "Range";
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
@@ -420,7 +440,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(33, 256);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(120, 26);
             this.button1.TabIndex = 5;
@@ -559,7 +579,7 @@
             "Z asix",
             "Custom Line"});
             this.ControlType.Location = new System.Drawing.Point(244, 117);
-            this.ControlType.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ControlType.Margin = new System.Windows.Forms.Padding(2);
             this.ControlType.Name = "ControlType";
             this.ControlType.Size = new System.Drawing.Size(92, 27);
             this.ControlType.TabIndex = 20;
@@ -717,7 +737,7 @@
             // 
             this.loadButton.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.loadButton.Location = new System.Drawing.Point(880, 13);
-            this.loadButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.loadButton.Margin = new System.Windows.Forms.Padding(2);
             this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(132, 25);
             this.loadButton.TabIndex = 5;
@@ -729,7 +749,7 @@
             // 
             this.saveButton.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.saveButton.Location = new System.Drawing.Point(880, 60);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(132, 25);
             this.saveButton.TabIndex = 6;
@@ -743,12 +763,12 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label27);
+            this.groupBox2.Controls.Add(label27);
             this.groupBox2.Controls.Add(label25);
             this.groupBox2.Controls.Add(this.curveNY);
             this.groupBox2.Controls.Add(label26);
             this.groupBox2.Controls.Add(this.curveNX);
-            this.groupBox2.Controls.Add(this.label24);
+            this.groupBox2.Controls.Add(label24);
             this.groupBox2.Controls.Add(label20);
             this.groupBox2.Controls.Add(this.curveY1);
             this.groupBox2.Controls.Add(label21);
@@ -759,24 +779,14 @@
             this.groupBox2.Controls.Add(this.curveX0);
             this.groupBox2.Controls.Add(label19);
             this.groupBox2.Controls.Add(this.curveType);
-            this.groupBox2.Location = new System.Drawing.Point(651, 120);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Enabled = false;
+            this.groupBox2.Location = new System.Drawing.Point(649, 133);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox2.Size = new System.Drawing.Size(488, 194);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Curve Drawing";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(272, 76);
-            this.label27.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(49, 13);
-            this.label27.TabIndex = 25;
-            this.label27.Text = "Divisions";
             // 
             // curveNY
             // 
@@ -790,7 +800,7 @@
             this.curveNY.Size = new System.Drawing.Size(62, 20);
             this.curveNY.TabIndex = 23;
             this.curveNY.Value = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             0});
@@ -808,21 +818,11 @@
             this.curveNX.Size = new System.Drawing.Size(62, 20);
             this.curveNX.TabIndex = 21;
             this.curveNX.Value = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             0});
             this.curveNX.ValueChanged += new System.EventHandler(this.curve_params_change);
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(9, 76);
-            this.label24.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(39, 13);
-            this.label24.TabIndex = 20;
-            this.label24.Text = "Range";
             // 
             // curveY1
             // 
@@ -841,7 +841,7 @@
             this.curveY1.Size = new System.Drawing.Size(62, 20);
             this.curveY1.TabIndex = 18;
             this.curveY1.Value = new decimal(new int[] {
-            100,
+            5,
             0,
             0,
             0});
@@ -864,7 +864,7 @@
             this.curveX1.Size = new System.Drawing.Size(62, 20);
             this.curveX1.TabIndex = 16;
             this.curveX1.Value = new decimal(new int[] {
-            100,
+            5,
             0,
             0,
             0});
@@ -886,6 +886,11 @@
             this.curveY0.Name = "curveY0";
             this.curveY0.Size = new System.Drawing.Size(62, 20);
             this.curveY0.TabIndex = 14;
+            this.curveY0.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            -2147483648});
             this.curveY0.ValueChanged += new System.EventHandler(this.curve_params_change);
             // 
             // curveX0
@@ -904,6 +909,11 @@
             this.curveX0.Name = "curveX0";
             this.curveX0.Size = new System.Drawing.Size(62, 20);
             this.curveX0.TabIndex = 12;
+            this.curveX0.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            -2147483648});
             this.curveX0.ValueChanged += new System.EventHandler(this.curve_params_change);
             // 
             // curveType
@@ -911,13 +921,14 @@
             this.curveType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.curveType.FormattingEnabled = true;
             this.curveType.Items.AddRange(new object[] {
-            "z = sin(x) * cos(y)",
-            "z = 5 * cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1",
-            "z = 1 - sqrt(x * x + y * y)"});
-            this.curveType.Location = new System.Drawing.Point(62, 39);
-            this.curveType.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            "f(x, y) = 5 * cos(x * x + y * y + 1) / (x * x + y * y + 1) + 0.1",
+            "f(x, y) = cos(x * x + y * y) / (x * x + y * y + 1)",
+            "f(x, y) = sin(x) * cos(y)",
+            "f(x, y) = sin(x) + cos(y)",
+            "f(x, y) = x * x + y * y"});
+            this.curveType.Location = new System.Drawing.Point(79, 41);
             this.curveType.Name = "curveType";
-            this.curveType.Size = new System.Drawing.Size(92, 21);
+            this.curveType.Size = new System.Drawing.Size(384, 21);
             this.curveType.TabIndex = 0;
             this.curveType.SelectedIndexChanged += new System.EventHandler(this.curve_params_change);
             // 
@@ -992,10 +1003,8 @@
         private System.Windows.Forms.NumericUpDown ControlOffsetY;
         private System.Windows.Forms.NumericUpDown ControlOffsetX;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label27;
         private System.Windows.Forms.NumericUpDown curveNY;
         private System.Windows.Forms.NumericUpDown curveNX;
-        private System.Windows.Forms.Label label24;
         private System.Windows.Forms.NumericUpDown curveY1;
         private System.Windows.Forms.NumericUpDown curveX1;
         private System.Windows.Forms.NumericUpDown curveY0;
