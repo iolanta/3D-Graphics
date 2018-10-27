@@ -719,10 +719,13 @@ namespace _3D_graphics
 
         public static Figure parse_rotation(List<string> lines)
         {
-            Figure res = new Figure();
+            
             string[] cnt = lines[1].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             int count_points = Int32.Parse(cnt[0]);
             int count_divs = Int32.Parse(cnt[1]);
+
+            if (count_points < 1 || count_divs < 1)
+                return new Figure();
 
             List<Point3D> pnts = new List<Point3D>();
             for (int i = 2; i < count_points + 2; ++i)
@@ -732,12 +735,13 @@ namespace _3D_graphics
             }
 
             string[] str = lines[count_points + 2].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            Point3D axis1 = new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3]));
+            Point3D axis1 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
             str = lines[count_points + 3].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            Point3D axis2 = new Point3D(float.Parse(str[1]), float.Parse(str[2]), float.Parse(str[3]));
-               
+            Point3D axis2 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
+            
+            
 
-            return res;
+            return get_Rotation( pnts, axis1,  axis2, count_divs);
         }
 
         public static void save_figure(Figure fig, string filename)
@@ -974,6 +978,45 @@ namespace _3D_graphics
                 res.sides.Add(s);
             }
             return res;
+        }
+
+
+        public static Figure get_Rotation(List<Point3D> pnts, Point3D axis1, Point3D axis2, int divs) {
+            Figure res = new Figure();
+            Figure edge = new Figure();
+            int cnt_pnt = pnts.Count;
+            edge.points = pnts.Select(x => new Point3D(x)).ToList();
+            res.points = pnts.Select(x => new Point3D(x)).ToList();
+            int cur_ind = res.points.Count;
+            float ang = (float)360/divs;
+            for (int i = 0; i < divs; i++) {
+                edge.line_rotate(ang, axis1, axis2);
+                cur_ind = res.points.Count;
+                for (int j = 0; j<cnt_pnt; j++)
+                {
+                    res.points.Add(new Point3D(edge.points[j]));
+
+                }
+
+                for (int j = cur_ind; j < res.points.Count-1; j++)
+                {
+                    Side s = new Side(res);
+                    s.points.AddRange(new int[] { j, j + 1, j + 1 - cnt_pnt, j-cnt_pnt});
+                    res.sides.Add(s);
+
+                }
+
+
+            }
+
+            for (int j = cur_ind; j < res.points.Count - 1; j++)
+            {
+                Side s = new Side(res);
+                s.points.AddRange(new int[] { j, j + 1, j + 1 - cur_ind, j - cur_ind });
+                res.sides.Add(s);
+
+            }
+                return res;
         }
         ///
         /// ---------------------------------------------------------------------------------------
