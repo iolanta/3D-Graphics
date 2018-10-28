@@ -1,5 +1,5 @@
 # 3D Graphics Demo 
-:ok_hand:[TRY](https://github.com/iolanta/3D-Graphics/releases/download/v0.5/3D_graphics.exe):ok_hand:
+:ok_hand:[TRY](https://github.com/iolanta/3D-Graphics/releases/download/v0.6/3D_graphics.exe):ok_hand:
 
 This demo shows simple, from the bottom, storage, transform and render of simple 3D objects using basic drawing tools of Windows Forms.
 ## Storage
