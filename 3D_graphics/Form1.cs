@@ -29,26 +29,44 @@ namespace _3D_graphics
             var g = e.Graphics;
             g.TranslateTransform(pictureBox1.Width / 2, pictureBox1.Height / 2);
             g.ScaleTransform(1, -1);
+            Point3D viewvec;
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();   
             foreach (Figure f in view) {
+                
                 switch (comboBox1.Text)
                 {
                     case "Central":
+                        
+                        viewvec = new Point3D(0, 0, 1);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         f.project_cental();
                         break;
                     case "Isometric":
+                        
+                        viewvec = new Point3D(-1, 1, -1);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         f.project_isometric();
                         break;
                     case "Ortographic(XY)":
+                        
+                        viewvec = new Point3D(0, 0, 1);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         f.project_orthogZ();
                         break;
                     case "Ortographic(XZ)":
+                       
+                        viewvec = new Point3D(0, 1, 0);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         f.project_orthogY();
                         break;
                     case "Ortographic(YZ)":
+                        viewvec = new Point3D(1, 0, 1);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         f.project_orthogX();
                         break;
                     default:
+                        viewvec = new Point3D(0, 0, 1);
+                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
                         break;
                 }
                 foreach (Side s in f.sides) {
@@ -302,7 +320,7 @@ namespace _3D_graphics
             x = 0;
             y = 0;
             z = 0;
-            
+
         }
         public Point3D(float _x, float _y, float _z)
         {
@@ -318,12 +336,28 @@ namespace _3D_graphics
             z = p.z;
         }
 
+        public static Point3D operator -(Point3D p1, Point3D p2)
+        {
+            return new Point3D(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+
+        }
+
+        public static float scalar(Point3D p1, Point3D p2) {
+            return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
+        }
 
         public static Point3D norm(Point3D p)
         {
             float z = (float)Math.Sqrt((float)(p.x * p.x + p.y * p.y + p.z * p.z));
             return new Point3D(p.x / z, p.y / z, p.z / z);
         }
+
+        public static Point3D operator*(Point3D p1, Point3D p2)
+        {
+            return new Point3D(p1.y*p2.z - p1.z*p2.y, p1.z*p2.x-p1.x*p2.z, p1.x*p2.y - p1.y*p2.x);
+        }
+
+
 
     }
 
@@ -358,6 +392,23 @@ namespace _3D_graphics
             if (host != null)
                 return host.points[points[ind]];
             return null;
+        }
+
+        public static Point3D norm(Side S) {
+            if (S.points.Count() < 3)
+                return null;
+            Point3D U = S.get_point(1) - S.get_point(0);
+            Point3D V = S.get_point(2) - S.get_point(1);
+            Point3D normal = new Point3D(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y * V.x);
+            return Point3D.norm(normal);
+        }
+
+        public bool isVisibleFrom(Point3D vv) {
+            if (points.Count() < 3)
+                return true;
+            vv = Point3D.norm(vv);
+            return Point3D.scalar(norm(this), vv) > 0;
+           
         }
 
 
@@ -655,7 +706,9 @@ namespace _3D_graphics
             float[,] res_mt = multiply_matrix(transform_matrix, projMatrix);
             for (int i = 0; i < res_mt.GetLength(0); ++i)
             {
-                res_mt[i, 0] = res_mt[i, 2];
+
+                res_mt[i, 0] = res_mt[i, 1];
+                res_mt[i, 1] = res_mt[i, 2];
                 res_mt[i, 2] = 0;
             }
             return res_mt;
@@ -797,7 +850,8 @@ namespace _3D_graphics
             
 
             Side s = new Side(res);
-            s.points.AddRange(new int[] { 0, 1 , 2, 3});
+            s.points.AddRange(new int[] { 3 , 2, 1 , 0}); 
+          
             res.sides.Add(s);
 
             s = new Side(res);
@@ -805,7 +859,8 @@ namespace _3D_graphics
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] {1,5,6,2});
+            s.points.AddRange(new int[] {2,6,5,1 }); 
+          
             res.sides.Add(s);
 
             s = new Side(res);
@@ -813,7 +868,8 @@ namespace _3D_graphics
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] { 0,4,5,1});
+            s.points.AddRange(new int[] { 1,5,4,0}); 
+            
             res.sides.Add(s);
 
             s = new Side(res);
@@ -856,7 +912,7 @@ namespace _3D_graphics
             res.points.Add(new Point3D(0, 0, -sz / 2));//5
 
             Side s = new Side(res);
-            s.points.AddRange(new int[] {0,3,4 });
+            s.points.AddRange(new int[] {0,4,3 });
             res.sides.Add(s);
 
             s = new Side(res);
@@ -864,7 +920,7 @@ namespace _3D_graphics
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] { 1, 2, 4 });
+            s.points.AddRange(new int[] { 1, 4, 2 });
             res.sides.Add(s);
 
             s = new Side(res);
@@ -872,7 +928,7 @@ namespace _3D_graphics
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] { 0, 2, 5 });
+            s.points.AddRange(new int[] { 0, 5, 2 });
             res.sides.Add(s);
 
             s = new Side(res);
@@ -884,7 +940,7 @@ namespace _3D_graphics
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] { 1, 3, 5 });
+            s.points.AddRange(new int[] { 1, 5, 3 });
             res.sides.Add(s);
 
 
@@ -903,11 +959,11 @@ namespace _3D_graphics
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 1, 2 });
             res.sides.Add(new Side(res));
-            res.sides.Last().points.AddRange(new List<int> { 1, 2,3 });
+            res.sides.Last().points.AddRange(new List<int> { 1,3,2 });
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 2, 3 });
             res.sides.Add(new Side(res));
-            res.sides.Last().points.AddRange(new List<int> { 0, 1, 3 });
+            res.sides.Last().points.AddRange(new List<int> { 0, 3, 1 });
             return res;
         }
 
@@ -923,13 +979,25 @@ namespace _3D_graphics
                 ind++;
             }
             Side s;
-            for (int i = 1; i < ind-1; i++) {
-                 s = new Side(res);
-                s.points.AddRange(new int[] {i-1,i,i+1});
+            for (int i = 1; i < ind - 1; i++)
+            {
+                s = new Side(res);
+                if (i % 2 != 0)
+                {
+                    s.points.AddRange(new int[] { i, i + 1, i - 1 });
+                    s.drawing_pen = new Pen(Color.Green);
+                }
+                else
+                {
+                    s.points.AddRange(new int[] { i, i - 1, i + 1 });
+                    s.drawing_pen = new Pen(Color.Red);
+                }
+            
                 res.sides.Add(s);
             }
             s = new Side(res);
-            s.points.AddRange(new int[] { ind-1, 0, 1 });
+            s.points.AddRange(new int[] { 0, ind - 1, 1 });
+            s.drawing_pen = new Pen(Color.Red);
             res.sides.Add(s);
 
 
@@ -940,13 +1008,16 @@ namespace _3D_graphics
             {
                 s = new Side(res);
                 s.points.AddRange(new int[] { i, ind, (i + 2) % ind });
+                s.points.Reverse();
+                
                 res.sides.Add(s);
             }
 
             for (int i = 1; i < ind; i += 2)
             {
                 s = new Side(res);
-                s.points.AddRange(new int[] { i, ind+1, (i + 2) % ind });
+                s.points.AddRange(new int[] { i, (i + 2) % ind , ind +1 });
+                s.points.Reverse();
                 res.sides.Add(s);
             }
 
@@ -1022,6 +1093,7 @@ namespace _3D_graphics
             {
                 Side s = new Side(res);
                 s.points.AddRange(new int[] { j, j + 1, j + 1 - cur_ind, j - cur_ind });
+                
                 res.sides.Add(s);
 
             }
@@ -1034,8 +1106,132 @@ namespace _3D_graphics
     }
 
 
+    public class CameraView
+    {
+        private Point3D position;
+        private Point3D target;
+        private Point3D up;
+        private float fovx;
+        private float fovy;
+        private float max_distance;
+        private float min_distance;
+        private float cam_width;
+        private float cam_height;
+        private float[,] view_matrix;
+        private float[,] perspective_projection_matrix;
+        private float[,] orthoganal_projection_matrix;
+
+
+        public CameraView(Point3D p, Point3D t, Point3D u,float fvx, float fvy,float mind, float maxd)
+        {
+            position = new Point3D(p);
+            target = new Point3D(t);
+            up = new Point3D(u);
+            fovx = fvx;
+            fovy = fvy;
+            max_distance = maxd;
+            min_distance = mind;
+            cam_width = 100;
+            cam_height = 100;
+            update_view_matrix();
+            update_proj_matrix();
+        }
 
 
 
+        /// 
+        ///  Camera params setters and getters invoking recounting of matrixes 
+        /// 
+        private void update_view_matrix()
+        {
+            Point3D a = Point3D.norm(position - target);
+            Point3D b = Point3D.norm(up * a);
+            Point3D c = Point3D.norm(a * b);
+            float[,] m = new float[,] { { b.x, c.x, a.x, 0 }, { b.y, c.y, a.y, 0 }, { b.z, c.z, a.z, 0 }, { 0, 0, 0, 1 } };
+            float[,] t = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -target.x, -target.y, -target.z, 1 } };
+            view_matrix = multiply_matrix(t, m);
 
+        }
+        private void update_proj_matrix()
+        {
+            float w = (float)(1 / Math.Tan(fovx / 2));
+            float h = (float)(1 / Math.Tan(fovy / 2));
+            perspective_projection_matrix = new float[,] { { w, 0, 0, 0 },
+                                                           { 0, h, 0, 0 },
+                                                           { 0, 0, max_distance / (max_distance - min_distance), 1 },
+                                                           { 0, 0,-max_distance*min_distance/(max_distance - min_distance), 0 } };
+            orthoganal_projection_matrix = new float[,] { { 2/cam_width,0,0,0},
+                                                          {0,2/cam_height,0,0},
+                                                          {0,0,1/(max_distance-min_distance),0 },
+                                                          {0,0,max_distance/(max_distance-min_distance),1} };
+
+
+        }
+        public Point3D Up
+        {
+            get { return new Point3D(up); }
+            set { up = value; update_view_matrix(); }
+        }
+        public Point3D Target
+        {
+            get { return new Point3D(target); }
+            set { target = value; update_view_matrix(); }
+        }
+        public Point3D Position
+        {
+            get { return new Point3D(position); }
+            set { position = value; update_view_matrix(); }
+        }
+        public float FovX
+        {
+            get { return fovx; }
+            set { fovx = value; update_proj_matrix(); }
+        }
+        public float FovY
+        {
+            get { return fvy; }
+            set { fvy = value; update_proj_matrix(); }
+        }
+        public float MaxDistance
+        {
+            get { return max_distance; }
+            set { max_distance = value; update_proj_matrix(); }
+        }
+        public float MinDistance
+        {
+            get { return min_distance; }
+            set { min_distance = value; update_proj_matrix(); }
+        }
+        public float CamWidth
+        {
+            get { return cam_width; }
+            set { cam_width = value; update_proj_matrix(); }
+        }
+        public float CamHeight
+        {
+            get { return cam_height; }
+            set { cam_height = value; update_proj_matrix(); }
+        }
+        /// 
+        /// ----------------------------------------------
+        ///
+
+        private static float[,] multiply_matrix(float[,] m1, float[,] m2)
+        {
+            float[,] res = new float[m1.GetLength(0), m2.GetLength(1)];
+            for (int i = 0; i < m1.GetLength(0); i++)
+            {
+                for (int j = 0; j < m2.GetLength(1); j++)
+                {
+                    for (int k = 0; k < m2.GetLength(0); k++)
+                    {
+                        res[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+            }
+            return res;
+
+        }
+
+    }
 }
