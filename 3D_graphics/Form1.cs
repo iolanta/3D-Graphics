@@ -1189,8 +1189,8 @@ namespace _3D_graphics
         }
         public float FovY
         {
-            get { return fvy; }
-            set { fvy = value; update_proj_matrix(); }
+            get { return fovy; }
+            set { fovy = value; update_proj_matrix(); }
         }
         public float MaxDistance
         {
