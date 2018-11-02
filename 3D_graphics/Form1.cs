@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace _3D_graphics
 {
     public partial class Form1 : Form
     {
+        public float cam_angx = 0;
+        public float cam_angy = -(float)Math.PI;
+        public float cam_distance = 200;
+        public float cam_tilt = 0;
         public List<Figure> scene = new List<Figure>();
-
+        public CameraView cam = new CameraView( new Point3D(200, 0, 0),new Point3D(0, 0, 0), new Point3D(0,0,1 ), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 50, 300);
         public Form1()
         {
             InitializeComponent();
@@ -27,54 +28,8 @@ namespace _3D_graphics
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
-            g.TranslateTransform(pictureBox1.Width / 2, pictureBox1.Height / 2);
-            g.ScaleTransform(1, -1);
-            Point3D viewvec;
-            List<Figure> view = scene.Select(f => new Figure(f)).ToList();   
-            foreach (Figure f in view) {
-                
-                switch (comboBox1.Text)
-                {
-                    case "Central":
-                        
-                        viewvec = new Point3D(0, 0, 1);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        f.project_cental();
-                        break;
-                    case "Isometric":
-                        
-                        viewvec = new Point3D(-1, 1, -1);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        f.project_isometric();
-                        break;
-                    case "Ortographic(XY)":
-                        
-                        viewvec = new Point3D(0, 0, 1);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        f.project_orthogZ();
-                        break;
-                    case "Ortographic(XZ)":
-                       
-                        viewvec = new Point3D(0, 1, 0);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        f.project_orthogY();
-                        break;
-                    case "Ortographic(YZ)":
-                        viewvec = new Point3D(1, 0, 1);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        f.project_orthogX();
-                        break;
-                    default:
-                        viewvec = new Point3D(0, 0, 1);
-                        f.sides.RemoveAll(s => !s.isVisibleFrom(viewvec));
-                        break;
-                }
-                foreach (Side s in f.sides) {
-                    g.DrawLines(s.drawing_pen, s.points.Select(i => new PointF(f.points[i].x, f.points[i].y)).ToArray());
-                    g.DrawLine(s.drawing_pen, new PointF(f.points[s.points.First()].x, f.points[s.points.First()].y), new PointF(f.points[s.points.Last()].x, f.points[s.points.Last()].y));
-                }
-                 
-            }
+            cam.CameraRender(g,pictureBox1, scene);
+          
         }
 
         private void rotatefigure(Figure f, float ang, string type) {
@@ -181,6 +136,9 @@ namespace _3D_graphics
                     break;
                 case "Icosahedron":
                     scene.Add(Figure.get_Icosahedron(100));
+                    break;
+                case "Torus":
+                    scene.Add(Figure.get_Torus(100));
                     break;
                 case "Custom":
                     scene.Add(new Figure());
@@ -310,6 +268,62 @@ namespace _3D_graphics
             groupBox2.Enabled = true;
         }
 
+        private void update_cam() {
+            Figure virt_cam = Figure.get_Coordinates();
+            virt_cam.offset(0, 0, -cam_distance);
+            virt_cam.line_rotate_rad(cam_angx, new Point3D(0, 0, 0), virt_cam.points[1] - virt_cam.points[0]);
+            virt_cam.line_rotate_rad(cam_angy, new Point3D(0, 0, 0), virt_cam.points[3] - virt_cam.points[0]);
+            virt_cam.line_rotate_rad(cam_tilt, new Point3D(0, 0, 0), virt_cam.points[2] - virt_cam.points[0]);
+
+            cam.set_params_at_once(virt_cam.points[0], cam.Target, virt_cam.points[2] - virt_cam.points[0], cam.FovX,cam.FovY,cam.MinDistance,cam.MaxDistance);
+            debuglabel.Text = String.Format("Camera pos {0} \n", cam.Position);
+            debuglabel.Text += String.Format("UP {0} ", cam.Up);
+
+            pictureBox1.Invalidate();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            // return if camera mode is not on
+
+            // camera movemetns
+            switch (e.KeyCode)
+            {
+                case Keys.A: // move left by 1d
+                    cam_angx -= (float)(Math.PI / 180);
+                    break;
+                case Keys.D: // move right by 1d
+                    cam_angx += (float)(Math.PI / 180);
+                    break;
+                case Keys.W: //move up by 1d
+                    cam_angy += (float)(Math.PI / 180);
+                    break;
+                case Keys.S: // move down by 1d
+                    cam_angy -= (float)(Math.PI / 180);
+                    break;
+                case Keys.Q: // rotate left
+                    cam_tilt += (float)(Math.PI / 180);
+                    break;
+                case Keys.E: // rotate right
+                    cam_tilt -= (float)(Math.PI / 180);
+                    break;
+
+                case Keys.R: //move closer 
+                    if (cam_distance > 0)
+                        cam_distance--;
+                    break;
+                case Keys.F: // move further
+                    cam_distance++;
+                    break;
+                default:
+                    break;
+
+
+            }
+            //e.Handled = true ;
+           // e.SuppressKeyPress = true;
+            update_cam();
+        }
     }
 
     public class Point3D
@@ -336,6 +350,10 @@ namespace _3D_graphics
             z = p.z;
         }
 
+        public override string ToString()
+        {
+            return String.Format("X:{0:f1} Y:{1:f1} Z:{2:f1}", x,y,z);
+        }
         public static Point3D operator -(Point3D p1, Point3D p2)
         {
             return new Point3D(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
@@ -546,39 +564,43 @@ namespace _3D_graphics
         /// ----------------------------- APHINE METHODS --------------------------------
         ///
 
-        public void rotate_around(float angle, string type) {
+        public void rotate_around_rad(float rangle, string type) {
             float[,] mt = get_matrix();
             Point3D center = get_center();
             switch (type)
             {
                 case "CX":
                     mt = apply_offset(mt, -center.x, -center.y, -center.z);
-                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_X(mt, rangle);
                     mt = apply_offset(mt, center.x, center.y, center.z);
                     break;
                 case "CY":
                     mt = apply_offset(mt, -center.x, -center.y, -center.z);
-                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_Y(mt, rangle );
                     mt = apply_offset(mt, center.x, center.y, center.z);
                     break;
                 case "CZ":
                     mt = apply_offset(mt, -center.x, -center.y, -center.z);
-                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_Z(mt, rangle );
                     mt = apply_offset(mt, center.x, center.y, center.z);
                     break;
                 case "X":
-                    mt = apply_rotation_X(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_X(mt, rangle );
                     break;
                 case "Y":
-                    mt = apply_rotation_Y(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_Y(mt, rangle );
                     break;
                 case "Z":
-                    mt = apply_rotation_Z(mt, angle * (float)Math.PI / 180);
+                    mt = apply_rotation_Z(mt, rangle);
                     break;
                 default:
                     break;
             }
             apply_matrix(mt);
+        }
+        public void rotate_around(float angle, string type)
+        {
+            rotate_around_rad(angle * (float)Math.PI / 180, type);
         }
         public void scale_axis(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
@@ -596,13 +618,20 @@ namespace _3D_graphics
             pnts = apply_offset(pnts, p.x, p.y, p.z);
             apply_matrix(pnts);
         }
-        public void line_rotate(float ang, Point3D p1, Point3D p2) {
-            ang = ang * (float)Math.PI / 180;
+
+        public void line_rotate_rad(float rang, Point3D p1, Point3D p2)
+        {
+            
             p2 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
             p2 = Point3D.norm(p2);
 
             float[,] mt = get_matrix();
-            apply_matrix(rotate_around_line(mt, p1, p2, ang));
+            apply_matrix(rotate_around_line(mt, p1, p2, rang));
+        }
+
+        public void line_rotate(float ang, Point3D p1, Point3D p2) {
+            ang = ang * (float)Math.PI / 180;
+            line_rotate_rad(ang, p1, p2);
         }
 
         ///
@@ -967,38 +996,54 @@ namespace _3D_graphics
             return res;
         }
 
+        static public Figure get_Torus(float sz, int d = 100) {
+
+            sz /= 2;
+            List<Point3D> crcl = new List<Point3D>(); 
+            float ang = 0;
+            float a =(float)( 2*Math.PI/d); 
+            for (int i = 0; i <= d; ++i) {
+                crcl.Add(new Point3D((float)Math.Cos(ang)* sz, 0, (float)Math.Sin(ang) *sz));
+                ang += a;
+            }
+            
+            Figure res = get_Rotation(crcl, new Point3D(-(float)(sz * 2.5), 0, 0), new Point3D(-(float)(sz * 2.5), 0, 1), d);
+            res.offset((float)(sz*2.5), 0, 0);
+            return res;
+        }
+
+
         static public Figure get_Icosahedron(float sz) {
             Figure res = new Figure();
-            float ang = 36 * (float)Math.PI / 180;
+            float ang = (float)(Math.PI / 5);
 
             bool is_upper = true;
             int ind = 0;
-            for (float a = 0; a <= (float) 2*Math.PI; a += ang) {
+            float a = 0;
+            for (int i = 0; i<10;++i ) {
                 res.points.Add(new Point3D((float)Math.Cos((float)a), (float)Math.Sin((float)a), is_upper ? (float)0.5 : (float)-0.5));
                 is_upper = !is_upper;
                 ind++;
+                a += ang;
             }
             Side s;
-            for (int i = 1; i < ind - 1; i++)
+            for (int i = 0; i < ind; i++)
             {
                 s = new Side(res);
-                if (i % 2 != 0)
+                if (i % 2 == 0)
                 {
-                    s.points.AddRange(new int[] { i, i + 1, i - 1 });
+                    s.points.AddRange(new int[] { i, (i + 1) % ind, (i + 2) % ind });
                     s.drawing_pen = new Pen(Color.Green);
                 }
                 else
                 {
-                    s.points.AddRange(new int[] { i, i - 1, i + 1 });
+                    s.points.AddRange(new int[] { (i + 2) % ind, (i + 1) % ind, i });
                     s.drawing_pen = new Pen(Color.Red);
                 }
             
                 res.sides.Add(s);
             }
-            s = new Side(res);
-            s.points.AddRange(new int[] { 0, ind - 1, 1 });
-            s.drawing_pen = new Pen(Color.Red);
-            res.sides.Add(s);
+
 
 
             
@@ -1055,6 +1100,7 @@ namespace _3D_graphics
 
                 Side s = new Side(res);
                 s.points.AddRange(new int[] { i, i + 1, i + n_y + 2, i + n_y + 1 });
+                s.points.Reverse();
                 res.sides.Add(s);
             }
             return res;
@@ -1108,8 +1154,8 @@ namespace _3D_graphics
 
     public class CameraView
     {
-        private Point3D position;
-        private Point3D target;
+        private Point3D view_target;
+        private Point3D eye_postion;
         private Point3D up;
         private float fovx;
         private float fovy;
@@ -1120,12 +1166,14 @@ namespace _3D_graphics
         private float[,] view_matrix;
         private float[,] perspective_projection_matrix;
         private float[,] orthoganal_projection_matrix;
+        private float[,] complete_matrix_perspective;
+        private float[,] complete_matrix_orthoganal;
 
 
         public CameraView(Point3D p, Point3D t, Point3D u,float fvx, float fvy,float mind, float maxd)
         {
-            position = new Point3D(p);
-            target = new Point3D(t);
+            view_target = new Point3D(t);
+            eye_postion = new Point3D(p);
             up = new Point3D(u);
             fovx = fvx;
             fovy = fvy;
@@ -1135,8 +1183,64 @@ namespace _3D_graphics
             cam_height = 100;
             update_view_matrix();
             update_proj_matrix();
+            update_full_matrix();
         }
 
+        public void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd) {
+            view_target = new Point3D(t);
+            eye_postion = new Point3D(p);
+            up = new Point3D(u);
+            fovx = fvx;
+            fovy = fvy;
+            max_distance = maxd;
+            min_distance = mind;
+            cam_width = 100;
+            cam_height = 100;
+            update_view_matrix();
+            update_proj_matrix();
+            update_full_matrix();
+        }
+
+       
+
+        public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
+            void ViewPortTranform(Point3D p)
+            {
+                p.x = (1 + p.x) * rend_obj.Width/2;
+                p.y = (1 + p.y) * rend_obj.Height/2;
+                //p.z =  p.z;
+            }
+
+
+            List<Figure> view = scene.Select(f => new Figure(f)).ToList();
+            foreach(Figure f in view)
+            {
+                
+                f.apply_matrix(multiply_matrix( f.get_matrix(),complete_matrix_perspective));
+        
+                f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0,0,-1))).ToList();
+                
+                foreach (Point3D p in f.points)
+                    ViewPortTranform(p);
+
+                try
+                {
+                    foreach (Side s in f.sides)
+                    {
+                        g.DrawLines(s.drawing_pen, s.points.Select(i => new PointF(f.points[i].x, f.points[i].y)).ToArray());
+                        g.DrawLine(s.drawing_pen, new PointF(f.points[s.points.First()].x, f.points[s.points.First()].y), new PointF(f.points[s.points.Last()].x, f.points[s.points.Last()].y));
+                    }
+                }
+                catch (Exception)
+                {
+                    
+                }
+                
+            }
+            
+            
+
+        }
 
 
         /// 
@@ -1144,13 +1248,10 @@ namespace _3D_graphics
         /// 
         private void update_view_matrix()
         {
-            Point3D a = Point3D.norm(position - target);
-            Point3D b = Point3D.norm(up * a);
-            Point3D c = Point3D.norm(a * b);
-            float[,] m = new float[,] { { b.x, c.x, a.x, 0 }, { b.y, c.y, a.y, 0 }, { b.z, c.z, a.z, 0 }, { 0, 0, 0, 1 } };
-            float[,] t = new float[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -target.x, -target.y, -target.z, 1 } };
-            view_matrix = multiply_matrix(t, m);
-
+            Point3D f = Point3D.norm(eye_postion - view_target);
+            Point3D s = Point3D.norm(f * up);
+            Point3D v = s * f;
+            view_matrix = new float[,] { {s.x,v.x,f.x,0 },{ s.y, v.y, f.y, 0 },{ s.z, v.z, f.z, 0 },{ -Point3D.scalar(s, eye_postion), -Point3D.scalar(v, eye_postion), -Point3D.scalar(f, eye_postion), 1 } };
         }
         private void update_proj_matrix()
         {
@@ -1167,50 +1268,56 @@ namespace _3D_graphics
 
 
         }
+        private void update_full_matrix()
+        {
+            complete_matrix_perspective = multiply_matrix(view_matrix, perspective_projection_matrix);
+            complete_matrix_orthoganal = multiply_matrix(view_matrix, orthoganal_projection_matrix);
+
+        }
         public Point3D Up
         {
             get { return new Point3D(up); }
-            set { up = value; update_view_matrix(); }
-        }
-        public Point3D Target
-        {
-            get { return new Point3D(target); }
-            set { target = value; update_view_matrix(); }
+            set { up = value; update_view_matrix(); update_full_matrix(); }
         }
         public Point3D Position
         {
-            get { return new Point3D(position); }
-            set { position = value; update_view_matrix(); }
+            get { return new Point3D(eye_postion); }
+            set { eye_postion = value; update_view_matrix(); update_full_matrix(); }
+        }
+        public Point3D Target
+{
+            get { return new Point3D(view_target); }
+            set { view_target = value; update_view_matrix(); update_full_matrix(); }
         }
         public float FovX
         {
             get { return fovx; }
-            set { fovx = value; update_proj_matrix(); }
+            set { fovx = value; update_proj_matrix(); update_full_matrix(); }
         }
         public float FovY
         {
             get { return fovy; }
-            set { fovy = value; update_proj_matrix(); }
+            set { fovy = value; update_proj_matrix(); update_full_matrix(); }
         }
         public float MaxDistance
         {
             get { return max_distance; }
-            set { max_distance = value; update_proj_matrix(); }
+            set { max_distance = value; update_proj_matrix(); update_full_matrix(); }
         }
         public float MinDistance
         {
             get { return min_distance; }
-            set { min_distance = value; update_proj_matrix(); }
+            set { min_distance = value; update_proj_matrix(); update_full_matrix(); }
         }
         public float CamWidth
         {
             get { return cam_width; }
-            set { cam_width = value; update_proj_matrix(); }
+            set { cam_width = value; update_proj_matrix(); update_full_matrix(); }
         }
         public float CamHeight
         {
             get { return cam_height; }
-            set { cam_height = value; update_proj_matrix(); }
+            set { cam_height = value; update_proj_matrix(); update_full_matrix(); }
         }
         /// 
         /// ----------------------------------------------

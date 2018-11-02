@@ -88,6 +88,7 @@
             this.curveY0 = new System.Windows.Forms.NumericUpDown();
             this.curveX0 = new System.Windows.Forms.NumericUpDown();
             this.curveType = new System.Windows.Forms.ComboBox();
+            this.debuglabel = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -604,7 +605,8 @@
             resources.GetString("comboBox2.Items2"),
             resources.GetString("comboBox2.Items3"),
             resources.GetString("comboBox2.Items4"),
-            resources.GetString("comboBox2.Items5")});
+            resources.GetString("comboBox2.Items5"),
+            resources.GetString("comboBox2.Items6")});
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
@@ -794,10 +796,17 @@
             this.curveType.Name = "curveType";
             this.curveType.SelectedIndexChanged += new System.EventHandler(this.curve_params_change);
             // 
+            // debuglabel
+            // 
+            resources.ApplyResources(this.debuglabel, "debuglabel");
+            this.debuglabel.BackColor = System.Drawing.Color.Transparent;
+            this.debuglabel.Name = "debuglabel";
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.debuglabel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.loadButton);
@@ -806,9 +815,11 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -834,6 +845,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.curveY0)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveX0)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -870,6 +882,7 @@
         private System.Windows.Forms.NumericUpDown curveY0;
         private System.Windows.Forms.NumericUpDown curveX0;
         private System.Windows.Forms.ComboBox curveType;
+        private System.Windows.Forms.Label debuglabel;
     }
 }
 
