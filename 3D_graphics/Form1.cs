@@ -14,8 +14,8 @@ namespace _3D_graphics
         public float cam_distance = 200;
         public float cam_tilt = 0;
         public List<Figure> scene = new List<Figure>();
-        public CameraView cam = new CameraView( new Point3D(200, 0, 0),new Point3D(0, 0, 0), new Point3D(0,0,1 ), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 50, 300);
-        public Form1()
+        public OrbitCamera OrbitCam = new OrbitCamera(200, 0, 0, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 50, 300);
+       public Form1()
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
@@ -28,7 +28,7 @@ namespace _3D_graphics
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
-            cam.CameraRender(g,pictureBox1, scene);
+            OrbitCam.CameraRender(g,pictureBox1, scene);
           
         }
 
@@ -268,19 +268,6 @@ namespace _3D_graphics
             groupBox2.Enabled = true;
         }
 
-        private void update_cam() {
-            Figure virt_cam = Figure.get_Coordinates();
-            virt_cam.offset(0, 0, -cam_distance);
-            virt_cam.line_rotate_rad(cam_angx, new Point3D(0, 0, 0), virt_cam.points[1] - virt_cam.points[0]);
-            virt_cam.line_rotate_rad(cam_angy, new Point3D(0, 0, 0), virt_cam.points[3] - virt_cam.points[0]);
-            virt_cam.line_rotate_rad(cam_tilt, new Point3D(0, 0, 0), virt_cam.points[2] - virt_cam.points[0]);
-
-            cam.set_params_at_once(virt_cam.points[0], cam.Target, virt_cam.points[2] - virt_cam.points[0], cam.FovX,cam.FovY,cam.MinDistance,cam.MaxDistance);
-            debuglabel.Text = String.Format("Camera pos {0} \n", cam.Position);
-            debuglabel.Text += String.Format("UP {0} ", cam.Up);
-
-            pictureBox1.Invalidate();
-        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -290,30 +277,29 @@ namespace _3D_graphics
             switch (e.KeyCode)
             {
                 case Keys.A: // move left by 1d
-                    cam_angx -= (float)(Math.PI / 180);
+                    OrbitCam.MoveLeftRight(-(float)(Math.PI / 180));
                     break;
                 case Keys.D: // move right by 1d
-                    cam_angx += (float)(Math.PI / 180);
+                    OrbitCam.MoveLeftRight((float)(Math.PI / 180));
                     break;
                 case Keys.W: //move up by 1d
-                    cam_angy += (float)(Math.PI / 180);
+                    OrbitCam.MoveUpDown((float)(Math.PI / 180));
                     break;
                 case Keys.S: // move down by 1d
-                    cam_angy -= (float)(Math.PI / 180);
+                    OrbitCam.MoveUpDown(-(float)(Math.PI / 180));
                     break;
                 case Keys.Q: // rotate left
-                    cam_tilt += (float)(Math.PI / 180);
+                    OrbitCam.TiltLeftRight((float)(Math.PI / 180));
                     break;
                 case Keys.E: // rotate right
-                    cam_tilt -= (float)(Math.PI / 180);
+                    OrbitCam.TiltLeftRight(-(float)(Math.PI / 180));
                     break;
-
                 case Keys.R: //move closer 
-                    if (cam_distance > 0)
-                        cam_distance--;
+                    OrbitCam.MoveFarNear(-1);
+    
                     break;
                 case Keys.F: // move further
-                    cam_distance++;
+                    OrbitCam.MoveFarNear(1); ;
                     break;
                 default:
                     break;
@@ -321,8 +307,17 @@ namespace _3D_graphics
 
             }
             //e.Handled = true ;
-           // e.SuppressKeyPress = true;
-            update_cam();
+            // e.SuppressKeyPress = true;
+            debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ",OrbitCam.AngleX*180/(float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
+            pictureBox1.Invalidate();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            OrbitCam.Reset();
+            debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
+
+            pictureBox1.Invalidate();
         }
     }
 
@@ -1186,7 +1181,8 @@ namespace _3D_graphics
             update_full_matrix();
         }
 
-        public void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd) {
+        // make protected
+        protected void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd) {
             view_target = new Point3D(t);
             eye_postion = new Point3D(p);
             up = new Point3D(u);
@@ -1339,6 +1335,131 @@ namespace _3D_graphics
             return res;
 
         }
+
+    }
+
+    public class OrbitCamera : CameraView {
+        private float cam_angx;
+        private float cam_angy;
+        private float cam_distance;
+        private float cam_tilt;
+        private Figure cam;
+        private float angX;
+        private float angY;
+        private float angT;
+        private float dist;
+
+
+
+
+
+        public OrbitCamera(float distance, float ini_anglx, float init_angly, float init_tiltang, Point3D t, float fvx, float fvy, float mind, float maxd)
+            : base(new Point3D(0,0,0), t, new Point3D(0,0,0), fvx, fvy, mind, maxd) {
+
+            cam_distance = distance;
+            cam_angy = init_angly;
+            cam_angx = ini_anglx;
+            cam_tilt = init_tiltang;
+
+            dist = distance;
+            angX = ini_anglx;
+            angY = init_angly;
+            angT = init_tiltang;
+
+            cam = Figure.get_Coordinates();
+            for (int i = 1; i < 4; i++)
+                cam.points[i] = Point3D.norm(cam.points[i]);
+
+            cam.offset(-cam_distance, 0, 0);
+            cam.line_rotate_rad(cam_angx, new Point3D(0, 0, 0), cam.points[3] - cam.points[0]);
+            cam.line_rotate_rad(cam_angy, new Point3D(0, 0, 0), cam.points[1] - cam.points[0]);
+            cam.line_rotate_rad(cam_tilt, new Point3D(0, 0, 0), cam.points[2] - cam.points[0]);
+
+            set_cam();
+
+
+        }
+
+        private void set_cam() {
+            set_params_at_once(cam.points[0], Target, cam.points[3] - cam.points[0], FovX, FovY, MinDistance, MaxDistance);
+             
+        }
+
+        public void MoveUpDown(float rad_ang) {
+            cam.line_rotate_rad(rad_ang, new Point3D(0, 0, 0), cam.points[1] - cam.points[0]);
+            angY += rad_ang;       
+            set_cam();
+            if (angY >= Math.PI * 2) angY -= (float)Math.PI * 2;
+            else if (angY <= -Math.PI * 2) angY += (float)Math.PI * 2;
+        }
+
+        public void MoveLeftRight(float rad_ang)
+        {
+            cam.line_rotate_rad(rad_ang, new Point3D(0, 0, 0), cam.points[3] - cam.points[0]);
+            angX += rad_ang;
+            set_cam();
+            if (angX >= Math.PI * 2) angX -= (float)Math.PI * 2;
+            else if (angX <= -Math.PI * 2) angX += (float)Math.PI * 2;
+        }
+
+        public void TiltLeftRight(float rad_ang) {
+            cam.line_rotate_rad(rad_ang, new Point3D(0, 0, 0), cam.points[2] - cam.points[0]);
+            angT += rad_ang;        
+            set_cam();
+            if (angT >= Math.PI * 2) angT -= (float)Math.PI * 2;
+            else if (angT <= -Math.PI * 2) angT += (float)Math.PI * 2;
+        }
+
+        public void MoveFarNear(float d) {
+            Point3D ofst = cam.points[0] - cam.points[2];
+            cam.offset(d * ofst.x, d * ofst.y, d * ofst.z);
+            dist += d;
+            set_cam();
+        }
+
+        public float AngleX
+        {
+            get { return angX; }
+            set { MoveLeftRight(value - angX);}
+        }
+
+        public float AngleY
+        {
+            get { return angY; }
+            set { MoveUpDown(value - angY); }
+        }
+
+        public float AngleTilt
+        {
+            get { return angT; }
+            set { TiltLeftRight(value - angT); }
+        }
+
+        public float Distance
+        {
+            get { return dist; }
+            set { MoveFarNear(value - dist); }
+        }
+
+        ///something weird with resetting to angles, went the hard way
+        public void Reset() {
+            dist = cam_distance;
+            angX = cam_angx;
+            angY = cam_angy;
+            angT = cam_tilt;
+
+            cam = Figure.get_Coordinates();
+            for (int i = 1; i < 4; i++)
+                cam.points[i] = Point3D.norm(cam.points[i]);
+
+            cam.offset(-cam_distance, 0, 0);
+            cam.line_rotate_rad(cam_angx, new Point3D(0, 0, 0), cam.points[3] - cam.points[0]);
+            cam.line_rotate_rad(cam_angy, new Point3D(0, 0, 0), cam.points[1] - cam.points[0]);
+            cam.line_rotate_rad(cam_tilt, new Point3D(0, 0, 0), cam.points[2] - cam.points[0]);
+
+            set_cam();
+        }
+
 
     }
 }

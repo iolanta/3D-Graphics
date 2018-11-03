@@ -89,6 +89,7 @@
             this.curveX0 = new System.Windows.Forms.NumericUpDown();
             this.curveType = new System.Windows.Forms.ComboBox();
             this.debuglabel = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -802,10 +803,19 @@
             this.debuglabel.BackColor = System.Drawing.Color.Transparent;
             this.debuglabel.Name = "debuglabel";
             // 
+            // button3
+            // 
+            this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.button3, "button3");
+            this.button3.Name = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.debuglabel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.saveButton);
@@ -883,6 +893,7 @@
         private System.Windows.Forms.NumericUpDown curveX0;
         private System.Windows.Forms.ComboBox curveType;
         private System.Windows.Forms.Label debuglabel;
+        private System.Windows.Forms.Button button3;
     }
 }
 
