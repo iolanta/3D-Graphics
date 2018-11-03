@@ -9,13 +9,12 @@ namespace _3D_graphics
 {
     public partial class Form1 : Form
     {
-        public float cam_angx = 0;
-        public float cam_angy = -(float)Math.PI;
-        public float cam_distance = 200;
-        public float cam_tilt = 0;
+
         public List<Figure> scene = new List<Figure>();
-        public OrbitCamera OrbitCam = new OrbitCamera(200, 0, 0, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 50, 300);
-       public Form1()
+
+        public OrbitCamera OrbitCam = new OrbitCamera(200, 0, 0, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
+
+        public Form1()
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
@@ -24,7 +23,12 @@ namespace _3D_graphics
             curveType.SelectedIndex = 0;
             
         }
-
+        
+        /// <summary>
+        ///  Invokes rerender of scene to  PictureBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -32,6 +36,8 @@ namespace _3D_graphics
           
         }
 
+
+        /// ---- Aphine Transforms handlers -----------
         private void rotatefigure(Figure f, float ang, string type) {
             switch (type)
             {
@@ -99,6 +105,8 @@ namespace _3D_graphics
             }
         }
 
+        /// ------------------------------------------------
+
         private void Form1_Load(object sender, EventArgs e)
         {
         
@@ -112,11 +120,34 @@ namespace _3D_graphics
             pictureBox1.Invalidate();
         }
 
+        /// <summary>
+        ///  view change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            switch (comboBox1.Text)
+            {
+                default:
+                case "Perspective":
+                    OrbitCam.IsOrthogonal = false;
+                    break;
+                case "Orthogonal":
+                    OrbitCam.IsOrthogonal = true;
+                    break;
+            }
             pictureBox1.Invalidate();
         }
 
+
+
+        // 
+        /// <summary>
+        ///  figure change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             scene.Clear();
@@ -156,6 +187,10 @@ namespace _3D_graphics
 
         }
 
+        /// <summary>
+        ///  Generates new Curve based on controls data
+        /// </summary>
+        /// <returns></returns>
         private Figure curve() {
             Func<float, float, float> f;
             switch (curveType.Text)
@@ -206,6 +241,9 @@ namespace _3D_graphics
             return Figure.get_curve(x0, x1, y0, y1, n_x, n_y, f);
         }
 
+        /// <summary>
+        /// Reset controls for Aphine transforms
+        /// </summary>
         private void reset_controls() {
             ControlOffsetX.Value = 0;
             ControlOffsetY.Value = 0;
@@ -216,11 +254,16 @@ namespace _3D_graphics
             ControlAngle.Value = 0;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void AphineResetButton_Click(object sender, EventArgs e)
         {
             reset_controls();
         }
 
+
+        /// <summary>
+        ///  Generates line figure, reads params from controls
+        /// </summary>
+        /// <returns></returns>
         private Figure gen_line() {
             Figure res = new Figure();
             res.points.Add(new Point3D((float)ControlCustom1X.Value, (float)ControlCustom1Y.Value, (float)ControlCustom1Z.Value));
@@ -231,6 +274,11 @@ namespace _3D_graphics
             return res;
         }
 
+        /// <summary>
+        ///  handles changes of custom line
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ControlCustom1X_ValueChanged(object sender, EventArgs e)
         {
             scene[1] = gen_line();
@@ -257,6 +305,11 @@ namespace _3D_graphics
             Figure.save_figure(scene[2], filename);
         }
 
+        /// <summary>
+        ///  Handles changes in Curve Paramters, loads new curve, locks/unlcoks groupbox, resets aphine transforms controls
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void curve_params_change(object sender, EventArgs e)
         {
             if (comboBox2.Text != "Curve")
@@ -268,7 +321,11 @@ namespace _3D_graphics
             groupBox2.Enabled = true;
         }
 
-
+        /// <summary>
+        /// Handles keyboard controls for camera
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             // return if camera mode is not on
@@ -312,11 +369,30 @@ namespace _3D_graphics
             pictureBox1.Invalidate();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void CamReset_Click(object sender, EventArgs e)
         {
             OrbitCam.Reset();
             debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
 
+            pictureBox1.Invalidate();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            float fov = (float)((sender as TrackBar).Value * Math.PI / 180);
+            OrbitCam.SetFov(fov, fov);
+            pictureBox1.Invalidate();
+        }
+
+        private void NearPlaneBar_Scroll(object sender, EventArgs e)
+        {
+            float val = (float)((sender as TrackBar)).Value;
+            OrbitCam.MinDistance = val;
             pictureBox1.Invalidate();
         }
     }
@@ -374,19 +450,6 @@ namespace _3D_graphics
 
     }
 
-    public class Segment3D {
-        public Point3D p1, p2;
-        public Segment3D(Point3D _p1, Point3D _p2) {
-            p1 = _p1;
-            p2 = _p2;
-        }
-        public Segment3D(Segment3D s)
-        {
-            p1 = s.p1;
-            p2 = s.p2;
-
-        }
-    }
 
     public class Side {
         public Figure host = null;
@@ -427,7 +490,8 @@ namespace _3D_graphics
 
     }
 
-    public class Edge
+    //DEPTICATED
+   /* public class Edge
     {
         public Figure host = null;
         public int ind_p1, ind_p2;
@@ -483,14 +547,14 @@ namespace _3D_graphics
 
 
    
-    }
+    }*/
 
 
     public class Figure
     {
 
         public List<Point3D> points = new List<Point3D>(); // точки 
-        public List<Edge> edges = new List<Edge>(); // ребра 
+        //----------DEPRICATED----------//public List<Edge> edges = new List<Edge>(); // ребра 
         public List<Side> sides = new List<Side>(); // стороны
 
         public Figure() { }
@@ -498,11 +562,6 @@ namespace _3D_graphics
         public Figure(Figure f) {
             foreach (Point3D p in f.points) {
                 points.Add(new Point3D(p));
-            }
-            foreach (Edge e in f.edges)
-            {
-                edges.Add(new Edge(e));
-                edges.Last().host = this;
             }
             foreach (Side s in f.sides)
             {
@@ -514,7 +573,7 @@ namespace _3D_graphics
 
 
         ///
-        /// ----------------------------- TRANSFORMS METHODS --------------------------------
+        /// ----------------------------- TRANSFORMS  SUPPORT METHODS --------------------------------
         ///
 
 
@@ -556,7 +615,7 @@ namespace _3D_graphics
 
 
         ///
-        /// ----------------------------- APHINE METHODS --------------------------------
+        /// ----------------------------- APHINE TRANSFORMS METHODS --------------------------------
         ///
 
         public void rotate_around_rad(float rangle, string type) {
@@ -613,7 +672,6 @@ namespace _3D_graphics
             pnts = apply_offset(pnts, p.x, p.y, p.z);
             apply_matrix(pnts);
         }
-
         public void line_rotate_rad(float rang, Point3D p1, Point3D p2)
         {
             
@@ -623,7 +681,12 @@ namespace _3D_graphics
             float[,] mt = get_matrix();
             apply_matrix(rotate_around_line(mt, p1, p2, rang));
         }
-
+        /// <summary>
+        /// rotate figure line
+        /// </summary>
+        /// <param name="ang">angle in degrees</param>
+        /// <param name="p1">line start</param>
+        /// <param name="p2">line end</param>
         public void line_rotate(float ang, Point3D p1, Point3D p2) {
             ang = ang * (float)Math.PI / 180;
             line_rotate_rad(ang, p1, p2);
@@ -767,7 +830,7 @@ namespace _3D_graphics
         }
 
         ///
-        /// ---------------------------------------------------------------------------------------
+        /// --------------------SAVE/LOAD METHODS------------------------------------------
         ///
 
         public static Figure parse_figure(string filename)
@@ -1101,7 +1164,7 @@ namespace _3D_graphics
             return res;
         }
 
-
+        // one polygon more than needed
         public static Figure get_Rotation(List<Point3D> pnts, Point3D axis1, Point3D axis2, int divs) {
             Figure res = new Figure();
             Figure edge = new Figure();
@@ -1149,6 +1212,8 @@ namespace _3D_graphics
 
     public class CameraView
     {
+
+        
         private Point3D view_target;
         private Point3D eye_postion;
         private Point3D up;
@@ -1163,8 +1228,18 @@ namespace _3D_graphics
         private float[,] orthoganal_projection_matrix;
         private float[,] complete_matrix_perspective;
         private float[,] complete_matrix_orthoganal;
+        private bool isorthg = false;
 
-
+        /// <summary>
+        /// Basic Camera object
+        /// </summary>
+        /// <param name="p">Postion of Camera</param>
+        /// <param name="t">Target to look at</param>
+        /// <param name="u">Vector to be vertical in camera</param>
+        /// <param name="fvx">FOVx in radians</param>
+        /// <param name="fvy">FOVy in radians</param>
+        /// <param name="mind">distance to near plane</param>
+        /// <param name="maxd">distacne to far plane</param>
         public CameraView(Point3D p, Point3D t, Point3D u,float fvx, float fvy,float mind, float maxd)
         {
             view_target = new Point3D(t);
@@ -1181,7 +1256,17 @@ namespace _3D_graphics
             update_full_matrix();
         }
 
-        // make protected
+ 
+        /// <summary>
+        ///  Set all params at once and recount matrixes only ones
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="t"></param>
+        /// <param name="u"></param>
+        /// <param name="fvx"></param>
+        /// <param name="fvy"></param>
+        /// <param name="mind"></param>
+        /// <param name="maxd"></param>
         protected void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd) {
             view_target = new Point3D(t);
             eye_postion = new Point3D(p);
@@ -1198,7 +1283,12 @@ namespace _3D_graphics
         }
 
        
-
+        /// <summary>
+        /// Invokes render
+        /// </summary>
+        /// <param name="g">Graphics objects from Paint event</param>
+        /// <param name="rend_obj"> PictureBox to rednder to</param>
+        /// <param name="scene"> list of objects to render</param>
         public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
             void ViewPortTranform(Point3D p)
             {
@@ -1211,8 +1301,17 @@ namespace _3D_graphics
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
             foreach(Figure f in view)
             {
-                
-                f.apply_matrix(multiply_matrix( f.get_matrix(),complete_matrix_perspective));
+
+                if (isorthg)
+                {
+                    cam_height = rend_obj.Height;
+                    cam_width = rend_obj.Width;
+                    update_proj_matrix();
+                    update_full_matrix();
+                    f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_orthoganal));
+                }
+                else
+                    f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_perspective));
         
                 f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0,0,-1))).ToList();
                 
@@ -1314,6 +1413,27 @@ namespace _3D_graphics
         {
             get { return cam_height; }
             set { cam_height = value; update_proj_matrix(); update_full_matrix(); }
+        }
+
+        public bool IsOrthogonal
+        {
+            get { return isorthg; }
+            set { isorthg = value; }
+
+        }
+
+        public void SetMimMaxPlane(float mn, float mx) {
+            min_distance = mn;
+            max_distance = mx;
+            update_proj_matrix();
+            update_full_matrix();
+        }
+
+        public void SetFov(float fx, float vy) {
+            fovx = fx;
+            fovy = vy;
+            update_proj_matrix();
+            update_full_matrix();
         }
         /// 
         /// ----------------------------------------------

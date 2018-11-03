@@ -56,6 +56,8 @@
             System.Windows.Forms.Label label26;
             System.Windows.Forms.Label label27;
             System.Windows.Forms.Label label24;
+            System.Windows.Forms.Label FOV;
+            System.Windows.Forms.Label label28;
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -90,6 +92,9 @@
             this.curveType = new System.Windows.Forms.ComboBox();
             this.debuglabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.CameraBox = new System.Windows.Forms.GroupBox();
+            this.NearPlaneBar = new System.Windows.Forms.TrackBar();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -117,6 +122,8 @@
             label26 = new System.Windows.Forms.Label();
             label27 = new System.Windows.Forms.Label();
             label24 = new System.Windows.Forms.Label();
+            FOV = new System.Windows.Forms.Label();
+            label28 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Z)).BeginInit();
@@ -139,6 +146,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.curveX1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveY0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveX0)).BeginInit();
+            this.CameraBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -276,6 +286,17 @@
             resources.ApplyResources(label24, "label24");
             label24.Name = "label24";
             // 
+            // FOV
+            // 
+            resources.ApplyResources(FOV, "FOV");
+            FOV.BackColor = System.Drawing.Color.Transparent;
+            FOV.Name = "FOV";
+            // 
+            // label28
+            // 
+            resources.ApplyResources(label28, "label28");
+            label28.Name = "label28";
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.White;
@@ -324,6 +345,7 @@
             resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // button1
             // 
@@ -339,7 +361,7 @@
             resources.ApplyResources(this.button2, "button2");
             this.button2.Name = "button2";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.AphineResetButton_Click);
             // 
             // ControlCustom2Z
             // 
@@ -587,10 +609,7 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             resources.GetString("comboBox1.Items"),
-            resources.GetString("comboBox1.Items1"),
-            resources.GetString("comboBox1.Items2"),
-            resources.GetString("comboBox1.Items3"),
-            resources.GetString("comboBox1.Items4")});
+            resources.GetString("comboBox1.Items1")});
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -809,19 +828,50 @@
             resources.ApplyResources(this.button3, "button3");
             this.button3.Name = "button3";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.CamReset_Click);
+            // 
+            // CameraBox
+            // 
+            this.CameraBox.Controls.Add(label28);
+            this.CameraBox.Controls.Add(this.NearPlaneBar);
+            this.CameraBox.Controls.Add(FOV);
+            this.CameraBox.Controls.Add(this.trackBar1);
+            this.CameraBox.Controls.Add(this.comboBox1);
+            this.CameraBox.Controls.Add(this.button3);
+            resources.ApplyResources(this.CameraBox, "CameraBox");
+            this.CameraBox.Name = "CameraBox";
+            this.CameraBox.TabStop = false;
+            // 
+            // NearPlaneBar
+            // 
+            resources.ApplyResources(this.NearPlaneBar, "NearPlaneBar");
+            this.NearPlaneBar.Maximum = 1000;
+            this.NearPlaneBar.Name = "NearPlaneBar";
+            this.NearPlaneBar.TickFrequency = 100;
+            this.NearPlaneBar.Value = 100;
+            this.NearPlaneBar.Scroll += new System.EventHandler(this.NearPlaneBar_Scroll);
+            // 
+            // trackBar1
+            // 
+            resources.ApplyResources(this.trackBar1, "trackBar1");
+            this.trackBar1.Maximum = 120;
+            this.trackBar1.Minimum = 30;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.SmallChange = 5;
+            this.trackBar1.TickFrequency = 10;
+            this.trackBar1.Value = 65;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.CameraBox);
             this.Controls.Add(this.debuglabel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -854,6 +904,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.curveX1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveY0)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveX0)).EndInit();
+            this.CameraBox.ResumeLayout(false);
+            this.CameraBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -894,6 +948,9 @@
         private System.Windows.Forms.ComboBox curveType;
         private System.Windows.Forms.Label debuglabel;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.GroupBox CameraBox;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.TrackBar NearPlaneBar;
     }
 }
 

@@ -126,7 +126,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 44</value>
+    <value>8, 22</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>46, 19</value>
@@ -156,7 +156,7 @@
     <value>True</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 44</value>
+    <value>274, 22</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -186,7 +186,7 @@
     <value>True</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 75</value>
+    <value>274, 53</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -216,7 +216,7 @@
     <value>True</value>
   </data>
   <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 73</value>
+    <value>8, 51</value>
   </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
     <value>39, 19</value>
@@ -246,7 +246,7 @@
     <value>True</value>
   </data>
   <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>198, 119</value>
+    <value>176, 79</value>
   </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
     <value>37, 19</value>
@@ -276,7 +276,7 @@
     <value>True</value>
   </data>
   <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
-    <value>46, 119</value>
+    <value>51, 82</value>
   </data>
   <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
     <value>42, 19</value>
@@ -306,7 +306,7 @@
     <value>True</value>
   </data>
   <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 119</value>
+    <value>6, 82</value>
   </data>
   <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
     <value>37, 19</value>
@@ -336,7 +336,7 @@
     <value>True</value>
   </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 188</value>
+    <value>225, 123</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -366,7 +366,7 @@
     <value>True</value>
   </data>
   <data name="label13.Location" type="System.Drawing.Point, System.Drawing">
-    <value>159, 188</value>
+    <value>112, 123</value>
   </data>
   <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -396,7 +396,7 @@
     <value>True</value>
   </data>
   <data name="label14.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 188</value>
+    <value>6, 123</value>
   </data>
   <data name="label14.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -426,7 +426,7 @@
     <value>True</value>
   </data>
   <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 219</value>
+    <value>225, 154</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -456,7 +456,7 @@
     <value>True</value>
   </data>
   <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
-    <value>159, 217</value>
+    <value>112, 152</value>
   </data>
   <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -486,7 +486,7 @@
     <value>True</value>
   </data>
   <data name="label17.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 220</value>
+    <value>6, 155</value>
   </data>
   <data name="label17.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -516,7 +516,7 @@
     <value>True</value>
   </data>
   <data name="label18.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 157</value>
+    <value>108, 104</value>
   </data>
   <data name="label18.Size" type="System.Drawing.Size, System.Drawing">
     <value>89, 19</value>
@@ -549,7 +549,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label19.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 46</value>
+    <value>8, 31</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label19.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
@@ -583,7 +583,7 @@
     <value>True</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 44</value>
+    <value>55, 22</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -613,7 +613,7 @@
     <value>True</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>159, 44</value>
+    <value>161, 22</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -643,7 +643,7 @@
     <value>True</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 75</value>
+    <value>55, 53</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -673,7 +673,7 @@
     <value>True</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>159, 75</value>
+    <value>161, 53</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -706,7 +706,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label20.Location" type="System.Drawing.Point, System.Drawing">
-    <value>154, 138</value>
+    <value>115, 118</value>
   </data>
   <data name="label20.Size" type="System.Drawing.Size, System.Drawing">
     <value>28, 19</value>
@@ -739,7 +739,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label21.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 141</value>
+    <value>10, 121</value>
   </data>
   <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
     <value>28, 19</value>
@@ -772,7 +772,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label22.Location" type="System.Drawing.Point, System.Drawing">
-    <value>154, 110</value>
+    <value>115, 90</value>
   </data>
   <data name="label22.Size" type="System.Drawing.Size, System.Drawing">
     <value>28, 19</value>
@@ -805,7 +805,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label23.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 110</value>
+    <value>10, 90</value>
   </data>
   <data name="label23.Size" type="System.Drawing.Size, System.Drawing">
     <value>28, 19</value>
@@ -838,7 +838,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label25.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 143</value>
+    <value>289, 123</value>
   </data>
   <data name="label25.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -871,7 +871,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label26.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 111</value>
+    <value>289, 91</value>
   </data>
   <data name="label26.Size" type="System.Drawing.Size, System.Drawing">
     <value>20, 19</value>
@@ -904,7 +904,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 84</value>
+    <value>289, 64</value>
   </data>
   <data name="label27.Size" type="System.Drawing.Size, System.Drawing">
     <value>63, 19</value>
@@ -937,7 +937,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="label24.Location" type="System.Drawing.Point, System.Drawing">
-    <value>49, 84</value>
+    <value>10, 64</value>
   </data>
   <data name="label24.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 19</value>
@@ -960,6 +960,72 @@
   <data name="&gt;&gt;label24.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
+  <metadata name="FOV.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="FOV.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="FOV.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="FOV.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 49</value>
+  </data>
+  <data name="FOV.Size" type="System.Drawing.Size, System.Drawing">
+    <value>28, 13</value>
+  </data>
+  <data name="FOV.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="FOV.Text" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="&gt;&gt;FOV.Name" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="&gt;&gt;FOV.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;FOV.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;FOV.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <metadata name="label28.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="label28.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label28.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label28.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 49</value>
+  </data>
+  <data name="label28.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 13</value>
+  </data>
+  <data name="label28.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="label28.Text" xml:space="preserve">
+    <value>Near Plane</value>
+  </data>
+  <data name="&gt;&gt;label28.Name" xml:space="preserve">
+    <value>label28</value>
+  </data>
+  <data name="&gt;&gt;label28.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label28.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 13</value>
   </data>
@@ -979,13 +1045,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>7</value>
   </data>
   <data name="button1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
   </data>
   <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>65, 256</value>
+    <value>8, 181</value>
   </data>
   <data name="button1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -1015,7 +1081,7 @@
     <value>Popup</value>
   </data>
   <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>297, 258</value>
+    <value>295, 181</value>
   </data>
   <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
     <value>132, 24</value>
@@ -1039,7 +1105,7 @@
     <value>1</value>
   </data>
   <data name="ControlCustom2Z.Location" type="System.Drawing.Point, System.Drawing">
-    <value>296, 217</value>
+    <value>249, 152</value>
   </data>
   <data name="ControlCustom2Z.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1060,7 +1126,7 @@
     <value>4</value>
   </data>
   <data name="ControlCustom2Y.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 217</value>
+    <value>135, 152</value>
   </data>
   <data name="ControlCustom2Y.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1081,7 +1147,7 @@
     <value>6</value>
   </data>
   <data name="ControlCustom2X.Location" type="System.Drawing.Point, System.Drawing">
-    <value>77, 219</value>
+    <value>30, 154</value>
   </data>
   <data name="ControlCustom2X.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1102,7 +1168,7 @@
     <value>8</value>
   </data>
   <data name="ControlCustom1Z.Location" type="System.Drawing.Point, System.Drawing">
-    <value>296, 186</value>
+    <value>249, 121</value>
   </data>
   <data name="ControlCustom1Z.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1123,7 +1189,7 @@
     <value>10</value>
   </data>
   <data name="ControlCustom1Y.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 188</value>
+    <value>135, 123</value>
   </data>
   <data name="ControlCustom1Y.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1144,7 +1210,7 @@
     <value>12</value>
   </data>
   <data name="ControlCustom1X.Location" type="System.Drawing.Point, System.Drawing">
-    <value>77, 188</value>
+    <value>30, 123</value>
   </data>
   <data name="ControlCustom1X.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1189,7 +1255,7 @@
     <value>Custom Line</value>
   </data>
   <data name="ControlType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>244, 117</value>
+    <value>218, 76</value>
   </data>
   <data name="ControlType.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -1213,7 +1279,7 @@
     <value>15</value>
   </data>
   <data name="ControlAngle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 118</value>
+    <value>99, 79</value>
   </data>
   <data name="ControlAngle.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1234,7 +1300,7 @@
     <value>19</value>
   </data>
   <data name="ControlScaleZ.Location" type="System.Drawing.Point, System.Drawing">
-    <value>297, 73</value>
+    <value>299, 51</value>
   </data>
   <data name="ControlScaleZ.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1255,7 +1321,7 @@
     <value>21</value>
   </data>
   <data name="ControlScaleY.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 73</value>
+    <value>184, 51</value>
   </data>
   <data name="ControlScaleY.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1276,7 +1342,7 @@
     <value>23</value>
   </data>
   <data name="ControlScaleX.Location" type="System.Drawing.Point, System.Drawing">
-    <value>77, 73</value>
+    <value>79, 51</value>
   </data>
   <data name="ControlScaleX.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1297,7 +1363,7 @@
     <value>26</value>
   </data>
   <data name="ControlOffsetZ.Location" type="System.Drawing.Point, System.Drawing">
-    <value>297, 42</value>
+    <value>299, 20</value>
   </data>
   <data name="ControlOffsetZ.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1318,7 +1384,7 @@
     <value>28</value>
   </data>
   <data name="ControlOffsetY.Location" type="System.Drawing.Point, System.Drawing">
-    <value>182, 42</value>
+    <value>184, 20</value>
   </data>
   <data name="ControlOffsetY.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1339,7 +1405,7 @@
     <value>30</value>
   </data>
   <data name="ControlOffsetX.Location" type="System.Drawing.Point, System.Drawing">
-    <value>77, 42</value>
+    <value>79, 20</value>
   </data>
   <data name="ControlOffsetX.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1363,10 +1429,10 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 322</value>
+    <value>651, 404</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>488, 297</value>
+    <value>472, 215</value>
   </data>
   <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1384,7 +1450,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <data name="comboBox1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1393,22 +1459,13 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="comboBox1.Items" xml:space="preserve">
-    <value>Central</value>
+    <value>Perspective</value>
   </data>
   <data name="comboBox1.Items1" xml:space="preserve">
-    <value>Isometric</value>
-  </data>
-  <data name="comboBox1.Items2" xml:space="preserve">
-    <value>Ortographic(XY)</value>
-  </data>
-  <data name="comboBox1.Items3" xml:space="preserve">
-    <value>Ortographic(XZ)</value>
-  </data>
-  <data name="comboBox1.Items4" xml:space="preserve">
-    <value>Ortographic(YZ)</value>
+    <value>Orthogonal</value>
   </data>
   <data name="comboBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 14</value>
+    <value>10, 19</value>
   </data>
   <data name="comboBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 27</value>
@@ -1423,10 +1480,10 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;comboBox1.Parent" xml:space="preserve">
-    <value>$this</value>
+    <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;comboBox1.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>4</value>
   </data>
   <data name="comboBox2.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1456,7 +1513,7 @@
     <value>Curve</value>
   </data>
   <data name="comboBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 60</value>
+    <value>651, 7</value>
   </data>
   <data name="comboBox2.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 27</value>
@@ -1483,7 +1540,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="loadButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1007, 14</value>
+    <value>786, 7</value>
   </data>
   <data name="loadButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -1516,7 +1573,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="saveButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1007, 60</value>
+    <value>929, 7</value>
   </data>
   <data name="saveButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -1552,7 +1609,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveNY.Location" type="System.Drawing.Point, System.Drawing">
-    <value>352, 141</value>
+    <value>313, 121</value>
   </data>
   <data name="curveNY.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1576,7 +1633,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveNX.Location" type="System.Drawing.Point, System.Drawing">
-    <value>352, 110</value>
+    <value>313, 90</value>
   </data>
   <data name="curveNX.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1600,7 +1657,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveY1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>184, 140</value>
+    <value>145, 120</value>
   </data>
   <data name="curveY1.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1624,7 +1681,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveX1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 140</value>
+    <value>41, 120</value>
   </data>
   <data name="curveX1.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1648,7 +1705,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveY0.Location" type="System.Drawing.Point, System.Drawing">
-    <value>184, 108</value>
+    <value>145, 88</value>
   </data>
   <data name="curveY0.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1672,7 +1729,7 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="curveX0.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 108</value>
+    <value>41, 88</value>
   </data>
   <data name="curveX0.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 22</value>
@@ -1714,7 +1771,7 @@
     <value>f(x, y) = x * x + y * y</value>
   </data>
   <data name="curveType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>79, 44</value>
+    <value>75, 28</value>
   </data>
   <data name="curveType.Size" type="System.Drawing.Size, System.Drawing">
     <value>384, 27</value>
@@ -1741,13 +1798,13 @@
     <value>Segoe UI, 10.2pt</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>651, 114</value>
+    <value>651, 241</value>
   </data>
   <data name="groupBox2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
   </data>
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>488, 194</value>
+    <value>474, 157</value>
   </data>
   <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -1801,7 +1858,7 @@
     <value>NoControl</value>
   </data>
   <data name="button3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>777, 62</value>
+    <value>332, 19</value>
   </data>
   <data name="button3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -1822,9 +1879,75 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;button3.Parent" xml:space="preserve">
-    <value>$this</value>
+    <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;button3.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="NearPlaneBar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 59</value>
+  </data>
+  <data name="NearPlaneBar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 45</value>
+  </data>
+  <data name="NearPlaneBar.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;NearPlaneBar.Name" xml:space="preserve">
+    <value>NearPlaneBar</value>
+  </data>
+  <data name="&gt;&gt;NearPlaneBar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;NearPlaneBar.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;NearPlaneBar.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="trackBar1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 59</value>
+  </data>
+  <data name="trackBar1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 45</value>
+  </data>
+  <data name="trackBar1.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;trackBar1.Name" xml:space="preserve">
+    <value>trackBar1</value>
+  </data>
+  <data name="&gt;&gt;trackBar1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;trackBar1.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;trackBar1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="CameraBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>651, 114</value>
+  </data>
+  <data name="CameraBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>469, 130</value>
+  </data>
+  <data name="CameraBox.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="CameraBox.Text" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="&gt;&gt;CameraBox.Name" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;CameraBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CameraBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CameraBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
