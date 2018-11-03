@@ -21,7 +21,13 @@ namespace _3D_graphics
             comboBox2.SelectedIndex = 0;
             ControlType.SelectedIndex = 0;
             curveType.SelectedIndex = 0;
-            
+            Bitmap bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            using (Graphics graph = Graphics.FromImage(bmp))
+            {
+                Rectangle ImageSize = new Rectangle(0,0,pictureBox1.Width, pictureBox1.Height);
+                graph.FillRectangle(Brushes.White, ImageSize);
+            }
+            pictureBox1.Image = bmp;
         }
         
         /// <summary>
@@ -466,7 +472,7 @@ namespace _3D_graphics
         }
         public Point3D get_point(int ind) {
             if (host != null)
-                return host.points[points[ind]];
+                return host.points[ind];
             return null;
         }
 
@@ -933,12 +939,12 @@ namespace _3D_graphics
             res.points.Add(new Point3D(-sz / 2, -sz / 2, sz / 2)); //5
             res.points.Add(new Point3D(-sz / 2, -sz / 2, -sz / 2)); // 6
             res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); // 7
-   
-            
 
+
+            var p = new Pen(Color.Red);
             Side s = new Side(res);
-            s.points.AddRange(new int[] { 3 , 2, 1 , 0}); 
-          
+            s.points.AddRange(new int[] { 3 , 2, 1 , 0});
+            
             res.sides.Add(s);
 
             s = new Side(res);
@@ -963,6 +969,8 @@ namespace _3D_graphics
             s.points.AddRange(new int[] { 2,3,7,6});
             res.sides.Add(s);
 
+            foreach (var _s in res.sides)
+                _s.drawing_pen = p;
             return res;
         }
 
@@ -1288,18 +1296,33 @@ namespace _3D_graphics
         /// </summary>
         /// <param name="g">Graphics objects from Paint event</param>
         /// <param name="rend_obj"> PictureBox to rednder to</param>
-        /// <param name="scene"> list of objects to render</param>
+        /// <param name="scene"> list of objects to render, is copied</param>
         public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
-            void ViewPortTranform(Point3D p)
+            point3 ViewPortTranform(Point3D p)
             {
-                p.x = (1 + p.x) * rend_obj.Width/2;
-                p.y = (1 + p.y) * rend_obj.Height/2;
-                //p.z =  p.z;
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(p.z * 1024));
+            }
+            int calc(int v1,int v2, int v3) {
+                return v1 + v2*v3;
             }
 
 
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
-            foreach(Figure f in view)
+            int h = rend_obj.Height;
+            int w = rend_obj.Width;
+
+            int[,] zbuffer = new int[h,w];
+            Color[,] cbuffer = new Color[h, w];
+            for (int i = 0; i < h; i++)
+                for (int j = 0; j < w; j++) {
+                    zbuffer[i, j] = 0;
+                    cbuffer[i, j] = Color.Black;
+                }
+                    
+            
+                    
+
+            foreach (Figure f in view)
             {
 
                 if (isorthg)
@@ -1315,25 +1338,71 @@ namespace _3D_graphics
         
                 f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0,0,-1))).ToList();
                 
-                foreach (Point3D p in f.points)
-                    ViewPortTranform(p);
 
-                try
-                {
-                    foreach (Side s in f.sides)
-                    {
-                        g.DrawLines(s.drawing_pen, s.points.Select(i => new PointF(f.points[i].x, f.points[i].y)).ToArray());
-                        g.DrawLine(s.drawing_pen, new PointF(f.points[s.points.First()].x, f.points[s.points.First()].y), new PointF(f.points[s.points.Last()].x, f.points[s.points.Last()].y));
-                    }
-                }
-                catch (Exception)
-                {
+                foreach (Side s in f.sides) {
+                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.get_point(i))).OrderBy(p=>p.y).ThenBy(p=>p.x));
+                    Color clr = s.drawing_pen.Color;
                     
+                    switch (pl.Count)
+                    {
+                        case 1:
+                            if (pl[0].x > 0 && pl[0].x < w && pl[0].y > 0 && pl[0].y < h) {
+                                if (pl[0].z > zbuffer[pl[0].x, pl[0].y])
+                                {
+                                    zbuffer[pl[0].x, pl[0].y] = pl[0].z;
+                                    cbuffer[pl[0].x, pl[0].y] = clr;
+                                }
+                            }
+
+                            break;
+
+                        case 2:
+                            FillLine(pl[0], pl[1],  clr, w, h, zbuffer, cbuffer);
+                            break;
+
+                        case 3:
+                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            break;
+                        case 4:
+                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagle(pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
+                            break;
+                        default:
+                            break;
+                    }
+
                 }
+
+     
                 
             }
+
+            Bitmap bmp = rend_obj.Image as Bitmap;
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            System.Drawing.Imaging.BitmapData bmpData =
+                bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                bmp.PixelFormat);
+
+            IntPtr ptr = bmpData.Scan0;
+            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+            byte[] rgbValues = new byte[bytes];
+           
             
-            
+            int ind = 0;
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
+            {
+                int i = ind / w;
+                int j = ind % w;
+                rgbValues[counter] = cbuffer[i,j].B;
+                rgbValues[counter + 1] = cbuffer[i, j].R; //R
+                rgbValues[counter + 2] = cbuffer[i, j].G;
+                ind++;
+            }
+
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
+            bmp.UnlockBits(bmpData);
+            rend_obj.Image = bmp;
+
 
         }
 
@@ -1455,6 +1524,140 @@ namespace _3D_graphics
             return res;
 
         }
+
+        private static int[] Interpolate(int i0, int d0, int i1, int d1) {
+            if (i0 == i1)
+                return new int[] { d0 };
+            int a = (d1 - d0) / (i1 - i0);
+            int[] res = new int[i1 - i0 + 1];
+            d1= 0;
+            for (int i = i0; i <=i1; i++)
+            {
+                res[d1] = d0;
+                d0 += a;
+            }
+            return res;
+            
+         }
+
+        private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+            int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
+            x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
+
+            int[] h012 = Interpolate(p0.y, p0.z, p1.y, p1.z);
+            h012 = h012.Take(h012.Length - 1).Concat(Interpolate(p1.y, p1.z, p2.y, p2.z)).ToArray();
+
+
+            int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
+            int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
+
+
+            int[] x_left, x_right, h_left, h_right;
+            int m = x012.Length / 2;
+           if( x02[m] < x012[m]) {
+                x_left = x02;
+                x_right = x012;
+
+                h_left = h02;
+                h_right = h012;
+            }
+            else
+            {
+                x_left = x012;
+                x_right = x02;
+
+                h_left = h012;
+                h_right = h02;
+            }
+            int i = 0;
+
+            int ly = Math.Max(p0.y, 0);
+            int uy = Math.Min(p2.y,h-1);
+            for (int y= ly; y<=uy; y++ ){
+                
+                int x_l = x_left[i];
+                int x_r = x_right[i];
+
+                int[] h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
+                int j = 0;
+
+                int lx = Math.Max(x_l, 0);
+                int ux = Math.Min(x_r, w - 1);
+                for (int x = lx; x <= ux; x++ ){
+                    int z = h_segment[j];
+                    if (z > zbuffer[x, y])
+                    {
+                        zbuffer[x, y] = z;
+                        cbuffer[x, y] = fill_clr;
+                    }
+                }
+                i++;
+            }
+
+        }
+
+        private static void FillLine(point3 p0, point3 p1, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+
+            int[] x = Interpolate(p0.y, p0.x, p1.y, p1.x);
+            int[] z = Interpolate(p0.y, p0.z, p1.y, p1.z);
+            
+
+            int ly = Math.Max(p0.y, 0);
+            int uy = Math.Min(p1.y, h - 1);
+            int i = -1;
+            for (int y = ly; y <= uy; y++) {
+                i++;
+                if (x[i] < 0 || x[i] >= h)
+                    continue;
+                if (z[i] > zbuffer[x[i], y])
+                {
+                    zbuffer[x[i], y] = z[i];
+                    cbuffer[x[i], y] = fill_clr;
+                }
+            }
+
+        }
+
+        private static void bresenham(int x, int y, int x2, int y2, SortedDictionary<int,List<int>> ls)
+        {
+            int w = x2 - x;
+            int h = y2 - y;
+            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+            int longest = Math.Abs(w);
+            int shortest = Math.Abs(h);
+            if (!(longest > shortest))
+            {
+                longest = Math.Abs(h);
+                shortest = Math.Abs(w);
+                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+                dx2 = 0;
+            }
+            int numerator = longest >> 1;
+            for (int i = 0; i <= longest; i++)
+            {
+                if (ls.ContainsKey(y))
+                    ls[y].Add(x);
+                else
+                    ls[y] = new List<int>(2) { x };
+
+                numerator += shortest;
+                if (!(numerator < longest))
+                {
+                    numerator -= longest;
+                    x += dx1;
+                    y += dy1;
+                }
+                else
+                {
+                    x += dx2;
+                    y += dy2;
+                }
+            }
+        }
+
 
     }
 
@@ -1581,5 +1784,20 @@ namespace _3D_graphics
         }
 
 
+    }
+
+    public struct point3
+    {
+        public int x;
+        public int y;
+        public int z;
+
+     
+
+        public point3(int _x, int _y, int _z) {
+            x = _x;
+            y = _y;
+            z = _z;
+        }
     }
 }
