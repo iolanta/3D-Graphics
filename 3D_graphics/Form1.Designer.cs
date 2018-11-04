@@ -58,6 +58,7 @@
             System.Windows.Forms.Label label24;
             System.Windows.Forms.Label FOV;
             System.Windows.Forms.Label label28;
+            System.Windows.Forms.Label label29;
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -95,6 +96,7 @@
             this.CameraBox = new System.Windows.Forms.GroupBox();
             this.NearPlaneBar = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -124,6 +126,7 @@
             label24 = new System.Windows.Forms.Label();
             FOV = new System.Windows.Forms.Label();
             label28 = new System.Windows.Forms.Label();
+            label29 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ControlCustom2Z)).BeginInit();
@@ -149,6 +152,7 @@
             this.CameraBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -832,6 +836,8 @@
             // 
             // CameraBox
             // 
+            this.CameraBox.Controls.Add(label29);
+            this.CameraBox.Controls.Add(this.trackBar2);
             this.CameraBox.Controls.Add(label28);
             this.CameraBox.Controls.Add(this.NearPlaneBar);
             this.CameraBox.Controls.Add(FOV);
@@ -861,6 +867,20 @@
             this.trackBar1.TickFrequency = 10;
             this.trackBar1.Value = 65;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // label29
+            // 
+            resources.ApplyResources(label29, "label29");
+            label29.Name = "label29";
+            // 
+            // trackBar2
+            // 
+            resources.ApplyResources(this.trackBar2, "trackBar2");
+            this.trackBar2.Maximum = 1000;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.TickFrequency = 100;
+            this.trackBar2.Value = 300;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
             // Form1
             // 
@@ -908,6 +928,7 @@
             this.CameraBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -951,6 +972,7 @@
         private System.Windows.Forms.GroupBox CameraBox;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar NearPlaneBar;
+        private System.Windows.Forms.TrackBar trackBar2;
     }
 }
 

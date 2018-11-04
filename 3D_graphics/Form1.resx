@@ -991,7 +991,7 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;FOV.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <metadata name="label28.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -1024,13 +1024,16 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 13</value>
   </data>
   <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>624, 606</value>
+  </data>
+  <data name="pictureBox1.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>CenterImage</value>
   </data>
   <data name="pictureBox1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -1483,7 +1486,7 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;comboBox1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="comboBox2.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1882,7 +1885,64 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;button3.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
+  </data>
+  <metadata name="label29.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="label29.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label29.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label29.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 90</value>
+  </data>
+  <data name="label29.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 13</value>
+  </data>
+  <data name="label29.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="label29.Text" xml:space="preserve">
+    <value>Far Plane</value>
+  </data>
+  <data name="&gt;&gt;label29.Name" xml:space="preserve">
+    <value>label29</value>
+  </data>
+  <data name="&gt;&gt;label29.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label29.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;label29.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="trackBar2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="trackBar2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>213, 90</value>
+  </data>
+  <data name="trackBar2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 45</value>
+  </data>
+  <data name="trackBar2.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;trackBar2.Name" xml:space="preserve">
+    <value>trackBar2</value>
+  </data>
+  <data name="&gt;&gt;trackBar2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;trackBar2.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;trackBar2.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="NearPlaneBar.Location" type="System.Drawing.Point, System.Drawing">
     <value>208, 59</value>
@@ -1903,7 +1963,7 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;NearPlaneBar.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="trackBar1.Location" type="System.Drawing.Point, System.Drawing">
     <value>5, 59</value>
@@ -1924,7 +1984,7 @@
     <value>CameraBox</value>
   </data>
   <data name="&gt;&gt;trackBar1.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="CameraBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>651, 114</value>

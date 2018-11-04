@@ -401,6 +401,13 @@ namespace _3D_graphics
             OrbitCam.MinDistance = val;
             pictureBox1.Invalidate();
         }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            float val = (float)((sender as TrackBar)).Value;
+            OrbitCam.MaxDistance = val;
+            pictureBox1.Invalidate();
+        }
     }
 
     public class Point3D
@@ -485,11 +492,13 @@ namespace _3D_graphics
             return Point3D.norm(normal);
         }
 
-        public bool isVisibleFrom(Point3D vv) {
+        public bool isVisibleFrom(Point3D cntr) {
             if (points.Count() < 3)
                 return true;
-            vv = Point3D.norm(vv);
-            return Point3D.scalar(norm(this), vv) > 0;
+            
+            
+           
+            return Point3D.scalar(norm(this),Point3D.norm(cntr-get_point(0))) > 0;
            
         }
 
@@ -941,7 +950,7 @@ namespace _3D_graphics
             res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); // 7
 
 
-            var p = new Pen(Color.Red);
+            var p = new Pen(Color.Aquamarine);
             Side s = new Side(res);
             s.points.AddRange(new int[] { 3 , 2, 1 , 0});
             
@@ -1051,14 +1060,19 @@ namespace _3D_graphics
             res.points.Add(new Point3D(-sz, -sz, sz));
             res.points.Add(new Point3D(sz, -sz, -sz));
             res.points.Add(new Point3D(-sz, sz, -sz));
+            Pen p = new Pen(Color.Aquamarine);
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 1, 2 });
+            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 1,3,2 });
+            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 2, 3 });
+            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 3, 1 });
+            res.sides.Last().drawing_pen = p;
             return res;
         }
 
@@ -1300,7 +1314,7 @@ namespace _3D_graphics
         public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
             point3 ViewPortTranform(Point3D p)
             {
-                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(p.z * 1024));
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(p.z * 100000000));
             }
             int calc(int v1,int v2, int v3) {
                 return v1 + v2*v3;
@@ -1315,29 +1329,32 @@ namespace _3D_graphics
             Color[,] cbuffer = new Color[h, w];
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++) {
-                    zbuffer[i, j] = 0;
-                    cbuffer[i, j] = Color.Black;
+                    zbuffer[i, j] = Int32.MaxValue;
+                    cbuffer[i, j] = Color.Transparent;
                 }
-                    
-            
-                    
+
+            cam_height = rend_obj.Height;
+            cam_width = rend_obj.Width;
+            update_proj_matrix();
+            update_full_matrix();
+
 
             foreach (Figure f in view)
             {
-
+                
                 if (isorthg)
                 {
-                    cam_height = rend_obj.Height;
-                    cam_width = rend_obj.Width;
-                    update_proj_matrix();
-                    update_full_matrix();
+                    
                     f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_orthoganal));
                 }
                 else
-                    f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_perspective));
-        
-                f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0,0,-1))).ToList();
-                
+                {
+                    //f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_perspective));
+                    f.apply_matrix(multiply_matrix(multiply_matrix(f.get_matrix(), view_matrix), perspective_projection_matrix));
+                }
+
+                f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0, 0, 0))).ToList();
+
 
                 foreach (Side s in f.sides) {
                     List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.get_point(i))).OrderBy(p=>p.y).ThenBy(p=>p.x));
@@ -1346,11 +1363,12 @@ namespace _3D_graphics
                     switch (pl.Count)
                     {
                         case 1:
+                            
                             if (pl[0].x > 0 && pl[0].x < w && pl[0].y > 0 && pl[0].y < h) {
-                                if (pl[0].z > zbuffer[pl[0].x, pl[0].y])
+                                if (pl[0].z < zbuffer[pl[0].y, pl[0].x])
                                 {
-                                    zbuffer[pl[0].x, pl[0].y] = pl[0].z;
-                                    cbuffer[pl[0].x, pl[0].y] = clr;
+                                    zbuffer[pl[0].y, pl[0].x] = pl[0].z;
+                                    cbuffer[pl[0].y, pl[0].x] = clr;
                                 }
                             }
 
@@ -1384,19 +1402,25 @@ namespace _3D_graphics
                 bmp.PixelFormat);
 
             IntPtr ptr = bmpData.Scan0;
-            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+            int strd = Math.Abs(bmpData.Stride);
+            int bytes = strd * bmp.Height;
             byte[] rgbValues = new byte[bytes];
-           
-            
-            int ind = 0;
-            for (int counter = 0; counter < rgbValues.Length; counter += 3)
-            {
-                int i = ind / w;
-                int j = ind % w;
-                rgbValues[counter] = cbuffer[i,j].B;
-                rgbValues[counter + 1] = cbuffer[i, j].R; //R
-                rgbValues[counter + 2] = cbuffer[i, j].G;
-                ind++;
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+
+
+            int rgb_ind = 0;
+            for (int i = 0; i < h; i++) { 
+                for (int j = 0; j < w; j++)
+                {
+                    int ind = rgb_ind + j * 4;
+                    rgbValues[ind] = cbuffer[i, j].B; //B
+                    rgbValues[ind+1] = cbuffer[i, j].G;//G
+                    rgbValues[ind+2] = cbuffer[i, j].R; // R
+                    rgbValues[ind+3] = cbuffer[i,j].A; //A
+                }
+                rgb_ind += strd;
+
             }
 
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
@@ -1423,12 +1447,12 @@ namespace _3D_graphics
             float h = (float)(1 / Math.Tan(fovy / 2));
             perspective_projection_matrix = new float[,] { { w, 0, 0, 0 },
                                                            { 0, h, 0, 0 },
-                                                           { 0, 0, max_distance / (max_distance - min_distance), 1 },
+                                                           { 0, 0,-max_distance / (max_distance - min_distance), -1 },
                                                            { 0, 0,-max_distance*min_distance/(max_distance - min_distance), 0 } };
             orthoganal_projection_matrix = new float[,] { { 2/cam_width,0,0,0},
                                                           {0,2/cam_height,0,0},
-                                                          {0,0,1/(max_distance-min_distance),0 },
-                                                          {0,0,max_distance/(max_distance-min_distance),1} };
+                                                          {0,0,-1/(max_distance-min_distance),0 },
+                                                          {0,0,-max_distance/(max_distance-min_distance),1} };
 
 
         }
@@ -1526,16 +1550,38 @@ namespace _3D_graphics
         }
 
         private static int[] Interpolate(int i0, int d0, int i1, int d1) {
-            if (i0 == i1)
-                return new int[] { d0 };
-            int a = (d1 - d0) / (i1 - i0);
-            int[] res = new int[i1 - i0 + 1];
-            d1= 0;
-            for (int i = i0; i <=i1; i++)
-            {
-                res[d1] = d0;
-                d0 += a;
+            int[] res;
+            if (i0 < i1) { 
+                int a = (d1 - d0) / (i1 - i0);
+                res = new int[i1 - i0 + 1];
+                d1= 0;
+                for (int i = i0; i <=i1; i++)
+                {
+                    res[d1] = d0;
+                    d0 += a;
+                    ++d1;
+                }
             }
+            else if(i0 > i1)
+            {
+                int t = i0;
+                i0 = i1;
+                i1 = t;
+                int a = (d1 - d0) / (i1 - i0);
+                d1 = i1 - i0;
+                res = new int[d1+1];
+                
+                for (int i = i0; i < i1; i++)
+                {
+                    res[d1] = d0;
+                    d0 += a;
+                    --d1;
+                }
+                
+            }
+            else 
+                return new int[] { d0 };
+
             return res;
             
          }
@@ -1554,7 +1600,7 @@ namespace _3D_graphics
 
             int[] x_left, x_right, h_left, h_right;
             int m = x012.Length / 2;
-           if( x02[m] < x012[m]) {
+           if( p2.x < p1.x) {
                 x_left = x02;
                 x_right = x012;
 
@@ -1574,21 +1620,26 @@ namespace _3D_graphics
             int ly = Math.Max(p0.y, 0);
             int uy = Math.Min(p2.y,h-1);
             for (int y= ly; y<=uy; y++ ){
+
                 
                 int x_l = x_left[i];
                 int x_r = x_right[i];
+                int[] h_segment;
+                if (x_l > x_r)
+                    h_segment = Interpolate(x_r, h_right[i], x_l, h_left[i]);
+                else
+                   h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
 
-                int[] h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
                 int j = 0;
 
                 int lx = Math.Max(x_l, 0);
                 int ux = Math.Min(x_r, w - 1);
                 for (int x = lx; x <= ux; x++ ){
                     int z = h_segment[j];
-                    if (z > zbuffer[x, y])
+                    if (z < zbuffer[y, x])
                     {
-                        zbuffer[x, y] = z;
-                        cbuffer[x, y] = fill_clr;
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
                     }
                 }
                 i++;
@@ -1609,7 +1660,7 @@ namespace _3D_graphics
                 i++;
                 if (x[i] < 0 || x[i] >= h)
                     continue;
-                if (z[i] > zbuffer[x[i], y])
+                if (z[i] < zbuffer[x[i], y])
                 {
                     zbuffer[x[i], y] = z[i];
                     cbuffer[x[i], y] = fill_clr;
