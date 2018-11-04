@@ -1729,6 +1729,130 @@ namespace _3D_graphics
         }
 
 
+    static private void line3d(point3 p1, point3 p2, SortedDictionary<int, List<Tuple<int, int>>> dict)
+    {
+            point3 tmp = p1;
+
+            float dx = p2.x - p1.x;
+            float dy = p2.y - p1.y;
+            float dz = p2.z - p1.z;
+
+            int x_inc = (dx < 0) ? -1 : 1;
+            int l = (int)Math.Abs(dx);
+            int y_inc = (dy < 0) ? -1 : 1;
+            int m = (int)Math.Abs(dy);
+            int z_inc = (dz < 0) ? -1 : 1;
+            int n = (int)Math.Abs(dz);
+
+            int dx2 = l << 1;
+            int dy2 = m << 1;
+            int dz2 = n << 1;
+
+            
+            if ((l >= m) && (l >= n))
+            {
+                int err_1 = dy2 - l;
+                int err_2 = dz2 - l;
+                for (int i = 0; i < l; i++)
+                {
+                    if (dict.ContainsKey(tmp.y))
+                    {
+                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+                    }
+                    else
+                    {
+                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
+                        dict.Add(p1.y, lst);
+                    }
+
+                    if (err_1 > 0)
+                    {
+                        tmp.y += y_inc;
+                        err_1 -= dx2;
+                    }
+                    if (err_2 > 0)
+                    {
+                        tmp.z += z_inc;
+                        err_2 -= dx2;
+                    }
+                    err_1 += dy2;
+                    err_2 += dz2;
+                    tmp.x += x_inc;
+                }
+            }
+            else if ((m >= l) && (m >= n))
+            {
+                int err_1 = dx2 - m;
+                int err_2 = dz2 - m;
+                for (int i = 0; i < m; i++)
+                {
+                    if (dict.ContainsKey(tmp.y))
+                    {
+                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+                    }
+                    else
+                    {
+                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
+                        dict.Add(p1.y, lst);
+                    }
+
+                    if (err_1 > 0)
+                    {
+                        tmp.x += x_inc;
+                        err_1 -= dy2;
+                    }
+                    if (err_2 > 0)
+                    {
+                        tmp.z += z_inc;
+                        err_2 -= dy2;
+                    }
+                    err_1 += dx2;
+                    err_2 += dz2;
+                    tmp.y += y_inc;
+                }
+            }
+            else
+            {
+                int err_1 = dy2 - n;
+                int err_2 = dx2 - n;
+                for (int i = 0; i < n; i++)
+                {
+                    if (dict.ContainsKey(tmp.y))
+                    {
+                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+                    }
+                    else
+                    {
+                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
+                        dict.Add(p1.y, lst);
+                    }
+
+                    if (err_1 > 0)
+                    {
+                        tmp.y += y_inc;
+                        err_1 -= dz2;
+                    }
+                    if (err_2 > 0)
+                    {
+                        tmp.y += x_inc;
+                        err_2 -= dz2;
+                    }
+                    err_1 += dy2;
+                    err_2 += dx2;
+                    tmp.z += z_inc;
+                }
+            }
+            if (dict.ContainsKey(tmp.y))
+            {
+                dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+            }
+            else
+            {
+                List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
+                dict.Add(p1.y, lst);
+            }
+        }
+
     }
 
     public class OrbitCamera : CameraView {
