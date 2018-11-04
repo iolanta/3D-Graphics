@@ -504,71 +504,13 @@ namespace _3D_graphics
 
     }
 
-    //DEPTICATED
-   /* public class Edge
-    {
-        public Figure host = null;
-        public int ind_p1, ind_p2;
-        public Color clr = Color.Black;
-
-        public Edge(int i1, int i2, Figure h = null) {
-            ind_p1 = i1;
-            ind_p2 = i2;
-            host = h;
-        }
-
-        public Edge(Edge e) {
-            ind_p1 = e.ind_p1;
-            ind_p2 = e.ind_p2;
-            host = e.host;
-            clr = e.clr; 
-        }
-
-        public Point3D p1
-        {
-            get
-            {
-                if(host != null)
-                return new Point3D(host.points[ind_p1]);
-                return null;
-            }
-            set
-            {
-                if (host !=null)
-                {
-                    host.points[ind_p1] = value;
-                }
-            }
-        }
-
-        public Point3D p2
-        {
-            get
-            {
-                if (host != null)
-                    return new Point3D(host.points[ind_p2]);
-                return null;
-            }
-            set
-            {
-                if (host != null)
-                {
-                    host.points[ind_p2] = value;
-                }
-            }
-        }
-
-
-
-   
-    }*/
+ 
 
 
     public class Figure
     {
 
         public List<Point3D> points = new List<Point3D>(); // точки 
-        //----------DEPRICATED----------//public List<Edge> edges = new List<Edge>(); // ребра 
         public List<Side> sides = new List<Side>(); // стороны
 
         public Figure() { }
@@ -1381,7 +1323,9 @@ namespace _3D_graphics
                             FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
                             break;
                         case 4:
-                            FillQuad(pl[0], pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
+                            //FillQuad(pl[0], pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            //FillTrinagle(pl[1], pl[1], pl[3], clr, w, h, zbuffer, cbuffer);
                             break;
                         default:
                             break;
@@ -1552,8 +1496,21 @@ namespace _3D_graphics
             {
                 return new int[] { d0 };
             }
-
             int[] res;
+            if (i0 > i1) {
+                int b = (d0 - d1) / (i0 - i1);
+                res = new int[i0 - i1 + 1];
+                d0 = 0;
+                for (int i = i0; i <= i1; i++)
+                {
+                    res[d0] = d1;
+                    d1 += b;
+                    ++d0;
+                }
+                return res.Reverse().ToArray();
+
+            }
+
             
                 int a = (d1 - d0) / (i1 - i0);
                 res = new int[i1 - i0 + 1];
@@ -1650,7 +1607,7 @@ namespace _3D_graphics
 
             int[] x_left, x_right, h_left, h_right;
             int m = x012.Length / 2;
-           if( p2.x < p1.x) {
+            if(x02[m] < x012[m]) {
                 x_left = x02;
                 x_right = x012;
 
@@ -1675,10 +1632,7 @@ namespace _3D_graphics
                 int x_l = x_left[i];
                 int x_r = x_right[i];
                 int[] h_segment;
-                if (x_l > x_r)
-                   h_segment = Interpolate(x_r, h_right[i], x_l, h_left[i]);
-                else
-                   h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
+                h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
 
                 int j = 0;
                 int lx = Math.Max(x_l, 0);
@@ -1719,8 +1673,22 @@ namespace _3D_graphics
 
         }
 
-        private static void bresenham(int x, int y, int x2, int y2, SortedDictionary<int,List<int>> ls)
+        private static void bresenham(point3 p1,point3 p2, SortedDictionary<int,List<Tuple<int,int>>> ls)
         {
+            int x = p1.x;
+            int y = p1.y;
+            int x2 = p2.x;
+            int y2 = p2.y;
+
+            int[] hvals;
+            if (y < y2)
+                hvals = Interpolate(y, p1.z, y2, p2.z);
+            else
+            {
+                hvals = Interpolate(y2, p2.z, y, p1.z);
+                hvals = hvals.Reverse().ToArray();
+            }
+
             int w = x2 - x;
             int h = y2 - y;
             int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
@@ -1739,10 +1707,11 @@ namespace _3D_graphics
             int numerator = longest >> 1;
             for (int i = 0; i <= longest; i++)
             {
-                if (ls.ContainsKey(y))
-                    ls[y].Add(x);
-                else
-                    ls[y] = new List<int>(2) { x };
+                int z = hvals[i];
+                //if (ls.ContainsKey(y))
+                   // ls[y].Add(x);
+                //else
+                 ///   ls[y] = new List<int>(2) { x };
 
                 numerator += shortest;
                 if (!(numerator < longest))
