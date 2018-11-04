@@ -1348,7 +1348,7 @@ namespace _3D_graphics
                 }
                 else
                 {
-                    //f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_perspective));
+                    
                     f.apply_matrix(multiply_matrix(multiply_matrix(f.get_matrix(), view_matrix), perspective_projection_matrix));
                 }
 
@@ -1381,8 +1381,7 @@ namespace _3D_graphics
                             FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
                             break;
                         case 4:
-                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
-                            FillTrinagle(pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
+                            FillQuad(pl[0], pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
                             break;
                         default:
                             break;
@@ -1549,8 +1548,13 @@ namespace _3D_graphics
         }
 
         private static int[] Interpolate(int i0, int d0, int i1, int d1) {
+            if(i0 == i1)
+            {
+                return new int[] { d0 };
+            }
+
             int[] res;
-            if (i0 < i1) { 
+            
                 int a = (d1 - d0) / (i1 - i0);
                 res = new int[i1 - i0 + 1];
                 d1= 0;
@@ -1560,30 +1564,77 @@ namespace _3D_graphics
                     d0 += a;
                     ++d1;
                 }
-            }
-            else if(i0 > i1)
-            {
-                int t = i0;
-                i0 = i1;
-                i1 = t;
-                int a = (d1 - d0) / (i1 - i0);
-                d1 = i1 - i0;
-                res = new int[d1+1];
-                
-                for (int i = i0; i < i1; i++)
-                {
-                    res[d1] = d0;
-                    d0 += a;
-                    --d1;
-                }
-                
-            }
-            else 
-                return new int[] { d0 };
+            
 
             return res;
             
          }
+
+
+        private static void FillQuad(point3 p0, point3 p1, point3 p2, point3 p3,Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        {
+            if (p1.x > p2.x)
+            {
+                point3 t = p1;
+                p1 = p2;
+                p2 = t;
+            }
+
+            int[] xleft = Interpolate(p0.y, p0.x, p1.y, p1.x);
+            xleft = xleft.Take(xleft.Length - 1).Concat(Interpolate(p1.y, p1.x, p3.y, p3.x)).ToArray();
+
+            int[] hleft = Interpolate(p0.y, p0.z, p1.y, p1.z);
+            hleft = hleft.Take(hleft.Length - 1).Concat(Interpolate(p1.y, p1.z, p3.y, p3.z)).ToArray();
+
+            int[] xright = Interpolate(p0.y, p0.x, p2.y, p2.x);
+            xright = xright.Take(xright.Length - 1).Concat(Interpolate(p2.y, p2.x, p3.y, p3.x)).ToArray();
+
+            int[] hright = Interpolate(p0.y, p0.z, p2.y, p2.z);
+            hright = hright.Take(hright.Length - 1).Concat(Interpolate(p2.y, p2.z, p3.y, p3.z)).ToArray();
+
+            int i = 0;
+            int ly = Math.Max(p0.y, 0);
+            int uy = Math.Min(p2.y, h - 1);
+            for (int y = ly; y <= uy; y++)
+            {
+
+
+                int x_l = xleft[i];
+                int x_r = xright[i];
+
+                if (x_l > x_r)
+                {
+                    int t = x_l;
+                    x_l = x_r;
+                    x_r = t;
+                    t = hleft[i];
+                    hleft[i] = hright[i];
+                    hright[i] = t;
+                }
+
+
+
+                int[] h_segment = Interpolate(x_l, hleft[i], x_r, hright[i]);
+
+                int j = 0;
+
+                int lx = Math.Max(x_l, 0);
+                int ux = Math.Min(x_r, w - 1);
+                for (int x = lx; x <= ux; x++)
+                {
+                    int z = h_segment[j];
+                    if (z < zbuffer[y, x])
+                    {
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
+                    }
+                    j++;
+                }
+                i++;
+            }
+
+
+        }
 
         private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
@@ -1625,12 +1676,11 @@ namespace _3D_graphics
                 int x_r = x_right[i];
                 int[] h_segment;
                 if (x_l > x_r)
-                    h_segment = Interpolate(x_r, h_right[i], x_l, h_left[i]);
+                   h_segment = Interpolate(x_r, h_right[i], x_l, h_left[i]);
                 else
                    h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
 
                 int j = 0;
-
                 int lx = Math.Max(x_l, 0);
                 int ux = Math.Min(x_r, w - 1);
                 for (int x = lx; x <= ux; x++ ){
@@ -1640,6 +1690,7 @@ namespace _3D_graphics
                         zbuffer[y, x] = z;
                         cbuffer[y, x] = fill_clr;
                     }
+                    j++;
                 }
                 i++;
             }
