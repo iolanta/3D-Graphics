@@ -479,7 +479,7 @@ namespace _3D_graphics
         }
         public Point3D get_point(int ind) {
             if (host != null)
-                return host.points[ind];
+                return host.points[points[ind]];
             return null;
         }
 
@@ -487,19 +487,18 @@ namespace _3D_graphics
             if (S.points.Count() < 3)
                 return null;
             Point3D U = S.get_point(1) - S.get_point(0);
-            Point3D V = S.get_point(2) - S.get_point(1);
-            Point3D normal = new Point3D(U.y * V.z - U.z * V.y, U.z * V.x - U.x * V.z, U.x * V.y - U.y * V.x);
+            Point3D V = S.get_point(S.points.Count-1) - S.get_point(0);
+            Point3D normal = V * U;
             return Point3D.norm(normal);
         }
 
         public bool isVisibleFrom(Point3D cntr) {
             if (points.Count() < 3)
                 return true;
-            
-            
-           
-            return Point3D.scalar(norm(this),Point3D.norm(cntr-get_point(0))) > 0;
-           
+            var val = Point3D.scalar(Point3D.norm(cntr - get_point(0)), norm(this));
+            return val < 0;
+
+
         }
 
 
@@ -950,36 +949,38 @@ namespace _3D_graphics
             res.points.Add(new Point3D(sz / 2, -sz / 2, -sz / 2)); // 7
 
 
-            var p = new Pen(Color.Aquamarine);
+           
             Side s = new Side(res);
             s.points.AddRange(new int[] { 3 , 2, 1 , 0});
-            
+            s.drawing_pen = new Pen(Color.Aquamarine); 
             res.sides.Add(s);
 
             s = new Side(res);
             s.points.AddRange(new int[] { 4, 5, 6, 7});
+            s.drawing_pen = new Pen(Color.Green);
             res.sides.Add(s);
 
             s = new Side(res);
-            s.points.AddRange(new int[] {2,6,5,1 }); 
-          
+            s.points.AddRange(new int[] {2,6,5,1 });
+            s.drawing_pen = new Pen(Color.Red);
             res.sides.Add(s);
 
             s = new Side(res);
+            s.drawing_pen = new Pen(Color.Yellow);
             s.points.AddRange(new int[] { 0,4,7,3});
             res.sides.Add(s);
 
             s = new Side(res);
+            s.drawing_pen = new Pen(Color.Blue);
             s.points.AddRange(new int[] { 1,5,4,0}); 
             
             res.sides.Add(s);
 
             s = new Side(res);
+            s.drawing_pen = new Pen(Color.Brown);
             s.points.AddRange(new int[] { 2,3,7,6});
             res.sides.Add(s);
-
-            foreach (var _s in res.sides)
-                _s.drawing_pen = p;
+            
             return res;
         }
 
@@ -1316,9 +1317,7 @@ namespace _3D_graphics
             {
                 return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(p.z * 100000000));
             }
-            int calc(int v1,int v2, int v3) {
-                return v1 + v2*v3;
-            }
+            
 
 
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
@@ -1353,11 +1352,11 @@ namespace _3D_graphics
                     f.apply_matrix(multiply_matrix(multiply_matrix(f.get_matrix(), view_matrix), perspective_projection_matrix));
                 }
 
-                f.sides = f.sides.Where(s => s.isVisibleFrom(new Point3D(0, 0, 0))).ToList();
 
+                f.sides.RemoveAll(s => !s.isVisibleFrom(new Point3D(0,0,0)));
 
                 foreach (Side s in f.sides) {
-                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.get_point(i))).OrderBy(p=>p.y).ThenBy(p=>p.x));
+                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p=>p.y).ThenBy(p=>p.x));
                     Color clr = s.drawing_pen.Color;
                     
                     switch (pl.Count)
@@ -1447,12 +1446,12 @@ namespace _3D_graphics
             float h = (float)(1 / Math.Tan(fovy / 2));
             perspective_projection_matrix = new float[,] { { w, 0, 0, 0 },
                                                            { 0, h, 0, 0 },
-                                                           { 0, 0,-max_distance / (max_distance - min_distance), -1 },
-                                                           { 0, 0,-max_distance*min_distance/(max_distance - min_distance), 0 } };
+                                                           { 0, 0,max_distance / (min_distance-max_distance), -1 },
+                                                           { 0, 0,max_distance*min_distance/(min_distance - max_distance), 0 } };
             orthoganal_projection_matrix = new float[,] { { 2/cam_width,0,0,0},
                                                           {0,2/cam_height,0,0},
-                                                          {0,0,-1/(max_distance-min_distance),0 },
-                                                          {0,0,-max_distance/(max_distance-min_distance),1} };
+                                                          {0,0,1 / (min_distance-max_distance),-1 },
+                                                          {0,0,min_distance/(min_distance - max_distance),0} };
 
 
         }
