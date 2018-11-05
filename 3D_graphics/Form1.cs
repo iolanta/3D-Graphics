@@ -294,7 +294,7 @@ namespace _3D_graphics
 
         private void loadButton_Click(object sender, EventArgs e)
         {
-            comboBox2.SelectedIndex = 4;
+            comboBox2.SelectedIndex = 5;
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             string filename = openFileDialog1.FileName; 
@@ -827,6 +827,7 @@ namespace _3D_graphics
                     res.sides.Add(s);
                 }
 
+                res.set_pen(new Pen(Color.Red));
                 return res;
             }
         }
@@ -852,8 +853,6 @@ namespace _3D_graphics
             Point3D axis1 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
             str = lines[count_points + 3].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             Point3D axis2 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
-            
-            
 
             return get_Rotation( pnts, axis1,  axis2, count_divs);
         }
@@ -1133,6 +1132,7 @@ namespace _3D_graphics
                 s.points.Reverse();
                 res.sides.Add(s);
             }
+            res.set_pen(new Pen(Color.Red));
             return res;
         }
 
