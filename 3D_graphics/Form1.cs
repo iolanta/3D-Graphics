@@ -317,7 +317,7 @@ namespace _3D_graphics
 
         private void loadButton_Click(object sender, EventArgs e)
         {
-            comboBox2.SelectedIndex = 4;
+            comboBox2.SelectedIndex = 5;
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             string filename = openFileDialog1.FileName; 
@@ -849,6 +849,7 @@ namespace _3D_graphics
                     res.sides.Add(s);
                 }
 
+                res.set_pen(new Pen(Color.Red));
                 return res;
             }
         }
@@ -874,8 +875,6 @@ namespace _3D_graphics
             Point3D axis1 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
             str = lines[count_points + 3].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             Point3D axis2 = new Point3D(float.Parse(str[0]), float.Parse(str[1]), float.Parse(str[2]));
-            
-            
 
             return get_Rotation( pnts, axis1,  axis2, count_divs);
         }
@@ -1021,7 +1020,7 @@ namespace _3D_graphics
             s.points.AddRange(new int[] { 1, 5, 3 });
             res.sides.Add(s);
 
-
+            res.set_pen(new Pen(Color.Violet));
 
             return res;
         }
@@ -1034,19 +1033,15 @@ namespace _3D_graphics
             res.points.Add(new Point3D(-sz, -sz, sz));
             res.points.Add(new Point3D(sz, -sz, -sz));
             res.points.Add(new Point3D(-sz, sz, -sz));
-            Pen p = new Pen(Color.Aquamarine);
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 1, 2 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 1,3,2 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 2, 3 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 3, 1 });
-            res.sides.Last().drawing_pen = p;
+            res.set_pen(new Pen(Color.Aquamarine));
             return res;
         }
 
@@ -1063,6 +1058,7 @@ namespace _3D_graphics
             
             Figure res = get_Rotation(crcl, new Point3D(-(float)(sz * 2.5), 0, 0), new Point3D(-(float)(sz * 2.5), 0, 1), d);
             res.offset((float)(sz*2.5), 0, 0);
+            res.set_pen(new Pen(Color.SpringGreen));
             return res;
         }
 
@@ -1087,12 +1083,12 @@ namespace _3D_graphics
                 if (i % 2 == 0)
                 {
                     s.points.AddRange(new int[] { i, (i + 1) % ind, (i + 2) % ind });
-                    s.drawing_pen = new Pen(Color.Green);
+                  //  s.drawing_pen = new Pen(Color.Green);
                 }
                 else
                 {
                     s.points.AddRange(new int[] { (i + 2) % ind, (i + 1) % ind, i });
-                    s.drawing_pen = new Pen(Color.Red);
+                 //   s.drawing_pen = new Pen(Color.Red);
                 }
             
                 res.sides.Add(s);
@@ -1122,6 +1118,7 @@ namespace _3D_graphics
 
             res.scale_around_center(sz, sz, sz);
 
+            res.set_pen(new Pen(Color.Orange));
             return res;
         }
 
@@ -1157,6 +1154,7 @@ namespace _3D_graphics
                 s.points.Reverse();
                 res.sides.Add(s);
             }
+            res.set_pen(new Pen(Color.Red));
             return res;
         }
 
@@ -1197,6 +1195,7 @@ namespace _3D_graphics
                 res.sides.Add(s);
 
             }
+            res.set_pen(new Pen(Color.Magenta));
                 return res;
         }
         ///

@@ -97,7 +97,9 @@
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.NearPlaneBar = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+
             this.FPSlabel = new System.Windows.Forms.Label();
+
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -883,12 +885,13 @@
             this.trackBar1.Value = 65;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
-            // FPSlabel
+         // FPSlabel
             // 
             resources.ApplyResources(this.FPSlabel, "FPSlabel");
             this.FPSlabel.BackColor = System.Drawing.Color.Transparent;
             this.FPSlabel.Name = "FPSlabel";
             // 
+
             // Form1
             // 
             resources.ApplyResources(this, "$this");
