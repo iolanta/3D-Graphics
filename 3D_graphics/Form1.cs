@@ -25,9 +25,10 @@ namespace _3D_graphics
             using (Graphics graph = Graphics.FromImage(bmp))
             {
                 Rectangle ImageSize = new Rectangle(0,0,pictureBox1.Width, pictureBox1.Height);
-                graph.FillRectangle(Brushes.White, ImageSize);
+                graph.FillRectangle(Brushes.Black, ImageSize);
             }
             pictureBox1.Image = bmp;
+            pictureBox1.Invalidate();
         }
         
         /// <summary>
@@ -39,7 +40,7 @@ namespace _3D_graphics
         {
             var g = e.Graphics;
             OrbitCam.CameraRender(g,pictureBox1, scene);
-          
+            
         }
 
 
@@ -115,7 +116,7 @@ namespace _3D_graphics
 
         private void Form1_Load(object sender, EventArgs e)
         {
-        
+            pictureBox1.Invalidate();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -495,7 +496,7 @@ namespace _3D_graphics
         public bool isVisibleFrom(Point3D cntr) {
             if (points.Count() < 3)
                 return true;
-            var val = Point3D.scalar(Point3D.norm(cntr - get_point(0)), norm(this));
+            var val = Point3D.scalar(cntr - get_point(0), norm(this));
             return val < 0;
 
 
@@ -1257,7 +1258,7 @@ namespace _3D_graphics
         public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
             point3 ViewPortTranform(Point3D p)
             {
-                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(p.z * 100000000));
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(1/p.z * 100000000));
             }
             
 
@@ -1270,8 +1271,8 @@ namespace _3D_graphics
             Color[,] cbuffer = new Color[h, w];
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++) {
-                    zbuffer[i, j] = Int32.MaxValue;
-                    cbuffer[i, j] = Color.Transparent;
+                    zbuffer[i, j] =0;
+                    cbuffer[i, j] = Color.Black;
                 }
 
             cam_height = rend_obj.Height;
@@ -1282,7 +1283,7 @@ namespace _3D_graphics
 
             foreach (Figure f in view)
             {
-                
+                f.sides.RemoveAll(s => !s.isVisibleFrom(eye_postion));
                 if (isorthg)
                 {
                     
@@ -1295,41 +1296,69 @@ namespace _3D_graphics
                 }
 
 
-                f.sides.RemoveAll(s => !s.isVisibleFrom(new Point3D(0,0,0)));
+               
 
                 foreach (Side s in f.sides) {
-                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p=>p.y).ThenBy(p=>p.x));
+                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.host.points[i]))).ToList();
+                    try
+                    {
+                        for (int i = 0; i < pl.Count; i++)
+                            g.DrawLine(s.drawing_pen, new Point(pl[i].x, pl[i].y), new Point(pl[(i+1)%pl.Count].x, pl[(i + 1) % pl.Count].y));
+                    }
+                    catch (Exception)
+                    {
+
+                       
+                    }
+                    
+                    
+                     /*
                     Color clr = s.drawing_pen.Color;
                     
-                    switch (pl.Count)
-                    {
-                        case 1:
-                            
-                            if (pl[0].x > 0 && pl[0].x < w && pl[0].y > 0 && pl[0].y < h) {
-                                if (pl[0].z < zbuffer[pl[0].y, pl[0].x])
-                                {
-                                    zbuffer[pl[0].y, pl[0].x] = pl[0].z;
-                                    cbuffer[pl[0].y, pl[0].x] = clr;
+                     switch (pl.Count)
+                     {
+                         case 4:
+
+                            /*foreach(point3  p in pl) 
+                             if (p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
+                                 if (p.z > zbuffer[p.y, p.x])
+                                 {
+                                        
+                                     zbuffer[p.y, p.x] = p.z;
+                                     cbuffer[p.y, p.x] = clr;
                                 }
                             }
 
-                            break;
+                            for (int i = 0; i < pl.Count; i++)
+                            {
+                                line3d(pl[i], pl[(i+1)%pl.Count], clr, w, h, zbuffer, cbuffer);
+                            }
 
-                        case 2:
-                            FillLine(pl[0], pl[1],  clr, w, h, zbuffer, cbuffer);
-                            break;
+                             break;
 
-                        case 3:
-                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                         case 2:
+                             line3d(pl[0], pl[1],  clr, w, h, zbuffer, cbuffer);
+                             break;
+
+                         case 3:
+                            for (int i = 0; i < pl.Count; i++)
+                            {
+                                line3d(pl[i], pl[(i + 1) % pl.Count], clr, w, h, zbuffer, cbuffer);
+                            }
                             break;
-                        case 4:
+                         //case 4:
                             //FillQuad(pl[0], pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
-                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            //FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            //FillTiage(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
                             //FillTrinagle(pl[1], pl[1], pl[3], clr, w, h, zbuffer, cbuffer);
-                            break;
-                        default:
-                            break;
-                    }
+                             break;
+                         default:
+                             break;
+                     }
+                    */
+                     
+                   // FillPolygon(pl, clr, w, h, zbuffer, cbuffer);
+
 
                 }
 
@@ -1337,7 +1366,7 @@ namespace _3D_graphics
                 
             }
 
-            Bitmap bmp = rend_obj.Image as Bitmap;
+            /*Bitmap bmp = rend_obj.Image as Bitmap;
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             System.Drawing.Imaging.BitmapData bmpData =
                 bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
@@ -1347,27 +1376,29 @@ namespace _3D_graphics
             int strd = Math.Abs(bmpData.Stride);
             int bytes = strd * bmp.Height;
             byte[] rgbValues = new byte[bytes];
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+            //System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
 
 
 
-            int rgb_ind = 0;
+           
             for (int i = 0; i < h; i++) { 
                 for (int j = 0; j < w; j++)
                 {
-                    int ind = rgb_ind + j * 4;
+                    int ind = strd*i + j * 4;
+                    //byte c = (byte)( 255 * (float)i/h*(float)j/w);
                     rgbValues[ind] = cbuffer[i, j].B; //B
-                    rgbValues[ind+1] = cbuffer[i, j].G;//G
-                    rgbValues[ind+2] = cbuffer[i, j].R; // R
-                    rgbValues[ind+3] = cbuffer[i,j].A; //A
+                    rgbValues[ind + 1] = cbuffer[i, j].G;//G
+                    rgbValues[ind + 2] =cbuffer[i, j].R; // R
+                    rgbValues[ind + 3] = cbuffer[i,j].A; //A
                 }
-                rgb_ind += strd;
+                
 
             }
 
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
             bmp.UnlockBits(bmpData);
-            rend_obj.Image = bmp;
+            
+            */
 
 
         }
@@ -1494,39 +1525,79 @@ namespace _3D_graphics
         private static int[] Interpolate(int i0, int d0, int i1, int d1) {
             if(i0 == i1)
             {
-                return new int[] { d0 };
+                return new int[] { d0,d1 };
             }
-            int[] res;
-            if (i0 > i1) {
-                int b = (d0 - d1) / (i0 - i1);
-                res = new int[i0 - i1 + 1];
-                d0 = 0;
-                for (int i = i0; i <= i1; i++)
-                {
-                    res[d0] = d1;
-                    d1 += b;
-                    ++d0;
-                }
-                return res.Reverse().ToArray();
-
+            int[] res;       
+            int a = (d1 - d0) / (i1 - i0);
+            res = new int[i1 - i0 + 1];
+            d1= 0;
+            for (int i = i0; i <=i1; i++)
+             {
+                res[d1] = d0;
+                d0 += a;
+                ++d1;
             }
-
-            
-                int a = (d1 - d0) / (i1 - i0);
-                res = new int[i1 - i0 + 1];
-                d1= 0;
-                for (int i = i0; i <=i1; i++)
-                {
-                    res[d1] = d0;
-                    d0 += a;
-                    ++d1;
-                }
             
 
             return res;
             
          }
 
+        private static void FillPolygon(List<point3> pol, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+            SortedList<int,border> scan = new SortedList<int, border>();
+            for (int i = 0; i < pol.Count; i++)
+            {
+               // line3d(pol[i], pol[(i + 1) % pol.Count], scan);
+            }
+
+            // get y bounds
+            int ylw = Math.Max(0, scan.Keys[0]);
+            int yup = Math.Min(h-1, scan.Keys.Last());
+            //  get ind of lower bound to start scaning y
+            int ind= -1;
+            if (ylw <= yup)
+                ind = scan.IndexOfKey(ylw);
+            else
+                return;
+            // scan y
+            for (int y = ylw; y <= yup; y++)
+            {
+                
+                var line = scan.Values[ind];
+                ind++;
+
+                // get left and right x
+                int xleft = line.x1;
+                int xright = line.x2;
+
+                // get x bounds and ind in interpolation array (if xlw == xleft index is 0 else set offset)
+                int xlw = Math.Max(0, xleft);
+                int zind = xlw - xleft;
+                int xup = Math.Min(w - 1, xright);
+
+                // skip interpolation of z if x out of bounds
+                if (xup < xlw)
+                    continue;
+
+                // interpolation of z form xleft to xright
+                int[] zint = Interpolate(xleft, line.z1, xright, line.z2);
+
+                // iterate over x
+                for (int x = xlw; x <= xup; x++) {
+                    int z = zint[zind];
+                    if (z < zbuffer[y, x])
+                    {
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
+                    }
+                    zind++;
+
+                }
+            }
+
+
+
+        }
 
         private static void FillQuad(point3 p0, point3 p1, point3 p2, point3 p3,Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
         {
@@ -1593,7 +1664,100 @@ namespace _3D_graphics
 
         }
 
+        private static void FillTiage(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+
+
+            int[] upleftx, upleftz, uprightx, uprightz;
+            int[] dwleftx, dwleftz, dwrightx, dwrightz;
+            point3 leftm, rightm;
+
+            void fillUpper() {
+
+                int i = 0;
+                for (int y = leftm.y; y<p2.y; y++)
+                {
+                    int xl = upleftx[i];
+                    int xr = uprightx[i];
+                    int zl = upleftz[i];
+                    int zr = uprightz[i];
+                    if (xl >= xr)
+                        break;
+                    int[] zline = Interpolate(xl, zl, xr, zr);
+                    int j = 0;
+                    for(int x = xl; x<=xr; x++)
+                    {
+                        int z = zline[j];
+                        if (z > zbuffer[y, x])
+                        {
+                            zbuffer[y, x] = z;
+                            cbuffer[y, x] = fill_clr;
+                        }
+                        j++;
+                    }
+
+
+                    i++;
+                }
+
+
+            }
+
+
+            int[] x01 = Interpolate(p0.y, p0.x, p1.y, p1.x);
+            int[] z01 = Interpolate(p0.y, p0.z, p1.y, p1.z);
+
+            int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
+            int[] z02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
+
+
+
+
+            int ind = p1.y - p0.y;
+            point3 pm = new point3(p1.y, x02[ind], z02[ind]);
+
+
+            if (p1.x < pm.x)
+            {
+                leftm = p1;
+                rightm = pm;
+
+                upleftx = Interpolate(p1.y, p1.x, p2.y, p2.x);
+                upleftz = Interpolate(p1.y, p1.z, p2.y, p2.z);
+                uprightx = x02.Skip(ind).ToArray();
+                uprightz = z02.Skip(ind).ToArray();
+
+                dwleftx = x01;
+                dwleftz = z01;
+                dwrightx = x02.Take(ind).ToArray();
+                dwrightz = z02.Take(ind).ToArray();
+
+            }
+            else
+            {
+                leftm = pm;
+                rightm = p1;
+
+                upleftx = x02.Skip(ind).ToArray();
+                upleftz = z02.Skip(ind).ToArray();
+                uprightx = Interpolate(p1.y, p1.x, p2.y, p2.x);
+                uprightz = Interpolate(p1.y, p1.z, p2.y, p2.z);
+
+                dwleftx = x02.Take(ind).ToArray();
+                dwleftz = z02.Take(ind).ToArray();
+                dwrightx = x01;
+                dwrightz = z01;
+
+            }
+            fillUpper();
+            
+
+
+
+        }
+
         private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+            // p0.y <=p1.y <= p2.y
+
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
             x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
 
@@ -1603,6 +1767,9 @@ namespace _3D_graphics
 
             int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
             int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
+
+
+
 
 
             int[] x_left, x_right, h_left, h_right;
@@ -1622,9 +1789,9 @@ namespace _3D_graphics
                 h_left = h012;
                 h_right = h02;
             }
-            int i = 0;
-
+            
             int ly = Math.Max(p0.y, 0);
+            int i = ly-p0.y;
             int uy = Math.Min(p2.y,h-1);
             for (int y= ly; y<=uy; y++ ){
 
@@ -1632,14 +1799,20 @@ namespace _3D_graphics
                 int x_l = x_left[i];
                 int x_r = x_right[i];
                 int[] h_segment;
+                if (x_l > x_r)
+                {
+                    i++;
+                    continue;
+                }
                 h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
 
-                int j = 0;
+                
                 int lx = Math.Max(x_l, 0);
+                int j = lx-x_l;
                 int ux = Math.Min(x_r, w - 1);
                 for (int x = lx; x <= ux; x++ ){
                     int z = h_segment[j];
-                    if (z < zbuffer[y, x])
+                    if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
                         cbuffer[y, x] = fill_clr;
@@ -1651,27 +1824,7 @@ namespace _3D_graphics
 
         }
 
-        private static void FillLine(point3 p0, point3 p1, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
 
-            int[] x = Interpolate(p0.y, p0.x, p1.y, p1.x);
-            int[] z = Interpolate(p0.y, p0.z, p1.y, p1.z);
-            
-
-            int ly = Math.Max(p0.y, 0);
-            int uy = Math.Min(p1.y, h - 1);
-            int i = -1;
-            for (int y = ly; y <= uy; y++) {
-                i++;
-                if (x[i] < 0 || x[i] >= h)
-                    continue;
-                if (z[i] < zbuffer[x[i], y])
-                {
-                    zbuffer[x[i], y] = z[i];
-                    cbuffer[x[i], y] = fill_clr;
-                }
-            }
-
-        }
 
         private static void bresenham(point3 p1,point3 p2, SortedDictionary<int,List<Tuple<int,int>>> ls)
         {
@@ -1729,7 +1882,7 @@ namespace _3D_graphics
         }
 
 
-    static private void line3d(point3 p1, point3 p2, SortedDictionary<int, List<Tuple<int, int>>> dict)
+    static private void line3d(point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
     {
             point3 tmp = p1;
 
@@ -1748,6 +1901,7 @@ namespace _3D_graphics
             int dy2 = m << 1;
             int dz2 = n << 1;
 
+            int x, y, z;
             
             if ((l >= m) && (l >= n))
             {
@@ -1755,15 +1909,15 @@ namespace _3D_graphics
                 int err_2 = dz2 - l;
                 for (int i = 0; i < l; i++)
                 {
-                    if (dict.ContainsKey(tmp.y))
+                     x = tmp.x;
+                     y = tmp.y;
+                     z = tmp.z;
+                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
                     {
-                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
                     }
-                    else
-                    {
-                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
-                        dict.Add(p1.y, lst);
-                    }
+
 
                     if (err_1 > 0)
                     {
@@ -1786,14 +1940,13 @@ namespace _3D_graphics
                 int err_2 = dz2 - m;
                 for (int i = 0; i < m; i++)
                 {
-                    if (dict.ContainsKey(tmp.y))
+                     x = tmp.x;
+                     y = tmp.y;
+                     z = tmp.z;
+                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
                     {
-                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
-                    }
-                    else
-                    {
-                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
-                        dict.Add(p1.y, lst);
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
                     }
 
                     if (err_1 > 0)
@@ -1817,14 +1970,13 @@ namespace _3D_graphics
                 int err_2 = dx2 - n;
                 for (int i = 0; i < n; i++)
                 {
-                    if (dict.ContainsKey(tmp.y))
+                     x = tmp.x;
+                     y = tmp.y;
+                     z = tmp.z;
+                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
                     {
-                        dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
-                    }
-                    else
-                    {
-                        List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
-                        dict.Add(p1.y, lst);
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = fill_clr;
                     }
 
                     if (err_1 > 0)
@@ -1842,15 +1994,44 @@ namespace _3D_graphics
                     tmp.z += z_inc;
                 }
             }
-            if (dict.ContainsKey(tmp.y))
+             x = tmp.x;
+             y = tmp.y;
+             z = tmp.z;
+            if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
             {
-                dict.ElementAt(tmp.y).Value.Add(Tuple.Create<int, int>(tmp.x, tmp.z));
+                zbuffer[y, x] = z;
+                cbuffer[y, x] = fill_clr;
             }
-            else
+        }
+
+    }
+
+    struct border {
+        public int x1;
+        public int z1;
+        public int x2;
+        public int z2;
+
+        public void update(int x, int z) {
+            if (x < x1)
             {
-                List<Tuple<int, int>> lst = new List<Tuple<int, int>> { Tuple.Create<int, int>(tmp.x, tmp.z) };
-                dict.Add(p1.y, lst);
+                x1 = x;
+                z1 = z;
             }
+            else if(x > x2)
+            {
+                x2 = x;
+                z2 = z;
+
+            }
+
+        }
+
+        public border(int x, int z) {
+            x1 = x;
+            x2 = x;
+            z1 = z;
+            z2 = z;
         }
 
     }
