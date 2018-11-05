@@ -999,7 +999,7 @@ namespace _3D_graphics
             s.points.AddRange(new int[] { 1, 5, 3 });
             res.sides.Add(s);
 
-
+            res.set_pen(new Pen(Color.Violet));
 
             return res;
         }
@@ -1012,19 +1012,15 @@ namespace _3D_graphics
             res.points.Add(new Point3D(-sz, -sz, sz));
             res.points.Add(new Point3D(sz, -sz, -sz));
             res.points.Add(new Point3D(-sz, sz, -sz));
-            Pen p = new Pen(Color.Aquamarine);
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 1, 2 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 1,3,2 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 2, 3 });
-            res.sides.Last().drawing_pen = p;
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 3, 1 });
-            res.sides.Last().drawing_pen = p;
+            res.set_pen(new Pen(Color.Aquamarine));
             return res;
         }
 
@@ -1041,6 +1037,7 @@ namespace _3D_graphics
             
             Figure res = get_Rotation(crcl, new Point3D(-(float)(sz * 2.5), 0, 0), new Point3D(-(float)(sz * 2.5), 0, 1), d);
             res.offset((float)(sz*2.5), 0, 0);
+            res.set_pen(new Pen(Color.SpringGreen));
             return res;
         }
 
@@ -1065,12 +1062,12 @@ namespace _3D_graphics
                 if (i % 2 == 0)
                 {
                     s.points.AddRange(new int[] { i, (i + 1) % ind, (i + 2) % ind });
-                    s.drawing_pen = new Pen(Color.Green);
+                  //  s.drawing_pen = new Pen(Color.Green);
                 }
                 else
                 {
                     s.points.AddRange(new int[] { (i + 2) % ind, (i + 1) % ind, i });
-                    s.drawing_pen = new Pen(Color.Red);
+                 //   s.drawing_pen = new Pen(Color.Red);
                 }
             
                 res.sides.Add(s);
@@ -1100,6 +1097,7 @@ namespace _3D_graphics
 
             res.scale_around_center(sz, sz, sz);
 
+            res.set_pen(new Pen(Color.Orange));
             return res;
         }
 
@@ -1175,6 +1173,7 @@ namespace _3D_graphics
                 res.sides.Add(s);
 
             }
+            res.set_pen(new Pen(Color.Magenta));
                 return res;
         }
         ///
