@@ -621,6 +621,14 @@ namespace _3D_graphics
         public void offset(float xs, float ys, float zs) {
             apply_matrix(apply_offset(get_matrix(), xs, ys, zs));
         }
+
+        public void set_pen(Pen dw)
+        {
+            foreach (Side s in sides)
+                s.drawing_pen = dw;
+
+        }
+
         public void scale_around_center(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
             Point3D p = get_center();
