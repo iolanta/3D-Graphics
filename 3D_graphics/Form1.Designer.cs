@@ -94,9 +94,10 @@
             this.debuglabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.CameraBox = new System.Windows.Forms.GroupBox();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.NearPlaneBar = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.FPSlabel = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -150,9 +151,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.curveY0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveX0)).BeginInit();
             this.CameraBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -300,6 +301,11 @@
             // 
             resources.ApplyResources(label28, "label28");
             label28.Name = "label28";
+            // 
+            // label29
+            // 
+            resources.ApplyResources(label29, "label29");
+            label29.Name = "label29";
             // 
             // pictureBox1
             // 
@@ -848,6 +854,15 @@
             this.CameraBox.Name = "CameraBox";
             this.CameraBox.TabStop = false;
             // 
+            // trackBar2
+            // 
+            resources.ApplyResources(this.trackBar2, "trackBar2");
+            this.trackBar2.Maximum = 1000;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.TickFrequency = 100;
+            this.trackBar2.Value = 300;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
             // NearPlaneBar
             // 
             resources.ApplyResources(this.NearPlaneBar, "NearPlaneBar");
@@ -868,24 +883,17 @@
             this.trackBar1.Value = 65;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
-            // label29
+            // FPSlabel
             // 
-            resources.ApplyResources(label29, "label29");
-            label29.Name = "label29";
-            // 
-            // trackBar2
-            // 
-            resources.ApplyResources(this.trackBar2, "trackBar2");
-            this.trackBar2.Maximum = 1000;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.TickFrequency = 100;
-            this.trackBar2.Value = 300;
-            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            resources.ApplyResources(this.FPSlabel, "FPSlabel");
+            this.FPSlabel.BackColor = System.Drawing.Color.Transparent;
+            this.FPSlabel.Name = "FPSlabel";
             // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.FPSlabel);
             this.Controls.Add(this.CameraBox);
             this.Controls.Add(this.debuglabel);
             this.Controls.Add(this.groupBox2);
@@ -926,9 +934,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.curveX0)).EndInit();
             this.CameraBox.ResumeLayout(false);
             this.CameraBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NearPlaneBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -973,6 +981,7 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar NearPlaneBar;
         private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Label FPSlabel;
     }
 }
 

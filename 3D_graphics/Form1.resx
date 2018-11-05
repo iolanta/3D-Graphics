@@ -1026,6 +1026,39 @@
   <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <metadata name="label29.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <data name="label29.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label29.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label29.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 90</value>
+  </data>
+  <data name="label29.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 13</value>
+  </data>
+  <data name="label29.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="label29.Text" xml:space="preserve">
+    <value>Far Plane</value>
+  </data>
+  <data name="&gt;&gt;label29.Name" xml:space="preserve">
+    <value>label29</value>
+  </data>
+  <data name="&gt;&gt;label29.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label29.Parent" xml:space="preserve">
+    <value>CameraBox</value>
+  </data>
+  <data name="&gt;&gt;label29.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 13</value>
   </data>
@@ -1048,7 +1081,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="button1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1453,7 +1486,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="comboBox1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1534,7 +1567,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;comboBox2.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="loadButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1567,7 +1600,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;loadButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="saveButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1600,7 +1633,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;saveButton.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -1825,7 +1858,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="debuglabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1849,7 +1882,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;debuglabel.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="button3.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
@@ -1886,39 +1919,6 @@
   </data>
   <data name="&gt;&gt;button3.ZOrder" xml:space="preserve">
     <value>7</value>
-  </data>
-  <metadata name="label29.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <data name="label29.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label29.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label29.Location" type="System.Drawing.Point, System.Drawing">
-    <value>153, 90</value>
-  </data>
-  <data name="label29.Size" type="System.Drawing.Size, System.Drawing">
-    <value>52, 13</value>
-  </data>
-  <data name="label29.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="label29.Text" xml:space="preserve">
-    <value>Far Plane</value>
-  </data>
-  <data name="&gt;&gt;label29.Name" xml:space="preserve">
-    <value>label29</value>
-  </data>
-  <data name="&gt;&gt;label29.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label29.Parent" xml:space="preserve">
-    <value>CameraBox</value>
-  </data>
-  <data name="&gt;&gt;label29.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="trackBar2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2008,6 +2008,33 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;CameraBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="FPSlabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="FPSlabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>576, 598</value>
+  </data>
+  <data name="FPSlabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>27, 13</value>
+  </data>
+  <data name="FPSlabel.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="FPSlabel.Text" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="&gt;&gt;FPSlabel.Name" xml:space="preserve">
+    <value>FPSlabel</value>
+  </data>
+  <data name="&gt;&gt;FPSlabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;FPSlabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;FPSlabel.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

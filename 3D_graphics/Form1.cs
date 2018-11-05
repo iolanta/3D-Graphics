@@ -13,22 +13,31 @@ namespace _3D_graphics
         public List<Figure> scene = new List<Figure>();
 
         public OrbitCamera OrbitCam = new OrbitCamera(200, 0, 0, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
+        private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+        
+       
 
         public Form1()
         {
+            watch.Stop();
+
             InitializeComponent();
-            comboBox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 0;
-            ControlType.SelectedIndex = 0;
-            curveType.SelectedIndex = 0;
             Bitmap bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             using (Graphics graph = Graphics.FromImage(bmp))
             {
-                Rectangle ImageSize = new Rectangle(0,0,pictureBox1.Width, pictureBox1.Height);
-                graph.FillRectangle(Brushes.Black, ImageSize);
+                Rectangle ImageSize = new Rectangle(0, 0, pictureBox1.Width, pictureBox1.Height);
+                graph.FillRectangle(Brushes.White, ImageSize);
             }
+
             pictureBox1.Image = bmp;
-            pictureBox1.Invalidate();
+            comboBox1.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 0;
+            ControlType.SelectedIndex = 0;
+            curveType.SelectedIndex = 0;        
+           
+
+
+
         }
         
         /// <summary>
@@ -38,9 +47,23 @@ namespace _3D_graphics
         /// <param name="e"></param>
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
-            OrbitCam.CameraRender(g,pictureBox1, scene);
+            watch.Restart();
+            e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene),new Point(0,0));
+            watch.Stop();
+            debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
+            int time = (int)(1000 / watch.ElapsedMilliseconds);
+            FPSlabel.Text = "FPS: " + time;
             
+        }
+
+      
+
+
+        private void render() {
+           
+            
+            pictureBox1.Invalidate();
+           
         }
 
 
@@ -116,7 +139,7 @@ namespace _3D_graphics
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            pictureBox1.Invalidate();
+           render();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -124,7 +147,7 @@ namespace _3D_graphics
             groupBox1.Enabled = false;
             apply_transforms();
             groupBox1.Enabled = true;
-            pictureBox1.Invalidate();
+           render();
         }
 
         /// <summary>
@@ -144,7 +167,7 @@ namespace _3D_graphics
                     OrbitCam.IsOrthogonal = true;
                     break;
             }
-            pictureBox1.Invalidate();
+           render();
         }
 
 
@@ -189,9 +212,9 @@ namespace _3D_graphics
                     break;
               
             }
-            pictureBox1.Invalidate();
+            
             reset_controls();
-
+            render();
         }
 
         /// <summary>
@@ -289,7 +312,7 @@ namespace _3D_graphics
         private void ControlCustom1X_ValueChanged(object sender, EventArgs e)
         {
             scene[1] = gen_line();
-            pictureBox1.Invalidate();
+           render();
         }
 
         private void loadButton_Click(object sender, EventArgs e)
@@ -301,7 +324,7 @@ namespace _3D_graphics
             if (!System.IO.File.Exists(filename))
                 return;
             scene[2] = Figure.parse_figure(filename);
-            pictureBox1.Invalidate();
+           render();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -324,7 +347,7 @@ namespace _3D_graphics
             groupBox2.Enabled = false;
             scene[2] = curve();
             reset_controls();
-            pictureBox1.Invalidate();
+           render();
             groupBox2.Enabled = true;
         }
 
@@ -372,16 +395,15 @@ namespace _3D_graphics
             }
             //e.Handled = true ;
             // e.SuppressKeyPress = true;
-            debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ",OrbitCam.AngleX*180/(float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
-            pictureBox1.Invalidate();
+            //debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ",OrbitCam.AngleX*180/(float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
+            render();
         }
 
         private void CamReset_Click(object sender, EventArgs e)
         {
             OrbitCam.Reset();
             debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
-
-            pictureBox1.Invalidate();
+            render();
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -393,21 +415,21 @@ namespace _3D_graphics
         {
             float fov = (float)((sender as TrackBar).Value * Math.PI / 180);
             OrbitCam.SetFov(fov, fov);
-            pictureBox1.Invalidate();
+            render();
         }
 
         private void NearPlaneBar_Scroll(object sender, EventArgs e)
         {
             float val = (float)((sender as TrackBar)).Value;
             OrbitCam.MinDistance = val;
-            pictureBox1.Invalidate();
+            render();
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
             float val = (float)((sender as TrackBar)).Value;
             OrbitCam.MaxDistance = val;
-            pictureBox1.Invalidate();
+            render();
         }
     }
 
@@ -1187,7 +1209,7 @@ namespace _3D_graphics
     public class CameraView
     {
 
-        
+
         private Point3D view_target;
         private Point3D eye_postion;
         private Point3D up;
@@ -1214,7 +1236,7 @@ namespace _3D_graphics
         /// <param name="fvy">FOVy in radians</param>
         /// <param name="mind">distance to near plane</param>
         /// <param name="maxd">distacne to far plane</param>
-        public CameraView(Point3D p, Point3D t, Point3D u,float fvx, float fvy,float mind, float maxd)
+        public CameraView(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd)
         {
             view_target = new Point3D(t);
             eye_postion = new Point3D(p);
@@ -1230,7 +1252,7 @@ namespace _3D_graphics
             update_full_matrix();
         }
 
- 
+
         /// <summary>
         ///  Set all params at once and recount matrixes only ones
         /// </summary>
@@ -1241,7 +1263,8 @@ namespace _3D_graphics
         /// <param name="fvy"></param>
         /// <param name="mind"></param>
         /// <param name="maxd"></param>
-        protected void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd) {
+        protected void set_params_at_once(Point3D p, Point3D t, Point3D u, float fvx, float fvy, float mind, float maxd)
+        {
             view_target = new Point3D(t);
             eye_postion = new Point3D(p);
             up = new Point3D(u);
@@ -1256,30 +1279,30 @@ namespace _3D_graphics
             update_full_matrix();
         }
 
-       
+
         /// <summary>
         /// Invokes render
         /// </summary>
         /// <param name="g">Graphics objects from Paint event</param>
         /// <param name="rend_obj"> PictureBox to rednder to</param>
         /// <param name="scene"> list of objects to render, is copied</param>
-        public void CameraRender(Graphics g,PictureBox rend_obj,List<Figure> scene) {
+        public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene)
+        {
             point3 ViewPortTranform(Point3D p)
             {
-                return new point3((int)((1 + p.x) * rend_obj.Width / 2),  (int)((1 + p.y) * rend_obj.Height / 2),  (int)(1/p.z * 100000000));
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2), (int)((1 + p.y) * rend_obj.Height / 2), (int)(1 / p.z * 100000000));
             }
-            
-
 
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
             int h = rend_obj.Height;
             int w = rend_obj.Width;
 
-            int[,] zbuffer = new int[h,w];
+            int[,] zbuffer = new int[h, w];
             Color[,] cbuffer = new Color[h, w];
             for (int i = 0; i < h; i++)
-                for (int j = 0; j < w; j++) {
-                    zbuffer[i, j] =0;
+                for (int j = 0; j < w; j++)
+                {
+                    zbuffer[i, j] = 0;
                     cbuffer[i, j] = Color.Black;
                 }
 
@@ -1294,87 +1317,61 @@ namespace _3D_graphics
                 f.sides.RemoveAll(s => !s.isVisibleFrom(eye_postion));
                 if (isorthg)
                 {
-                    
+
                     f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_orthoganal));
                 }
                 else
                 {
-                    
+
                     f.apply_matrix(multiply_matrix(multiply_matrix(f.get_matrix(), view_matrix), perspective_projection_matrix));
                 }
 
 
-               
-
-                foreach (Side s in f.sides) {
-                    List<point3> pl = new List<point3>(s.points.Select(i => ViewPortTranform(s.host.points[i]))).ToList();
-                    try
-                    {
-                        for (int i = 0; i < pl.Count; i++)
-                            g.DrawLine(s.drawing_pen, new Point(pl[i].x, pl[i].y), new Point(pl[(i+1)%pl.Count].x, pl[(i + 1) % pl.Count].y));
-                    }
-                    catch (Exception)
-                    {
-
-                       
-                    }
-                    
-                    
-                     /*
+                foreach (Side s in f.sides)
+                {
                     Color clr = s.drawing_pen.Color;
-                    
-                     switch (pl.Count)
-                     {
-                         case 4:
 
-                            /*foreach(point3  p in pl) 
-                             if (p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
-                                 if (p.z > zbuffer[p.y, p.x])
-                                 {
-                                        
-                                     zbuffer[p.y, p.x] = p.z;
-                                     cbuffer[p.y, p.x] = clr;
-                                }
-                            }
-
-                            for (int i = 0; i < pl.Count; i++)
+                    switch (s.points.Count)
+                    {
+                        case 1:
+                            point3 p0 = ViewPortTranform(s.get_point(0));
+                            if (p0.z > zbuffer[p0.y, p0.x])
                             {
-                                line3d(pl[i], pl[(i+1)%pl.Count], clr, w, h, zbuffer, cbuffer);
-                            }
-
-                             break;
-
-                         case 2:
-                             line3d(pl[0], pl[1],  clr, w, h, zbuffer, cbuffer);
-                             break;
-
-                         case 3:
-                            for (int i = 0; i < pl.Count; i++)
-                            {
-                                line3d(pl[i], pl[(i + 1) % pl.Count], clr, w, h, zbuffer, cbuffer);
+                                zbuffer[p0.y, p0.x] = p0.z;
+                                cbuffer[p0.y, p0.x] = clr;
                             }
                             break;
-                         //case 4:
-                            //FillQuad(pl[0], pl[1], pl[2], pl[3], clr, w, h, zbuffer, cbuffer);
-                            //FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
-                            //FillTiage(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
-                            //FillTrinagle(pl[1], pl[1], pl[3], clr, w, h, zbuffer, cbuffer);
-                             break;
-                         default:
-                             break;
-                     }
-                    */
-                     
-                   // FillPolygon(pl, clr, w, h, zbuffer, cbuffer);
+                        case 2:
+                            point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p => p.y).ToArray();
+                            FillTrinagle(plline[0], plline[1], plline[1], clr, w, h, zbuffer, cbuffer);
+                            break;
+
+                        case 3:
+                            point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p => p.y).ToArray();
+                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            break;
+                        case 4:
+
+                            point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i])).ToArray();
+                            point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
+                            point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
+                            FillTrinagle(pl1[0], pl1[1], pl1[2], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagle(pl2[0], pl2[1], pl2[2], clr, w, h, zbuffer, cbuffer);
+                            break;
+                        default:
+                            break;
+                    }
+
+
+
 
 
                 }
 
-     
-                
+
             }
 
-            /*Bitmap bmp = rend_obj.Image as Bitmap;
+            Bitmap bmp = new Bitmap(rend_obj.Width,rend_obj.Height);
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             System.Drawing.Imaging.BitmapData bmpData =
                 bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
@@ -1384,30 +1381,27 @@ namespace _3D_graphics
             int strd = Math.Abs(bmpData.Stride);
             int bytes = strd * bmp.Height;
             byte[] rgbValues = new byte[bytes];
-            //System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-
-
-           
-            for (int i = 0; i < h; i++) { 
+            for (int i = 0; i < h; i++)
+            {
                 for (int j = 0; j < w; j++)
                 {
-                    int ind = strd*i + j * 4;
-                    //byte c = (byte)( 255 * (float)i/h*(float)j/w);
+                    int ind = strd * i + j * 4;
+
                     rgbValues[ind] = cbuffer[i, j].B; //B
                     rgbValues[ind + 1] = cbuffer[i, j].G;//G
-                    rgbValues[ind + 2] =cbuffer[i, j].R; // R
-                    rgbValues[ind + 3] = cbuffer[i,j].A; //A
+                    rgbValues[ind + 2] = cbuffer[i, j].R; // R
+                    rgbValues[ind + 3] = cbuffer[i, j].A; //A
                 }
-                
+
 
             }
 
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
             bmp.UnlockBits(bmpData);
-            
-            */
 
+
+            return bmp;
 
         }
 
@@ -1420,7 +1414,7 @@ namespace _3D_graphics
             Point3D f = Point3D.norm(eye_postion - view_target);
             Point3D s = Point3D.norm(f * up);
             Point3D v = s * f;
-            view_matrix = new float[,] { {s.x,v.x,f.x,0 },{ s.y, v.y, f.y, 0 },{ s.z, v.z, f.z, 0 },{ -Point3D.scalar(s, eye_postion), -Point3D.scalar(v, eye_postion), -Point3D.scalar(f, eye_postion), 1 } };
+            view_matrix = new float[,] { { s.x, v.x, f.x, 0 }, { s.y, v.y, f.y, 0 }, { s.z, v.z, f.z, 0 }, { -Point3D.scalar(s, eye_postion), -Point3D.scalar(v, eye_postion), -Point3D.scalar(f, eye_postion), 1 } };
         }
         private void update_proj_matrix()
         {
@@ -1454,7 +1448,7 @@ namespace _3D_graphics
             set { eye_postion = value; update_view_matrix(); update_full_matrix(); }
         }
         public Point3D Target
-{
+        {
             get { return new Point3D(view_target); }
             set { view_target = value; update_view_matrix(); update_full_matrix(); }
         }
@@ -1496,14 +1490,16 @@ namespace _3D_graphics
 
         }
 
-        public void SetMimMaxPlane(float mn, float mx) {
+        public void SetMimMaxPlane(float mn, float mx)
+        {
             min_distance = mn;
             max_distance = mx;
             update_proj_matrix();
             update_full_matrix();
         }
 
-        public void SetFov(float fx, float vy) {
+        public void SetFov(float fx, float vy)
+        {
             fovx = fx;
             fovy = vy;
             update_proj_matrix();
@@ -1530,91 +1526,34 @@ namespace _3D_graphics
 
         }
 
-        private static int[] Interpolate(int i0, int d0, int i1, int d1) {
-            if(i0 == i1)
+        private static int[] Interpolate(int i0, int d0, int i1, int d1)
+        {
+            if (i0 == i1)
             {
-                return new int[] { d0,d1 };
+                return new int[] { d0 };
             }
-            int[] res;       
-            int a = (d1 - d0) / (i1 - i0);
+            int[] res;
+            float a = (float)(d1 - d0) / (i1 - i0);
+            float val = d0;
             res = new int[i1 - i0 + 1];
-            d1= 0;
-            for (int i = i0; i <=i1; i++)
-             {
+            d1 = 0;
+            for (int i = i0; i <= i1; i++)
+            {
                 res[d1] = d0;
-                d0 += a;
+                val += a;
+                d0 = (int)val;
                 ++d1;
             }
-            
+
 
             return res;
-            
-         }
-
-        private static void FillPolygon(List<point3> pol, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
-            SortedList<int,border> scan = new SortedList<int, border>();
-            for (int i = 0; i < pol.Count; i++)
-            {
-               // line3d(pol[i], pol[(i + 1) % pol.Count], scan);
-            }
-
-            // get y bounds
-            int ylw = Math.Max(0, scan.Keys[0]);
-            int yup = Math.Min(h-1, scan.Keys.Last());
-            //  get ind of lower bound to start scaning y
-            int ind= -1;
-            if (ylw <= yup)
-                ind = scan.IndexOfKey(ylw);
-            else
-                return;
-            // scan y
-            for (int y = ylw; y <= yup; y++)
-            {
-                
-                var line = scan.Values[ind];
-                ind++;
-
-                // get left and right x
-                int xleft = line.x1;
-                int xright = line.x2;
-
-                // get x bounds and ind in interpolation array (if xlw == xleft index is 0 else set offset)
-                int xlw = Math.Max(0, xleft);
-                int zind = xlw - xleft;
-                int xup = Math.Min(w - 1, xright);
-
-                // skip interpolation of z if x out of bounds
-                if (xup < xlw)
-                    continue;
-
-                // interpolation of z form xleft to xright
-                int[] zint = Interpolate(xleft, line.z1, xright, line.z2);
-
-                // iterate over x
-                for (int x = xlw; x <= xup; x++) {
-                    int z = zint[zind];
-                    if (z < zbuffer[y, x])
-                    {
-                        zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
-                    }
-                    zind++;
-
-                }
-            }
-
-
 
         }
 
-        private static void FillQuad(point3 p0, point3 p1, point3 p2, point3 p3,Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+
+        private static void FillQuad(point3 p0, point3 p1, point3 p2, point3 p3, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
         {
-            if (p1.x > p2.x)
-            {
-                point3 t = p1;
-                p1 = p2;
-                p2 = t;
-            }
+
 
             int[] xleft = Interpolate(p0.y, p0.x, p1.y, p1.x);
             xleft = xleft.Take(xleft.Length - 1).Concat(Interpolate(p1.y, p1.x, p3.y, p3.x)).ToArray();
@@ -1628,8 +1567,24 @@ namespace _3D_graphics
             int[] hright = Interpolate(p0.y, p0.z, p2.y, p2.z);
             hright = hright.Take(hright.Length - 1).Concat(Interpolate(p2.y, p2.z, p3.y, p3.z)).ToArray();
 
-            int i = 0;
+
+
+
+            int m = xleft.Length / 2;
+            if (xleft[m] > xright[m])
+            {
+                int[] t = xleft;
+                xleft = xright;
+                xright = t;
+
+                t = hright;
+                hright = hleft;
+                hleft = t;
+            }
+
+
             int ly = Math.Max(p0.y, 0);
+            int i = ly - p0.y;
             int uy = Math.Min(p2.y, h - 1);
             for (int y = ly; y <= uy; y++)
             {
@@ -1652,14 +1607,15 @@ namespace _3D_graphics
 
                 int[] h_segment = Interpolate(x_l, hleft[i], x_r, hright[i]);
 
-                int j = 0;
+
 
                 int lx = Math.Max(x_l, 0);
+                int j = lx - x_l;
                 int ux = Math.Min(x_r, w - 1);
                 for (int x = lx; x <= ux; x++)
                 {
                     int z = h_segment[j];
-                    if (z < zbuffer[y, x])
+                    if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
                         cbuffer[y, x] = fill_clr;
@@ -1672,98 +1628,9 @@ namespace _3D_graphics
 
         }
 
-        private static void FillTiage(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
 
-
-            int[] upleftx, upleftz, uprightx, uprightz;
-            int[] dwleftx, dwleftz, dwrightx, dwrightz;
-            point3 leftm, rightm;
-
-            void fillUpper() {
-
-                int i = 0;
-                for (int y = leftm.y; y<p2.y; y++)
-                {
-                    int xl = upleftx[i];
-                    int xr = uprightx[i];
-                    int zl = upleftz[i];
-                    int zr = uprightz[i];
-                    if (xl >= xr)
-                        break;
-                    int[] zline = Interpolate(xl, zl, xr, zr);
-                    int j = 0;
-                    for(int x = xl; x<=xr; x++)
-                    {
-                        int z = zline[j];
-                        if (z > zbuffer[y, x])
-                        {
-                            zbuffer[y, x] = z;
-                            cbuffer[y, x] = fill_clr;
-                        }
-                        j++;
-                    }
-
-
-                    i++;
-                }
-
-
-            }
-
-
-            int[] x01 = Interpolate(p0.y, p0.x, p1.y, p1.x);
-            int[] z01 = Interpolate(p0.y, p0.z, p1.y, p1.z);
-
-            int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
-            int[] z02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
-
-
-
-
-            int ind = p1.y - p0.y;
-            point3 pm = new point3(p1.y, x02[ind], z02[ind]);
-
-
-            if (p1.x < pm.x)
-            {
-                leftm = p1;
-                rightm = pm;
-
-                upleftx = Interpolate(p1.y, p1.x, p2.y, p2.x);
-                upleftz = Interpolate(p1.y, p1.z, p2.y, p2.z);
-                uprightx = x02.Skip(ind).ToArray();
-                uprightz = z02.Skip(ind).ToArray();
-
-                dwleftx = x01;
-                dwleftz = z01;
-                dwrightx = x02.Take(ind).ToArray();
-                dwrightz = z02.Take(ind).ToArray();
-
-            }
-            else
-            {
-                leftm = pm;
-                rightm = p1;
-
-                upleftx = x02.Skip(ind).ToArray();
-                upleftz = z02.Skip(ind).ToArray();
-                uprightx = Interpolate(p1.y, p1.x, p2.y, p2.x);
-                uprightz = Interpolate(p1.y, p1.z, p2.y, p2.z);
-
-                dwleftx = x02.Take(ind).ToArray();
-                dwleftz = z02.Take(ind).ToArray();
-                dwrightx = x01;
-                dwrightz = z01;
-
-            }
-            fillUpper();
-            
-
-
-
-        }
-
-        private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer) {
+        private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        {
             // p0.y <=p1.y <= p2.y
 
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
@@ -1777,12 +1644,10 @@ namespace _3D_graphics
             int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
 
 
-
-
-
             int[] x_left, x_right, h_left, h_right;
             int m = x012.Length / 2;
-            if(x02[m] < x012[m]) {
+            if (x02[m] < x012[m])
+            {
                 x_left = x02;
                 x_right = x012;
 
@@ -1797,28 +1662,27 @@ namespace _3D_graphics
                 h_left = h012;
                 h_right = h02;
             }
-            
-            int ly = Math.Max(p0.y, 0);
-            int i = ly-p0.y;
-            int uy = Math.Min(p2.y,h-1);
-            for (int y= ly; y<=uy; y++ ){
 
-                
+            int ly = Math.Max(p0.y, 0);
+            int i = ly - p0.y;
+            int uy = Math.Min(p2.y, h - 1);
+            for (int y = ly; y <= uy; y++)
+            {
+
+
                 int x_l = x_left[i];
                 int x_r = x_right[i];
                 int[] h_segment;
                 if (x_l > x_r)
-                {
-                    i++;
-                    continue;
-                }
+                    break;
                 h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
 
-                
+
                 int lx = Math.Max(x_l, 0);
-                int j = lx-x_l;
+                int j = lx - x_l;
                 int ux = Math.Min(x_r, w - 1);
-                for (int x = lx; x <= ux; x++ ){
+                for (int x = lx; x <= ux; x++)
+                {
                     int z = h_segment[j];
                     if (z > zbuffer[y, x])
                     {
@@ -1834,215 +1698,10 @@ namespace _3D_graphics
 
 
 
-        private static void bresenham(point3 p1,point3 p2, SortedDictionary<int,List<Tuple<int,int>>> ls)
-        {
-            int x = p1.x;
-            int y = p1.y;
-            int x2 = p2.x;
-            int y2 = p2.y;
+    }    
 
-            int[] hvals;
-            if (y < y2)
-                hvals = Interpolate(y, p1.z, y2, p2.z);
-            else
-            {
-                hvals = Interpolate(y2, p2.z, y, p1.z);
-                hvals = hvals.Reverse().ToArray();
-            }
-
-            int w = x2 - x;
-            int h = y2 - y;
-            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-            int longest = Math.Abs(w);
-            int shortest = Math.Abs(h);
-            if (!(longest > shortest))
-            {
-                longest = Math.Abs(h);
-                shortest = Math.Abs(w);
-                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-                dx2 = 0;
-            }
-            int numerator = longest >> 1;
-            for (int i = 0; i <= longest; i++)
-            {
-                int z = hvals[i];
-                //if (ls.ContainsKey(y))
-                   // ls[y].Add(x);
-                //else
-                 ///   ls[y] = new List<int>(2) { x };
-
-                numerator += shortest;
-                if (!(numerator < longest))
-                {
-                    numerator -= longest;
-                    x += dx1;
-                    y += dy1;
-                }
-                else
-                {
-                    x += dx2;
-                    y += dy2;
-                }
-            }
-        }
-
-
-    static private void line3d(point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
-    {
-            point3 tmp = p1;
-
-            float dx = p2.x - p1.x;
-            float dy = p2.y - p1.y;
-            float dz = p2.z - p1.z;
-
-            int x_inc = (dx < 0) ? -1 : 1;
-            int l = (int)Math.Abs(dx);
-            int y_inc = (dy < 0) ? -1 : 1;
-            int m = (int)Math.Abs(dy);
-            int z_inc = (dz < 0) ? -1 : 1;
-            int n = (int)Math.Abs(dz);
-
-            int dx2 = l << 1;
-            int dy2 = m << 1;
-            int dz2 = n << 1;
-
-            int x, y, z;
-            
-            if ((l >= m) && (l >= n))
-            {
-                int err_1 = dy2 - l;
-                int err_2 = dz2 - l;
-                for (int i = 0; i < l; i++)
-                {
-                     x = tmp.x;
-                     y = tmp.y;
-                     z = tmp.z;
-                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
-                    {
-                        zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
-                    }
-
-
-                    if (err_1 > 0)
-                    {
-                        tmp.y += y_inc;
-                        err_1 -= dx2;
-                    }
-                    if (err_2 > 0)
-                    {
-                        tmp.z += z_inc;
-                        err_2 -= dx2;
-                    }
-                    err_1 += dy2;
-                    err_2 += dz2;
-                    tmp.x += x_inc;
-                }
-            }
-            else if ((m >= l) && (m >= n))
-            {
-                int err_1 = dx2 - m;
-                int err_2 = dz2 - m;
-                for (int i = 0; i < m; i++)
-                {
-                     x = tmp.x;
-                     y = tmp.y;
-                     z = tmp.z;
-                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
-                    {
-                        zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
-                    }
-
-                    if (err_1 > 0)
-                    {
-                        tmp.x += x_inc;
-                        err_1 -= dy2;
-                    }
-                    if (err_2 > 0)
-                    {
-                        tmp.z += z_inc;
-                        err_2 -= dy2;
-                    }
-                    err_1 += dx2;
-                    err_2 += dz2;
-                    tmp.y += y_inc;
-                }
-            }
-            else
-            {
-                int err_1 = dy2 - n;
-                int err_2 = dx2 - n;
-                for (int i = 0; i < n; i++)
-                {
-                     x = tmp.x;
-                     y = tmp.y;
-                     z = tmp.z;
-                    if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
-                    {
-                        zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
-                    }
-
-                    if (err_1 > 0)
-                    {
-                        tmp.y += y_inc;
-                        err_1 -= dz2;
-                    }
-                    if (err_2 > 0)
-                    {
-                        tmp.y += x_inc;
-                        err_2 -= dz2;
-                    }
-                    err_1 += dy2;
-                    err_2 += dx2;
-                    tmp.z += z_inc;
-                }
-            }
-             x = tmp.x;
-             y = tmp.y;
-             z = tmp.z;
-            if (x >= 0 && x < w && y >= 0 && y < h && z > zbuffer[y, x])
-            {
-                zbuffer[y, x] = z;
-                cbuffer[y, x] = fill_clr;
-            }
-        }
-
-    }
-
-    struct border {
-        public int x1;
-        public int z1;
-        public int x2;
-        public int z2;
-
-        public void update(int x, int z) {
-            if (x < x1)
-            {
-                x1 = x;
-                z1 = z;
-            }
-            else if(x > x2)
-            {
-                x2 = x;
-                z2 = z;
-
-            }
-
-        }
-
-        public border(int x, int z) {
-            x1 = x;
-            x2 = x;
-            z1 = z;
-            z2 = z;
-        }
-
-    }
+    
+  
 
     public class OrbitCamera : CameraView {
         private float cam_angx;
