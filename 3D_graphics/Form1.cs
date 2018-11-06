@@ -12,7 +12,7 @@ namespace _3D_graphics
 
         public List<Figure> scene = new List<Figure>();
 
-        public OrbitCamera OrbitCam = new OrbitCamera(200, 0, 0, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
+        public OrbitCamera OrbitCam = new OrbitCamera(200, 0, (float)Math.PI/2, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
         private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
         
        
@@ -48,6 +48,8 @@ namespace _3D_graphics
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             watch.Restart();
+            e.Graphics.TranslateTransform(0, pictureBox1.Height);
+            e.Graphics.ScaleTransform(1, -1);
             e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene),new Point(0,0));
             watch.Stop();
             debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
@@ -196,10 +198,10 @@ namespace _3D_graphics
                     scene.Add(Figure.get_Octahedron(100));
                     break;
                 case "Icosahedron":
-                    scene.Add(Figure.get_Icosahedron(100));
+                    scene.Add(Figure.get_Icosahedron(50));
                     break;
                 case "Torus":
-                    scene.Add(Figure.get_Torus(100));
+                    scene.Add(Figure.get_Torus(50));
                     break;
                 case "Custom":
                     scene.Add(new Figure());
@@ -364,10 +366,10 @@ namespace _3D_graphics
             switch (e.KeyCode)
             {
                 case Keys.A: // move left by 1d
-                    OrbitCam.MoveLeftRight(-(float)(Math.PI / 180));
+                    OrbitCam.MoveLeftRight((float)(Math.PI / 180));
                     break;
                 case Keys.D: // move right by 1d
-                    OrbitCam.MoveLeftRight((float)(Math.PI / 180));
+                    OrbitCam.MoveLeftRight(-(float)(Math.PI / 180));
                     break;
                 case Keys.W: //move up by 1d
                     OrbitCam.MoveUpDown((float)(Math.PI / 180));
@@ -650,6 +652,16 @@ namespace _3D_graphics
                 s.drawing_pen = dw;
 
         }
+        public void set_rand_color() {
+            Random r = new Random();
+            foreach (Side s in sides) {
+                
+                Color c = Color.FromArgb((byte)r.Next(0, 255), (byte)r.Next(0, 255), (byte)r.Next(0, 255));
+                s.drawing_pen = new Pen(c);
+            }
+                
+        }
+
 
         public void scale_around_center(float xs, float ys, float zs) {
             float[,] pnts = get_matrix();
@@ -1020,7 +1032,7 @@ namespace _3D_graphics
             s.points.AddRange(new int[] { 1, 5, 3 });
             res.sides.Add(s);
 
-            res.set_pen(new Pen(Color.Violet));
+            res.set_rand_color();
 
             return res;
         }
@@ -1041,7 +1053,7 @@ namespace _3D_graphics
             res.sides.Last().points.AddRange(new List<int> { 0, 2, 3 });
             res.sides.Add(new Side(res));
             res.sides.Last().points.AddRange(new List<int> { 0, 3, 1 });
-            res.set_pen(new Pen(Color.Aquamarine));
+            res.set_rand_color();
             return res;
         }
 
@@ -1058,7 +1070,7 @@ namespace _3D_graphics
             
             Figure res = get_Rotation(crcl, new Point3D(-(float)(sz * 2.5), 0, 0), new Point3D(-(float)(sz * 2.5), 0, 1), d);
             res.offset((float)(sz*2.5), 0, 0);
-            res.set_pen(new Pen(Color.SpringGreen));
+            res.set_rand_color();
             return res;
         }
 
@@ -1118,7 +1130,7 @@ namespace _3D_graphics
 
             res.scale_around_center(sz, sz, sz);
 
-            res.set_pen(new Pen(Color.Orange));
+            res.set_rand_color();
             return res;
         }
 
@@ -1154,7 +1166,7 @@ namespace _3D_graphics
                 s.points.Reverse();
                 res.sides.Add(s);
             }
-            res.set_pen(new Pen(Color.Red));
+            res.set_rand_color();
             return res;
         }
 
@@ -1313,7 +1325,9 @@ namespace _3D_graphics
 
             foreach (Figure f in view)
             {
-                f.sides.RemoveAll(s => !s.isVisibleFrom(eye_postion));
+
+                //f.sides.RemoveAll(s => !s.isVisibleFrom(Position));
+
                 if (isorthg)
                 {
 
@@ -1325,7 +1339,7 @@ namespace _3D_graphics
                     f.apply_matrix(multiply_matrix(multiply_matrix(f.get_matrix(), view_matrix), perspective_projection_matrix));
                 }
 
-
+                
                 foreach (Side s in f.sides)
                 {
                     Color clr = s.drawing_pen.Color;

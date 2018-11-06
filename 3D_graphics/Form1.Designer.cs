@@ -97,9 +97,8 @@
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.NearPlaneBar = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-
             this.FPSlabel = new System.Windows.Forms.Label();
-
+            this.label30 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -860,6 +859,7 @@
             // 
             resources.ApplyResources(this.trackBar2, "trackBar2");
             this.trackBar2.Maximum = 1000;
+            this.trackBar2.Minimum = 10;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.TickFrequency = 100;
             this.trackBar2.Value = 300;
@@ -869,6 +869,7 @@
             // 
             resources.ApplyResources(this.NearPlaneBar, "NearPlaneBar");
             this.NearPlaneBar.Maximum = 1000;
+            this.NearPlaneBar.Minimum = 10;
             this.NearPlaneBar.Name = "NearPlaneBar";
             this.NearPlaneBar.TickFrequency = 100;
             this.NearPlaneBar.Value = 100;
@@ -885,17 +886,22 @@
             this.trackBar1.Value = 65;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
-         // FPSlabel
+            // FPSlabel
             // 
             resources.ApplyResources(this.FPSlabel, "FPSlabel");
             this.FPSlabel.BackColor = System.Drawing.Color.Transparent;
             this.FPSlabel.Name = "FPSlabel";
             // 
-
+            // label30
+            // 
+            resources.ApplyResources(this.label30, "label30");
+            this.label30.Name = "label30";
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label30);
             this.Controls.Add(this.FPSlabel);
             this.Controls.Add(this.CameraBox);
             this.Controls.Add(this.debuglabel);
@@ -985,6 +991,7 @@
         private System.Windows.Forms.TrackBar NearPlaneBar;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label FPSlabel;
+        private System.Windows.Forms.Label label30;
     }
 }
 
