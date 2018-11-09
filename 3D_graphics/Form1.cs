@@ -535,7 +535,7 @@ namespace _3D_graphics
 
         public List<Point3D> points = new List<Point3D>(); // точки 
         public List<Side> sides = new List<Side>(); // стороны
-
+        public List<Point3D> point_normals = new List<Point3D>(); // нормали к вершинам
         public Figure() { }
 
         public Figure(Figure f) {
@@ -549,6 +549,33 @@ namespace _3D_graphics
             }
 
         }
+
+
+        public void CalculateVertexNormals() {
+            point_normals.Clear();
+            point_normals.Capacity = points.Count;
+            for (int i = 0; i < points.Count; i++)
+            {
+                point_normals.Add(null);
+            }
+            foreach (Side s in sides) {
+                
+                Point3D norm = Side.norm(s);
+                if (norm == null)
+                    continue;
+                foreach (int ind in s.points) {
+                    if (point_normals[ind] == null)
+                        point_normals[ind] = norm;
+                    else
+                    {
+                        point_normals[ind].x = (point_normals[ind].x + norm.x) / 2;
+                        point_normals[ind].y = (point_normals[ind].y + norm.y) / 2;
+                        point_normals[ind].z = (point_normals[ind].z + norm.z) / 2;
+                    }
+                }
+            }
+        }
+
 
 
         ///
