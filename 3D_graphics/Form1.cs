@@ -11,7 +11,7 @@ namespace _3D_graphics
     {
 
         public List<Figure> scene = new List<Figure>();
-
+        public Lighting light = new Lighting(new Point3D(0,0,1000), Color.White,Color.FromArgb(40, 40, 40));
         public OrbitCamera OrbitCam = new OrbitCamera(200, 0, (float)Math.PI/2, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
         private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
         
@@ -50,7 +50,7 @@ namespace _3D_graphics
             watch.Restart();
             e.Graphics.TranslateTransform(0, pictureBox1.Height);
             e.Graphics.ScaleTransform(1, -1);
-            e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene),new Point(0,0));
+            e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene,light),new Point(0,0));
             watch.Stop();
             debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
             int time = (int)(1000 / watch.ElapsedMilliseconds);
@@ -390,6 +390,9 @@ namespace _3D_graphics
                 case Keys.F: // move further
                     OrbitCam.MoveFarNear(1); ;
                     break;
+                case Keys.L: // 
+                    light.position = OrbitCam.Position;
+                    break;
                 default:
                     break;
 
@@ -454,6 +457,8 @@ namespace _3D_graphics
 
         public Point3D(Point3D p)
         {
+            if (p == null)
+                return;
             x = p.x;
             y = p.y;
             z = p.z;
@@ -493,6 +498,8 @@ namespace _3D_graphics
         public Figure host = null;
         public List<int> points = new List<int>();
         public Pen drawing_pen = new Pen(Color.Black);
+        public Point3D Normal;
+        public bool IsVisible = false;
 
         public Side(Figure h = null) {
             host = h;
@@ -501,6 +508,8 @@ namespace _3D_graphics
             points = new List<int>(s.points);
             host = s.host;
             drawing_pen = s.drawing_pen.Clone() as Pen;
+            Normal = new Point3D(s.Normal);
+            IsVisible = s.IsVisible;
         }
         public Point3D get_point(int ind) {
             if (host != null)
@@ -510,19 +519,22 @@ namespace _3D_graphics
 
         public static Point3D norm(Side S) {
             if (S.points.Count() < 3)
-                return null;
+                return new Point3D(0,0,0);
             Point3D U = S.get_point(1) - S.get_point(0);
             Point3D V = S.get_point(S.points.Count-1) - S.get_point(0);
             Point3D normal = V * U;
             return Point3D.norm(normal);
         }
 
-        public bool isVisibleFrom(Point3D cntr) {
-            if (points.Count() < 3)
-                return true;
-            var val = Point3D.scalar(cntr - get_point(0), norm(this));
-            return val < 0;
+        public void CalculateSideNormal() {
+            Normal = norm(this);
+        }
 
+        public void CalculateVisibilty(Point3D cntr) {
+            if (Normal == null)
+                IsVisible = true;
+            else 
+                IsVisible =  Point3D.scalar(cntr - get_point(0), Normal) < 0;
 
         }
 
@@ -537,9 +549,11 @@ namespace _3D_graphics
 
         public List<Point3D> points = new List<Point3D>(); // точки 
         public List<Side> sides = new List<Side>(); // стороны
-        public List<Point3D> point_normals = new List<Point3D>(); // нормали к вершинам
-        public Figure() { }
+        public float[] lighting;
+        public Figure() {
+        }
 
+        // redo for new members
         public Figure(Figure f) {
             foreach (Point3D p in f.points) {
                 points.Add(new Point3D(p));
@@ -549,34 +563,60 @@ namespace _3D_graphics
                 sides.Add(new Side(s));
                 sides.Last().host = this;
             }
-
+            if (f.lighting != null)
+            lighting = f.lighting.ToArray();
         }
 
 
-        public void CalculateVertexNormals() {
-            point_normals.Clear();
-            point_normals.Capacity = points.Count;
+
+
+        /// <summary>
+        ///  Calculate visibility of each side and lighting intensifyer of every visible vertex
+        /// </summary>
+        /// <param name="eye_pos"> Postion of Camera</param>
+        /// <param name="light_pos">Position of ligthing</param>
+        public void CalculateVisibiltyAndLighting(Point3D eye_pos, Point3D light_pos) {
+            lighting = new float[points.Count];
+            List<Side>[] point_sides = new List<Side>[points.Count];
+            bool[] point_visible = new bool[points.Count];
+            Point3D[] point_normals = new Point3D[points.Count];
+            foreach (Side s in sides)
+            {
+                s.CalculateSideNormal();
+                s.CalculateVisibilty(eye_pos);
+                foreach (int ind in s.points)
+                    if (point_sides[ind] == null)
+                        point_sides[ind] = new List<Side>() {s };
+                    else
+                        point_sides[ind].Add(s);
+                
+            }
+
             for (int i = 0; i < points.Count; i++)
             {
-                point_normals.Add(null);
-            }
-            foreach (Side s in sides) {
-                
-                Point3D norm = Side.norm(s);
-                if (norm == null)
-                    continue;
-                foreach (int ind in s.points) {
-                    if (point_normals[ind] == null)
-                        point_normals[ind] = norm;
-                    else
-                    {
-                        point_normals[ind].x = (point_normals[ind].x + norm.x) / 2;
-                        point_normals[ind].y = (point_normals[ind].y + norm.y) / 2;
-                        point_normals[ind].z = (point_normals[ind].z + norm.z) / 2;
-                    }
+                point_visible[i] = point_sides[i].Any(s => s.IsVisible);
+                if (point_visible[i])
+                {
+                    Point3D t = point_sides[i].Aggregate(new Point3D(0, 0, 0), (Point3D n, Side s) => { n.x += s.Normal.x; n.y += s.Normal.y; n.z += s.Normal.z; return n; });
+                    t.x /= point_sides[i].Count;
+                    t.y /= point_sides[i].Count;
+                    t.z /= point_sides[i].Count;
+                    point_normals[i] = t;
+
+                    lighting[i] = (Point3D.scalar(t, Point3D.norm(  points[i]-light_pos)));
+                    if (lighting[i] <= 0)
+                        lighting[i] = 0;
+
+
                 }
+                
+
             }
+
+            
+
         }
+
 
 
 
@@ -1097,7 +1137,7 @@ namespace _3D_graphics
             
             Figure res = get_Rotation(crcl, new Point3D(-(float)(sz * 2.5), 0, 0), new Point3D(-(float)(sz * 2.5), 0, 1), d);
             res.offset((float)(sz*2.5), 0, 0);
-            res.set_rand_color();
+            res.set_pen(new Pen(Color.Tomato));
             return res;
         }
 
@@ -1226,14 +1266,9 @@ namespace _3D_graphics
 
             }
 
-            for (int j = cur_ind; j < res.points.Count - 1; j++)
-            {
-                Side s = new Side(res);
-                s.points.AddRange(new int[] { j, j + 1, j + 1 - cur_ind, j - cur_ind });
-                
-                res.sides.Add(s);
 
-            }
+
+      
             res.set_pen(new Pen(Color.Magenta));
                 return res;
         }
@@ -1324,11 +1359,23 @@ namespace _3D_graphics
         /// <param name="g">Graphics objects from Paint event</param>
         /// <param name="rend_obj"> PictureBox to rednder to</param>
         /// <param name="scene"> list of objects to render, is copied</param>
-        public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene)
+        /// <param name="light"> Light position and color </param>
+        public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene,Lighting light)
         {
-            point3 ViewPortTranform(Point3D p)
+            Point3D lightamb = new Point3D(light.ambient_color.R / 255.0f, light.ambient_color.G / 255.0f, light.ambient_color.B / 255.0f);
+            Point3D lightcolor = new Point3D(light.color.R / 255.0f, light.color.G / 255.0f, light.color.B / 255.0f);
+            Point3D lightpos = light.position;
+
+
+
+            Point3D calculate_color(float val, Point3D obj_c, Point3D lig_c,Point3D amb) {
+                return new Point3D(Math.Min( Math.Max(val , amb.x) * obj_c.x * lig_c.x, 1),
+                                  Math.Min(Math.Max(val, amb.y) * obj_c.y * lig_c.y, 1),
+                                   Math.Min(Math.Max(val, amb.z) * obj_c.z * lig_c.z, 1));
+            }
+            point3 ViewPortTranform(Point3D p,Point3D c)
             {
-                return new point3((int)((1 + p.x) * rend_obj.Width / 2), (int)((1 + p.y) * rend_obj.Height / 2), (int)(1 / p.z * 100000000));
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2), (int)((1 + p.y) * rend_obj.Height / 2), (int)(1 / p.z * 100000000),c);
             }
 
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
@@ -1341,19 +1388,19 @@ namespace _3D_graphics
                 for (int j = 0; j < w; j++)
                 {
                     zbuffer[i, j] = 0;
-                    cbuffer[i, j] = Color.Black;
+                    cbuffer[i, j] = Color.LightSkyBlue;
                 }
 
-            cam_height = rend_obj.Height;
-            cam_width = rend_obj.Width;
-            update_proj_matrix();
-            update_full_matrix();
+            //cam_height = rend_obj.Height;
+            //cam_width = rend_obj.Width;
+           // update_proj_matrix();
+           // update_full_matrix();
 
 
             foreach (Figure f in view)
             {
 
-                //f.sides.RemoveAll(s => !s.isVisibleFrom(Position));
+                f.CalculateVisibiltyAndLighting(Position,lightpos);
 
                 if (isorthg)
                 {
@@ -1367,14 +1414,15 @@ namespace _3D_graphics
                 }
 
                 
-                foreach (Side s in f.sides)
+                foreach (Side s in f.sides.Where(s => s.IsVisible))
                 {
                     Color clr = s.drawing_pen.Color;
+                    Point3D obj_clr = new Point3D(clr.R / 255.0f, clr.G / 255.0f, clr.B / 255.0f);
 
                     switch (s.points.Count)
                     {
                         case 1:
-                            point3 p0 = ViewPortTranform(s.get_point(0));
+                            point3 p0 = ViewPortTranform(s.get_point(0),calculate_color(f.lighting[s.points[0]],obj_clr,lightcolor,lightamb));
                             if (p0.z > zbuffer[p0.y, p0.x])
                             {
                                 zbuffer[p0.y, p0.x] = p0.z;
@@ -1382,17 +1430,17 @@ namespace _3D_graphics
                             }
                             break;
                         case 2:
-                            point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p => p.y).ToArray();
+                            point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
                             FillTrinagle(plline[0], plline[1], plline[1], clr, w, h, zbuffer, cbuffer);
                             break;
 
                         case 3:
-                            point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i])).OrderBy(p => p.y).ToArray();
+                            point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
                             FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
                             break;
                         case 4:
 
-                            point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i])).ToArray();
+                            point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
                             point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
                             point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
                             FillTrinagle(pl1[0], pl1[1], pl1[2], clr, w, h, zbuffer, cbuffer);
@@ -1673,18 +1721,43 @@ namespace _3D_graphics
         {
             // p0.y <=p1.y <= p2.y
 
+            int ly = Math.Max(p0.y, 0);
+            int i = ly - p0.y;
+            int uy = Math.Min(p2.y, h - 1);
+            if (ly > uy)
+                return;
+
+
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
             x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
 
             int[] h012 = Interpolate(p0.y, p0.z, p1.y, p1.z);
             h012 = h012.Take(h012.Length - 1).Concat(Interpolate(p1.y, p1.z, p2.y, p2.z)).ToArray();
 
+            int[] R012 = Interpolate(p0.y, p0.c.R, p1.y, p1.c.R);
+            R012 = R012.Take(R012.Length - 1).Concat(Interpolate(p1.y, p1.c.R, p2.y, p2.c.R)).ToArray();
+
+            int[] G012 = Interpolate(p0.y, p0.c.G, p1.y, p1.c.G);
+            G012 = G012.Take(G012.Length - 1).Concat(Interpolate(p1.y, p1.c.G, p2.y, p2.c.G)).ToArray();
+
+            int[] B012 = Interpolate(p0.y, p0.c.B, p1.y, p1.c.B);
+            B012 = B012.Take(B012.Length - 1).Concat(Interpolate(p1.y, p1.c.B, p2.y, p2.c.B)).ToArray();
+
+
+
 
             int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
             int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
 
+            int[] R02 = Interpolate(p0.y, p0.c.R, p2.y, p2.c.R);
+            int[] G02 = Interpolate(p0.y, p0.c.G, p2.y, p2.c.G);
+            int[] B02 = Interpolate(p0.y, p0.c.B, p2.y, p2.c.B);
+
+
 
             int[] x_left, x_right, h_left, h_right;
+            int[] r_left, g_left, b_left;
+            int[] r_right, g_right, b_right;
             int m = x012.Length / 2;
             if (x02[m] < x012[m])
             {
@@ -1693,6 +1766,13 @@ namespace _3D_graphics
 
                 h_left = h02;
                 h_right = h012;
+
+                r_left = R02;
+                r_right = R012;
+                g_left = G02;
+                g_right = G012;
+                b_left = B02;
+                b_right = B012;
             }
             else
             {
@@ -1701,33 +1781,53 @@ namespace _3D_graphics
 
                 h_left = h012;
                 h_right = h02;
+
+                r_left = R012;
+                r_right = R02;
+                g_left = G012;
+                g_right = G02;
+                b_left = B012;
+                b_right = B02;
             }
 
-            int ly = Math.Max(p0.y, 0);
-            int i = ly - p0.y;
-            int uy = Math.Min(p2.y, h - 1);
+           
             for (int y = ly; y <= uy; y++)
             {
 
 
                 int x_l = x_left[i];
                 int x_r = x_right[i];
-                int[] h_segment;
-                if (x_l > x_r)
-                    break;
-                h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
+
+                
+
 
 
                 int lx = Math.Max(x_l, 0);
                 int j = lx - x_l;
                 int ux = Math.Min(x_r, w - 1);
+
+                if (lx > ux) {
+                    i++;
+                    continue;
+                }
+
+                int[] h_segment, r_segment, g_segment, b_segment;
+                if (x_l > x_r)
+                    break;
+                h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
+                r_segment = Interpolate(x_l, r_left[i], x_r, r_right[i]);
+                g_segment = Interpolate(x_l, g_left[i], x_r, g_right[i]);
+                b_segment = Interpolate(x_l, b_left[i], x_r, b_right[i]); 
+
+
+
                 for (int x = lx; x <= ux; x++)
                 {
                     int z = h_segment[j];
                     if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
+                        cbuffer[y, x] = Color.FromArgb(r_segment[j], g_segment[j], b_segment[j]);
                     }
                     j++;
                 }
@@ -1868,18 +1968,46 @@ namespace _3D_graphics
 
     }
 
+
+    public class Lighting
+    {
+        public Point3D position;
+        public Color color;
+        public Color ambient_color;
+
+        public Lighting(Point3D p, Color c,Color a)
+        {
+            position = new Point3D(p);
+            color = c;
+            ambient_color = a;
+
+        }
+
+    }
+
     public struct point3
     {
         public int x;
         public int y;
         public int z;
-
+        public Color c;
      
 
-        public point3(int _x, int _y, int _z) {
+        public point3(int _x, int _y, int _z,Color _c) {
             x = _x;
             y = _y;
             z = _z;
+            c = _c;
         }
+
+        public point3(int _x, int _y, int _z, Point3D cf)
+        {
+            x = _x;
+            y = _y;
+            z = _z;
+            c = Color.FromArgb((int)(255*cf.x) % 255, (int)(255 * cf.y) % 255, (int)(255 * cf.z) % 255);
+        }
+
+
     }
 }
