@@ -94,11 +94,13 @@
             this.debuglabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.CameraBox = new System.Windows.Forms.GroupBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.NearPlaneBar = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.FPSlabel = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             label1 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
@@ -843,6 +845,8 @@
             // 
             // CameraBox
             // 
+            this.CameraBox.Controls.Add(this.checkBox1);
+            this.CameraBox.Controls.Add(this.button4);
             this.CameraBox.Controls.Add(label29);
             this.CameraBox.Controls.Add(this.trackBar2);
             this.CameraBox.Controls.Add(label28);
@@ -854,6 +858,13 @@
             resources.ApplyResources(this.CameraBox, "CameraBox");
             this.CameraBox.Name = "CameraBox";
             this.CameraBox.TabStop = false;
+            // 
+            // button4
+            // 
+            resources.ApplyResources(this.button4, "button4");
+            this.button4.Name = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // trackBar2
             // 
@@ -896,6 +907,13 @@
             // 
             resources.ApplyResources(this.label30, "label30");
             this.label30.Name = "label30";
+            // 
+            // checkBox1
+            // 
+            resources.ApplyResources(this.checkBox1, "checkBox1");
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Form1
             // 
@@ -992,6 +1010,8 @@
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label FPSlabel;
         private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

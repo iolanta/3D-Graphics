@@ -14,6 +14,7 @@ namespace _3D_graphics
         public Lighting light = new Lighting(new Point3D(0,0,1000), Color.White,Color.FromArgb(40, 40, 40));
         public OrbitCamera OrbitCam = new OrbitCamera(200, 0, (float)Math.PI/2, 0, new Point3D(0, 0, 0), (float)(65 * Math.PI / 180), (float)(65 * Math.PI / 180), 100, 300);
         private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+        public Color[,] texture;
         
        
 
@@ -33,8 +34,8 @@ namespace _3D_graphics
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
             ControlType.SelectedIndex = 0;
-            curveType.SelectedIndex = 0;        
-           
+            curveType.SelectedIndex = 0;
+            texture = new Color[1, 1] { { Color.White } };
 
 
 
@@ -50,7 +51,7 @@ namespace _3D_graphics
             watch.Restart();
             e.Graphics.TranslateTransform(0, pictureBox1.Height);
             e.Graphics.ScaleTransform(1, -1);
-            e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene,light),new Point(0,0));
+            e.Graphics.DrawImageUnscaled(OrbitCam.CameraRender(pictureBox1, scene,light, texture),new Point(0,0));
             watch.Stop();
             debuglabel.Text = String.Format("Camerea pos:\n AngleX:{0}\n AngleY:{1}\n Tilt:{2}\n Distance:{3} ", OrbitCam.AngleX * 180 / (float)Math.PI, OrbitCam.AngleY * 180 / (float)Math.PI, OrbitCam.AngleTilt * 180 / (float)Math.PI, OrbitCam.Distance);
             int time = (int)(1000 / watch.ElapsedMilliseconds);
@@ -434,6 +435,23 @@ namespace _3D_graphics
         {
             float val = (float)((sender as TrackBar)).Value;
             OrbitCam.MaxDistance = val;
+            render();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+            string filename = openFileDialog1.FileName;
+            if (!System.IO.File.Exists(filename))
+                return;
+
+            texture = CameraView.TextureToColors(filename);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            OrbitCam.istexture = checkBox1.Checked;
             render();
         }
     }
@@ -1237,7 +1255,7 @@ namespace _3D_graphics
             return res;
         }
 
-        // one polygon more than needed
+       
         public static Figure get_Rotation(List<Point3D> pnts, Point3D axis1, Point3D axis2, int divs) {
             Figure res = new Figure();
             Figure edge = new Figure();
@@ -1281,8 +1299,6 @@ namespace _3D_graphics
 
     public class CameraView
     {
-
-
         private Point3D view_target;
         private Point3D eye_postion;
         private Point3D up;
@@ -1298,6 +1314,7 @@ namespace _3D_graphics
         private float[,] complete_matrix_perspective;
         private float[,] complete_matrix_orthoganal;
         private bool isorthg = false;
+        public bool istexture = false;
 
         /// <summary>
         /// Basic Camera object
@@ -1360,7 +1377,7 @@ namespace _3D_graphics
         /// <param name="rend_obj"> PictureBox to rednder to</param>
         /// <param name="scene"> list of objects to render, is copied</param>
         /// <param name="light"> Light position and color </param>
-        public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene,Lighting light)
+        public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene,Lighting light, Color[,] tex)
         {
             Point3D lightamb = new Point3D(light.ambient_color.R / 255.0f, light.ambient_color.G / 255.0f, light.ambient_color.B / 255.0f);
             Point3D lightcolor = new Point3D(light.color.R / 255.0f, light.color.G / 255.0f, light.color.B / 255.0f);
@@ -1419,6 +1436,7 @@ namespace _3D_graphics
                     Color clr = s.drawing_pen.Color;
                     Point3D obj_clr = new Point3D(clr.R / 255.0f, clr.G / 255.0f, clr.B / 255.0f);
 
+                    if(!istexture)
                     switch (s.points.Count)
                     {
                         case 1:
@@ -1431,24 +1449,55 @@ namespace _3D_graphics
                             break;
                         case 2:
                             point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                            FillTrinagle(plline[0], plline[1], plline[1], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagleColor(plline[0], plline[1], plline[1], w, h, zbuffer, cbuffer);
                             break;
 
                         case 3:
                             point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                            FillTrinagle(pl[0], pl[1], pl[2], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagleColor(pl[0], pl[1], pl[2], w, h, zbuffer, cbuffer);
                             break;
                         case 4:
 
                             point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
                             point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
                             point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
-                            FillTrinagle(pl1[0], pl1[1], pl1[2], clr, w, h, zbuffer, cbuffer);
-                            FillTrinagle(pl2[0], pl2[1], pl2[2], clr, w, h, zbuffer, cbuffer);
+                            FillTrinagleColor(pl1[0], pl1[1], pl1[2], w, h, zbuffer, cbuffer);
+                            FillTrinagleColor(pl2[0], pl2[1], pl2[2], w, h, zbuffer, cbuffer);
                             break;
                         default:
                             break;
                     }
+                    else
+                        switch (s.points.Count)
+                        {
+                            case 1:
+                                point3 p0 = ViewPortTranform(s.get_point(0), calculate_color(f.lighting[s.points[0]], obj_clr, lightcolor, lightamb));
+                                if (p0.z > zbuffer[p0.y, p0.x])
+                                {
+                                    zbuffer[p0.y, p0.x] = p0.z;
+                                    cbuffer[p0.y, p0.x] = clr;
+                                }
+                                break;
+                            case 2:
+                                point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
+                                FillTrinagleColor(plline[0], plline[1], plline[1], w, h, zbuffer, cbuffer);
+                                break;
+
+                            case 3:
+                                point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
+                                FillTrinagleTexture(pl[0], pl[1], pl[2], tex, w, h, zbuffer, cbuffer);
+                                break;
+                            case 4:
+
+                                point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
+                                point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
+                                point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
+                                FillTrinagleTexture(pl1[0], pl1[1], pl1[2], tex, w, h, zbuffer, cbuffer);
+                                FillTrinagleTexture(pl2[0], pl2[1], pl2[2], tex, w, h, zbuffer, cbuffer);
+                                break;
+                            default:
+                                break;
+                        }
 
 
 
@@ -1643,6 +1692,9 @@ namespace _3D_graphics
         {
 
 
+
+
+
             int[] xleft = Interpolate(p0.y, p0.x, p1.y, p1.x);
             xleft = xleft.Take(xleft.Length - 1).Concat(Interpolate(p1.y, p1.x, p3.y, p3.x)).ToArray();
 
@@ -1717,7 +1769,7 @@ namespace _3D_graphics
         }
 
 
-        private static void FillTrinagle(point3 p0, point3 p1, point3 p2, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        private static void FillTrinagleTexture(point3 p0, point3 p1, point3 p2,Color[,] texture, int w, int h, int[,] zbuffer, Color[,] cbuffer)
         {
             // p0.y <=p1.y <= p2.y
 
@@ -1727,6 +1779,123 @@ namespace _3D_graphics
             if (ly > uy)
                 return;
 
+            int th =texture.GetLength(0)-1;
+            int tw = texture.GetLength(1) -1;
+
+            
+
+
+            int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
+            x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
+
+            int[] h012 = Interpolate(p0.y, p0.z, p1.y, p1.z);
+            h012 = h012.Take(h012.Length - 1).Concat(Interpolate(p1.y, p1.z, p2.y, p2.z)).ToArray();
+
+
+            int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
+            int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
+
+
+
+
+            int[] x_left, x_right, h_left, h_right;
+            int[] tx_right, ty_right, tx_left, ty_left;
+
+            int m = x012.Length / 2;
+            if (x02[m] < x012[m])
+            {
+                x_left = x02;
+                x_right = x012;
+
+                h_left = h02;
+                h_right = h012;
+
+
+                tx_right = Interpolate(p0.y, 0, p1.y,tw );
+                tx_right = tx_right.Take(tx_right.Length - 1).Concat(Interpolate(p1.y, tw, p2.y, tw)).ToArray();
+
+                ty_right = Interpolate(p0.y, 0, p1.y, 0);
+                ty_right = ty_right.Take(ty_right.Length - 1).Concat(Interpolate(p1.y, 0, p2.y, th)).ToArray();
+
+
+                tx_left = Interpolate(p0.y, 0, p2.y, tw);
+                ty_left = Interpolate(p0.y, 0, p2.y, th);
+                
+
+            }
+            else
+            {
+                x_left = x012;
+                x_right = x02;
+
+                h_left = h012;
+                h_right = h02;
+
+
+
+                tx_left = Interpolate(p0.y, 0, p1.y, 0);
+                tx_left = tx_left.Take(tx_left.Length - 1).Concat(Interpolate(p1.y, 0, p2.y, tw)).ToArray();
+
+                ty_left = Interpolate(p0.y, 0, p1.y, th);
+                ty_left = ty_left.Take(ty_left.Length - 1).Concat(Interpolate(p1.y, th, p2.y, th)).ToArray();
+
+
+                tx_right = Interpolate(p0.y, 0, p2.y, tw);
+                ty_right = Interpolate(p0.y, 0, p2.y, th);
+
+
+
+            }
+
+            for (int y = ly; y <= uy; y++)
+            {
+
+                int x_l = x_left[i];
+                int x_r = x_right[i];
+
+                int lx = Math.Max(x_l, 0);
+                int j = lx - x_l;
+                int ux = Math.Min(x_r, w - 1);
+
+                if (lx > ux) {
+                    i++;
+                    continue;
+                }
+
+                int[] h_segment, tx_segment, ty_segment;
+                if (x_l > x_r)
+                    break;
+                h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
+                tx_segment = Interpolate(x_l, tx_right[i], x_r, tx_left[i]);
+                ty_segment = Interpolate(x_l, ty_right[i], x_r, ty_left[i]);
+
+
+
+                for (int x = lx; x <= ux; x++)
+                {
+                    int z = h_segment[j];
+                    if (z > zbuffer[y, x])
+                    {
+                        zbuffer[y, x] = z;
+                        cbuffer[y, x] = texture[tx_segment[j], ty_segment[j]];
+                    }
+                    j++;
+                }
+                i++;
+            }
+
+        }
+
+
+        private static void FillTrinagleColor(point3 p0, point3 p1, point3 p2, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        {
+            // p0.y <=p1.y <= p2.y
+
+            int ly = Math.Max(p0.y, 0);
+            int i = ly - p0.y;
+            int uy = Math.Min(p2.y, h - 1);
+            if (ly > uy)
+                return;
 
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
             x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
@@ -1758,6 +1927,8 @@ namespace _3D_graphics
             int[] x_left, x_right, h_left, h_right;
             int[] r_left, g_left, b_left;
             int[] r_right, g_right, b_right;
+
+
             int m = x012.Length / 2;
             if (x02[m] < x012[m])
             {
@@ -1773,6 +1944,7 @@ namespace _3D_graphics
                 g_right = G012;
                 b_left = B02;
                 b_right = B012;
+
             }
             else
             {
@@ -1788,17 +1960,18 @@ namespace _3D_graphics
                 g_right = G02;
                 b_left = B012;
                 b_right = B02;
+
             }
 
-           
+
+
+
             for (int y = ly; y <= uy; y++)
             {
-
-
                 int x_l = x_left[i];
                 int x_r = x_right[i];
 
-                
+
 
 
 
@@ -1806,7 +1979,8 @@ namespace _3D_graphics
                 int j = lx - x_l;
                 int ux = Math.Min(x_r, w - 1);
 
-                if (lx > ux) {
+                if (lx > ux)
+                {
                     i++;
                     continue;
                 }
@@ -1817,9 +1991,7 @@ namespace _3D_graphics
                 h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
                 r_segment = Interpolate(x_l, r_left[i], x_r, r_right[i]);
                 g_segment = Interpolate(x_l, g_left[i], x_r, g_right[i]);
-                b_segment = Interpolate(x_l, b_left[i], x_r, b_right[i]); 
-
-
+                b_segment = Interpolate(x_l, b_left[i], x_r, b_right[i]);
 
                 for (int x = lx; x <= ux; x++)
                 {
@@ -1837,7 +2009,35 @@ namespace _3D_graphics
         }
 
 
+        public static Color[,] TextureToColors(string filepath) {
+            Bitmap tex = new Bitmap(filepath);
+            Color[,] res = new Color[tex.Height, tex.Width];
 
+          
+            Rectangle rect = new Rectangle(0, 0, tex.Width, tex.Height);
+            System.Drawing.Imaging.BitmapData bmpData =
+                tex.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                tex.PixelFormat);
+
+
+            IntPtr ptr = bmpData.Scan0;
+            int strd = Math.Abs(bmpData.Stride);
+            int bytes = strd * tex.Height;
+            byte[] rgbValues = new byte[bytes];
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+            tex.UnlockBits(bmpData);
+
+            for (int i = 0; i < tex.Height; i++)
+            {
+                for (int j = 0; j < tex.Width; j++)
+                {
+                    int ind = strd * i + j * 4;
+
+                    res[i, j] = Color.FromArgb(rgbValues[ind + 3], rgbValues[ind + 2], rgbValues[ind + 1], rgbValues[ind]);
+                }
+            }
+            return res;
+        }
     }    
 
     
