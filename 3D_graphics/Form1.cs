@@ -1457,13 +1457,14 @@ namespace _3D_graphics
                             FillTrinagleColor(pl[0], pl[1], pl[2], w, h, zbuffer, cbuffer);
                             break;
                         case 4:
-
                             point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
-                            point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
-                            point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
-                            FillTrinagleColor(pl1[0], pl1[1], pl1[2], w, h, zbuffer, cbuffer);
-                            FillTrinagleColor(pl2[0], pl2[1], pl2[2], w, h, zbuffer, cbuffer);
-                            break;
+                                FillQuadColor(pl0, w, h, zbuffer, cbuffer);
+                                /*  point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
+                                  point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
+                                  point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
+                                  FillTrinagleColor(pl1[0], pl1[1], pl1[2], w, h, zbuffer, cbuffer);
+                                  FillTrinagleColor(pl2[0], pl2[1], pl2[2], w, h, zbuffer, cbuffer);*/
+                                break;
                         default:
                             break;
                     }
@@ -1687,78 +1688,120 @@ namespace _3D_graphics
 
         }
 
-
-        private static void FillQuad(point3 p0, point3 p1, point3 p2, point3 p3, Color fill_clr, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        private static float[] FInterpolate(int i0, float d0, int i1, float d1)
         {
-
-
-
-
-
-            int[] xleft = Interpolate(p0.y, p0.x, p1.y, p1.x);
-            xleft = xleft.Take(xleft.Length - 1).Concat(Interpolate(p1.y, p1.x, p3.y, p3.x)).ToArray();
-
-            int[] hleft = Interpolate(p0.y, p0.z, p1.y, p1.z);
-            hleft = hleft.Take(hleft.Length - 1).Concat(Interpolate(p1.y, p1.z, p3.y, p3.z)).ToArray();
-
-            int[] xright = Interpolate(p0.y, p0.x, p2.y, p2.x);
-            xright = xright.Take(xright.Length - 1).Concat(Interpolate(p2.y, p2.x, p3.y, p3.x)).ToArray();
-
-            int[] hright = Interpolate(p0.y, p0.z, p2.y, p2.z);
-            hright = hright.Take(hright.Length - 1).Concat(Interpolate(p2.y, p2.z, p3.y, p3.z)).ToArray();
-
-
-
-
-            int m = xleft.Length / 2;
-            if (xleft[m] > xright[m])
+            if (i0 == i1)
             {
-                int[] t = xleft;
-                xleft = xright;
-                xright = t;
+                return new float[] { d0 };
+            }
+            float[] res;
+            float a = (d1 - d0) / (i1 - i0);
+            float val = d0;
+            res = new float[i1 - i0 + 1];
+            int ind = 0;
+            for (int i = i0; i <= i1; i++)
+            {
+                res[ind] = val;
+                val += a;
+                ++ind;
+            }
 
-                t = hright;
-                hright = hleft;
-                hleft = t;
+            return res;
+        }
+
+
+        private static void FillQuadColor(point3[] pl, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        {
+            int cur = 0;
+            int[] indexes = pl.Select(p => cur++).OrderBy(_i => pl[_i].y).ToArray();
+            List<int> wayCW = new List<int> { indexes.First() };
+            List<int> wayCCW = new List<int> { indexes.First() };
+
+            cur = indexes.First();
+            while(cur != indexes.Last())
+            {
+                cur = (cur + 1) % pl.Count();
+                wayCW.Add(cur);
+            }
+
+            cur = indexes.First();
+            while (cur != indexes.Last())
+            {
+                cur = (cur + pl.Count() - 1) % pl.Count();
+                wayCCW.Add(cur);
+            }
+
+            int ly = Math.Max(pl[indexes.First()].y, 0);
+            int i = ly - pl[indexes.First()].y;
+            int uy = Math.Min(pl[indexes.Last()].y, h - 1);
+            if (ly > uy)
+                return;
+
+            int[] xWayCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].x, pl[wayCW[1]].y, pl[wayCW[1]].x);
+            int[] hWayCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].z, pl[wayCW[1]].y, pl[wayCW[1]].z);
+
+            for (int k = 1; k < wayCW.Count-1; k++)
+            {
+                xWayCW = xWayCW.Take(xWayCW.Count() - 1).Concat(Interpolate(pl[wayCW[k]].y, pl[wayCW[k]].x, pl[wayCW[k+1]].y, pl[wayCW[k+1]].x)).ToArray();
+                hWayCW = hWayCW.Take(hWayCW.Count() - 1).Concat(Interpolate(pl[wayCW[k]].y, pl[wayCW[k]].z, pl[wayCW[k + 1]].y, pl[wayCW[k + 1]].z)).ToArray();
+            }
+
+            int[] xWayCCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].x, pl[wayCW[1]].y, pl[wayCW[1]].x);
+            int[] hWayCCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].z, pl[wayCW[1]].y, pl[wayCW[1]].z);
+
+            for (int k = 1; k < wayCCW.Count - 1; k++)
+            {
+                xWayCCW = xWayCCW.Take(xWayCCW.Count() - 1).Concat(Interpolate(pl[wayCCW[k]].y, pl[wayCCW[k]].x, pl[wayCCW[k + 1]].y, pl[wayCCW[k + 1]].x)).ToArray();
+                hWayCCW = hWayCCW.Take(hWayCCW.Count() - 1).Concat(Interpolate(pl[wayCCW[k]].y, pl[wayCCW[k]].z, pl[wayCCW[k + 1]].y, pl[wayCCW[k + 1]].z)).ToArray();
             }
 
 
-            int ly = Math.Max(p0.y, 0);
-            int i = ly - p0.y;
-            int uy = Math.Min(p2.y, h - 1);
+            int[] xleft, xright, hleft, hright;
+
+            int m = xWayCW.Length / 2;
+            if (xWayCW[m] < xWayCCW[m]) {
+                // CW way is left
+                // CCW way is right
+                xleft = xWayCW;
+                xright = xWayCCW;
+                hleft = hWayCW;
+                hright = hWayCCW;
+
+            }
+            else {
+                // CCW way is left
+                // CW way is right
+                xleft = xWayCCW;
+                xright = xWayCW;
+                hleft = hWayCCW;
+                hright = hWayCW;
+            }
+
+
             for (int y = ly; y <= uy; y++)
             {
-
-
                 int x_l = xleft[i];
                 int x_r = xright[i];
-
-                if (x_l > x_r)
-                {
-                    int t = x_l;
-                    x_l = x_r;
-                    x_r = t;
-                    t = hleft[i];
-                    hleft[i] = hright[i];
-                    hright[i] = t;
-                }
-
-
-
-                int[] h_segment = Interpolate(x_l, hleft[i], x_r, hright[i]);
-
-
 
                 int lx = Math.Max(x_l, 0);
                 int j = lx - x_l;
                 int ux = Math.Min(x_r, w - 1);
+
+                if (x_l > x_r || lx > ux)
+                {
+                    ++i;
+                    continue;
+                }
+
+                int[] h_segment = Interpolate(x_l, hleft[i], x_r, hright[i]);
+
                 for (int x = lx; x <= ux; x++)
                 {
                     int z = h_segment[j];
                     if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
-                        cbuffer[y, x] = fill_clr;
+                      //  cbuffer[y, x] = Color.FromArgb(r_segment[j], g_segment[j], b_segment[j]);
                     }
                     j++;
                 }
