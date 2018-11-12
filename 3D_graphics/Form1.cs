@@ -1380,7 +1380,6 @@ namespace _3D_graphics
         public Bitmap CameraRender(PictureBox rend_obj, List<Figure> scene,Lighting light, Color[,] tex)
         {
             Point3D lightamb = new Point3D(light.ambient_color.R / 255.0f, light.ambient_color.G / 255.0f, light.ambient_color.B / 255.0f);
-            Point3D lightcolor = new Point3D(light.color.R / 255.0f, light.color.G / 255.0f, light.color.B / 255.0f);
             Point3D lightpos = light.position;
 
 
@@ -1390,9 +1389,11 @@ namespace _3D_graphics
                                   Math.Min(Math.Max(val, amb.y) * obj_c.y * lig_c.y, 1),
                                    Math.Min(Math.Max(val, amb.z) * obj_c.z * lig_c.z, 1));
             }
-            point3 ViewPortTranform(Point3D p,Point3D c)
+            point3 ViewPortTranform(Point3D p,float l)
             {
-                return new point3((int)((1 + p.x) * rend_obj.Width / 2), (int)((1 + p.y) * rend_obj.Height / 2), (int)(1 / p.z * 100000000),c);
+                return new point3((int)((1 + p.x) * rend_obj.Width / 2), 
+                                  (int)((1 + p.y) * rend_obj.Height / 2),
+                                  (int)(1 / p.z * 100000000),l);
             }
 
             List<Figure> view = scene.Select(f => new Figure(f)).ToList();
@@ -1408,11 +1409,6 @@ namespace _3D_graphics
                     cbuffer[i, j] = Color.LightSkyBlue;
                 }
 
-            //cam_height = rend_obj.Height;
-            //cam_width = rend_obj.Width;
-           // update_proj_matrix();
-           // update_full_matrix();
-
 
             foreach (Figure f in view)
             {
@@ -1422,7 +1418,7 @@ namespace _3D_graphics
                 if (isorthg)
                 {
 
-                    f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_orthoganal));
+                   // f.apply_matrix(multiply_matrix(f.get_matrix(), complete_matrix_orthoganal));
                 }
                 else
                 {
@@ -1433,72 +1429,44 @@ namespace _3D_graphics
                 
                 foreach (Side s in f.sides.Where(s => s.IsVisible))
                 {
-                    Color clr = s.drawing_pen.Color;
-                    Point3D obj_clr = new Point3D(clr.R / 255.0f, clr.G / 255.0f, clr.B / 255.0f);
+                    Color[,] ObjectTexture;
 
-                    if(!istexture)
-                    switch (s.points.Count)
+
+                    if (istexture && tex != null)
+                    {
+                        ObjectTexture = tex;
+                    }
+                    else {
+                        ObjectTexture = new Color[1, 1] { { s.drawing_pen.Color } };
+                    }
+
+                   point3[] pl;
+                   switch (s.points.Count)
                     {
                         case 1:
-                            point3 p0 = ViewPortTranform(s.get_point(0),calculate_color(f.lighting[s.points[0]],obj_clr,lightcolor,lightamb));
+                            point3 p0 = ViewPortTranform(s.get_point(0), f.lighting[s.points[0]]);
                             if (p0.z > zbuffer[p0.y, p0.x])
                             {
                                 zbuffer[p0.y, p0.x] = p0.z;
-                                cbuffer[p0.y, p0.x] = clr;
+                                cbuffer[p0.y, p0.x] = ObjectTexture[0,0];
                             }
                             break;
                         case 2:
-                            point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                            FillTrinagleColor(plline[0], plline[1], plline[1], w, h, zbuffer, cbuffer);
+                            pl = s.points.Select(i => ViewPortTranform(s.host.points[i],s.host.lighting[i]) ).OrderBy(p => p.y).ToArray();
+                            FillTrinagle(pl[0], pl[1], pl[1], w, h, zbuffer, cbuffer, ObjectTexture, light.color, light.ambient_color);
                             break;
 
                         case 3:
-                            point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                            FillTrinagleColor(pl[0], pl[1], pl[2], w, h, zbuffer, cbuffer);
+                            pl = s.points.Select(i => ViewPortTranform(s.host.points[i], s.host.lighting[i])).OrderBy(p => p.y).ToArray();
+                            FillTrinagle(pl[0], pl[1], pl[2], w, h, zbuffer, cbuffer, ObjectTexture, light.color, light.ambient_color);
                             break;
-                        case 4:
-                            point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
-                                FillQuadColor(pl0, w, h, zbuffer, cbuffer);
-                                /*  point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
-                                  point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
-                                  point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
-                                  FillTrinagleColor(pl1[0], pl1[1], pl1[2], w, h, zbuffer, cbuffer);
-                                  FillTrinagleColor(pl2[0], pl2[1], pl2[2], w, h, zbuffer, cbuffer);*/
-                                break;
                         default:
-                            break;
+                        case 4:
+                           pl = s.points.Select(i => ViewPortTranform(s.host.points[i], s.host.lighting[i])).ToArray();
+                           FillQuad(pl, w, h, zbuffer, cbuffer, ObjectTexture,light.color,light.ambient_color);     
+                           break;           
                     }
-                    else
-                        switch (s.points.Count)
-                        {
-                            case 1:
-                                point3 p0 = ViewPortTranform(s.get_point(0), calculate_color(f.lighting[s.points[0]], obj_clr, lightcolor, lightamb));
-                                if (p0.z > zbuffer[p0.y, p0.x])
-                                {
-                                    zbuffer[p0.y, p0.x] = p0.z;
-                                    cbuffer[p0.y, p0.x] = clr;
-                                }
-                                break;
-                            case 2:
-                                point3[] plline = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                                FillTrinagleColor(plline[0], plline[1], plline[1], w, h, zbuffer, cbuffer);
-                                break;
-
-                            case 3:
-                                point3[] pl = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).OrderBy(p => p.y).ToArray();
-                                FillTrinagleTexture(pl[0], pl[1], pl[2], tex, w, h, zbuffer, cbuffer);
-                                break;
-                            case 4:
-
-                                point3[] pl0 = s.points.Select(i => ViewPortTranform(s.host.points[i], calculate_color(s.host.lighting[i], obj_clr, lightcolor, lightamb))).ToArray();
-                                point3[] pl1 = new point3[] { pl0[0], pl0[3], pl0[1] }.OrderBy(p => p.y).ToArray();
-                                point3[] pl2 = new point3[] { pl0[3], pl0[1], pl0[2] }.OrderBy(p => p.y).ToArray();
-                                FillTrinagleTexture(pl1[0], pl1[1], pl1[2], tex, w, h, zbuffer, cbuffer);
-                                FillTrinagleTexture(pl2[0], pl2[1], pl2[2], tex, w, h, zbuffer, cbuffer);
-                                break;
-                            default:
-                                break;
-                        }
+                   
 
 
 
@@ -1710,12 +1678,39 @@ namespace _3D_graphics
         }
 
 
-        private static void FillQuadColor(point3[] pl, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        private static void FillQuad(point3[] pl, int w, int h, int[,] zbuffer, Color[,] cbuffer, Color[,] texture, Color light, Color Ambient)
         {
             int cur = 0;
             int[] indexes = pl.Select(p => cur++).OrderBy(_i => pl[_i].y).ToArray();
             List<int> wayCW = new List<int> { indexes.First() };
             List<int> wayCCW = new List<int> { indexes.First() };
+
+
+            int minx = pl.Min(p => p.x), maxx = pl.Max(p => p.x);
+            int ly = Math.Max(pl[indexes.First()].y, 0);
+            int i = ly - pl[indexes.First()].y;
+            int uy = Math.Min(pl[indexes.Last()].y, h - 1);
+            if (ly > uy || Math.Max(0, minx) > Math.Min(w - 1, maxx))
+                return;
+
+
+            float TextureScaleX, TextureScaleY;
+            if (maxx != minx)
+                TextureScaleX = (float)(texture.GetLength(1) - 1) / (maxx - minx);
+            else
+                TextureScaleX = 0;
+
+            if (pl[indexes.First()].y != pl[indexes.Last()].y)
+                TextureScaleY = (float)(texture.GetLength(0) - 1) / (pl[indexes.Last()].y - pl[indexes.First()].y);
+            else
+                TextureScaleY = 0;
+
+        
+            Point ToTextureCoords(int x,int y) {
+                if (x < minx)
+                    x = minx;
+                return new Point((int)(TextureScaleX * (x - minx)), (int)(TextureScaleY * (y - pl[indexes.First()].y)));
+            }
 
             cur = indexes.First();
             while(cur != indexes.Last())
@@ -1731,32 +1726,39 @@ namespace _3D_graphics
                 wayCCW.Add(cur);
             }
 
-            int ly = Math.Max(pl[indexes.First()].y, 0);
-            int i = ly - pl[indexes.First()].y;
-            int uy = Math.Min(pl[indexes.Last()].y, h - 1);
-            if (ly > uy)
-                return;
+
+            
 
             int[] xWayCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].x, pl[wayCW[1]].y, pl[wayCW[1]].x);
             int[] hWayCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].z, pl[wayCW[1]].y, pl[wayCW[1]].z);
-
+            float[] fWayCW = FInterpolate(pl[wayCW[0]].y, pl[wayCW[0]].l, pl[wayCW[1]].y, pl[wayCW[1]].l);
             for (int k = 1; k < wayCW.Count-1; k++)
             {
+
                 xWayCW = xWayCW.Take(xWayCW.Count() - 1).Concat(Interpolate(pl[wayCW[k]].y, pl[wayCW[k]].x, pl[wayCW[k+1]].y, pl[wayCW[k+1]].x)).ToArray();
                 hWayCW = hWayCW.Take(hWayCW.Count() - 1).Concat(Interpolate(pl[wayCW[k]].y, pl[wayCW[k]].z, pl[wayCW[k + 1]].y, pl[wayCW[k + 1]].z)).ToArray();
+                fWayCW = fWayCW.Take(fWayCW.Count() - 1).Concat(FInterpolate(pl[wayCW[k]].y, pl[wayCW[k]].l, pl[wayCW[k + 1]].y, pl[wayCW[k + 1]].l)).ToArray();
+
             }
 
-            int[] xWayCCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].x, pl[wayCW[1]].y, pl[wayCW[1]].x);
-            int[] hWayCCW = Interpolate(pl[wayCW[0]].y, pl[wayCW[0]].z, pl[wayCW[1]].y, pl[wayCW[1]].z);
 
+
+
+
+
+            int[] xWayCCW = Interpolate(pl[wayCCW[0]].y, pl[wayCCW[0]].x, pl[wayCCW[1]].y, pl[wayCCW[1]].x);
+            int[] hWayCCW = Interpolate(pl[wayCCW[0]].y, pl[wayCCW[0]].z, pl[wayCCW[1]].y, pl[wayCCW[1]].z);
+            float[] fWayCCW = FInterpolate(pl[wayCCW[0]].y, pl[wayCCW[0]].l, pl[wayCCW[1]].y, pl[wayCCW[1]].l);
             for (int k = 1; k < wayCCW.Count - 1; k++)
             {
                 xWayCCW = xWayCCW.Take(xWayCCW.Count() - 1).Concat(Interpolate(pl[wayCCW[k]].y, pl[wayCCW[k]].x, pl[wayCCW[k + 1]].y, pl[wayCCW[k + 1]].x)).ToArray();
                 hWayCCW = hWayCCW.Take(hWayCCW.Count() - 1).Concat(Interpolate(pl[wayCCW[k]].y, pl[wayCCW[k]].z, pl[wayCCW[k + 1]].y, pl[wayCCW[k + 1]].z)).ToArray();
+                fWayCCW = fWayCCW.Take(fWayCCW.Count() - 1).Concat(FInterpolate(pl[wayCCW[k]].y, pl[wayCCW[k]].l, pl[wayCCW[k + 1]].y, pl[wayCCW[k + 1]].l)).ToArray();
             }
 
 
             int[] xleft, xright, hleft, hright;
+            float[] fleft, fright;
 
             int m = xWayCW.Length / 2;
             if (xWayCW[m] < xWayCCW[m]) {
@@ -1766,7 +1768,9 @@ namespace _3D_graphics
                 xright = xWayCCW;
                 hleft = hWayCW;
                 hright = hWayCCW;
-
+                fleft = fWayCW;
+                fright = fWayCCW;
+                
             }
             else {
                 // CCW way is left
@@ -1775,6 +1779,8 @@ namespace _3D_graphics
                 xright = xWayCW;
                 hleft = hWayCCW;
                 hright = hWayCW;
+                fleft = fWayCCW;
+                fright = fWayCW;
             }
 
 
@@ -1794,6 +1800,7 @@ namespace _3D_graphics
                 }
 
                 int[] h_segment = Interpolate(x_l, hleft[i], x_r, hright[i]);
+                float[] f_segment = FInterpolate(x_l, fleft[i], x_r, fright[i]);
 
                 for (int x = lx; x <= ux; x++)
                 {
@@ -1801,7 +1808,8 @@ namespace _3D_graphics
                     if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
-                      //  cbuffer[y, x] = Color.FromArgb(r_segment[j], g_segment[j], b_segment[j]);
+                        Point t = ToTextureCoords(x, y);
+                        cbuffer[y, x] = CompileColor(texture[t.Y, t.X], f_segment[j], light, Ambient);
                     }
                     j++;
                 }
@@ -1812,20 +1820,54 @@ namespace _3D_graphics
         }
 
 
-        private static void FillTrinagleTexture(point3 p0, point3 p1, point3 p2,Color[,] texture, int w, int h, int[,] zbuffer, Color[,] cbuffer)
+        private static Color CompileColor(Color tex, float fval, Color light, Color ambient) {
+            int fuse(int t, int l,int a)
+            {
+                return  (int)((1 - (255-fval*l)*(255-a)/255/255)*t);
+
+            }
+            
+            /*return Color.FromArgb(255,(int)(fval*tex.R*light.R*ambient.R/Lighting.color_norm),
+                                      (int)(fval * tex.G * light.G * ambient.G / Lighting.color_norm),
+                                      (int)(fval * tex.B * light.B * ambient.B / Lighting.color_norm));*/
+
+            return Color.FromArgb(255, fuse(tex.R, light.R,ambient.R), fuse(tex.G, light.G, ambient.G),fuse(tex.B, light.B,ambient.B));
+        }
+
+
+        private static void FillTrinagle(point3 p0, point3 p1, point3 p2, int w, int h, int[,] zbuffer, Color[,] cbuffer, Color[,] texture, Color light, Color Ambient)
         {
             // p0.y <=p1.y <= p2.y
+
+            var pl = new point3[]{ p0, p1, p2 };
+            int minx = pl.Min(p => p.x), maxx = pl.Max(p => p.x);
 
             int ly = Math.Max(p0.y, 0);
             int i = ly - p0.y;
             int uy = Math.Min(p2.y, h - 1);
-            if (ly > uy)
+            if (ly > uy || Math.Max(0, minx) > Math.Min(w - 1, maxx))
                 return;
 
-            int th =texture.GetLength(0)-1;
-            int tw = texture.GetLength(1) -1;
 
-            
+
+            float TextureScaleX, TextureScaleY;
+            if (maxx != minx)
+                TextureScaleX = (float)(texture.GetLength(1) - 1) / (maxx - minx);
+            else
+                TextureScaleX = 0;
+
+            if (p0.y != p2.y)
+                TextureScaleY = (float)(texture.GetLength(0) - 1) / (p2.y - p0.y);
+            else
+                TextureScaleY = 0;
+
+            Point ToTextureCoords(int x, int y)
+            {
+                if (x < minx)
+                    x = minx;
+                return new Point((int)(TextureScaleX * (x - minx)), (int)(TextureScaleY * (y - p0.y)));
+            }
+
 
 
             int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
@@ -1834,15 +1876,17 @@ namespace _3D_graphics
             int[] h012 = Interpolate(p0.y, p0.z, p1.y, p1.z);
             h012 = h012.Take(h012.Length - 1).Concat(Interpolate(p1.y, p1.z, p2.y, p2.z)).ToArray();
 
+            float[] f012 = FInterpolate(p0.y, p0.l, p1.y, p1.l);
+            f012 = f012.Take(f012.Length - 1).Concat(FInterpolate(p1.y, p1.l, p2.y, p2.l)).ToArray();
 
             int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
             int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
-
+            float[] f02 = FInterpolate(p0.y, p0.l, p2.y, p2.l);
 
 
 
             int[] x_left, x_right, h_left, h_right;
-            int[] tx_right, ty_right, tx_left, ty_left;
+            float[] f_left,f_right;
 
             int m = x012.Length / 2;
             if (x02[m] < x012[m])
@@ -1853,18 +1897,8 @@ namespace _3D_graphics
                 h_left = h02;
                 h_right = h012;
 
-
-                tx_right = Interpolate(p0.y, 0, p1.y,tw );
-                tx_right = tx_right.Take(tx_right.Length - 1).Concat(Interpolate(p1.y, tw, p2.y, tw)).ToArray();
-
-                ty_right = Interpolate(p0.y, 0, p1.y, 0);
-                ty_right = ty_right.Take(ty_right.Length - 1).Concat(Interpolate(p1.y, 0, p2.y, th)).ToArray();
-
-
-                tx_left = Interpolate(p0.y, 0, p2.y, tw);
-                ty_left = Interpolate(p0.y, 0, p2.y, th);
-                
-
+                f_left = f02;
+                f_right = f012;
             }
             else
             {
@@ -1874,20 +1908,8 @@ namespace _3D_graphics
                 h_left = h012;
                 h_right = h02;
 
-
-
-                tx_left = Interpolate(p0.y, 0, p1.y, 0);
-                tx_left = tx_left.Take(tx_left.Length - 1).Concat(Interpolate(p1.y, 0, p2.y, tw)).ToArray();
-
-                ty_left = Interpolate(p0.y, 0, p1.y, th);
-                ty_left = ty_left.Take(ty_left.Length - 1).Concat(Interpolate(p1.y, th, p2.y, th)).ToArray();
-
-
-                tx_right = Interpolate(p0.y, 0, p2.y, tw);
-                ty_right = Interpolate(p0.y, 0, p2.y, th);
-
-
-
+                f_left = f012;
+                f_right = f02;
             }
 
             for (int y = ly; y <= uy; y++)
@@ -1905,13 +1927,12 @@ namespace _3D_graphics
                     continue;
                 }
 
-                int[] h_segment, tx_segment, ty_segment;
+                int[] h_segment;
+                float[] f_segment;
                 if (x_l > x_r)
                     break;
                 h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
-                tx_segment = Interpolate(x_l, tx_right[i], x_r, tx_left[i]);
-                ty_segment = Interpolate(x_l, ty_right[i], x_r, ty_left[i]);
-
+                f_segment = FInterpolate(x_l, f_left[i], x_r, f_right[i]);
 
 
                 for (int x = lx; x <= ux; x++)
@@ -1920,7 +1941,8 @@ namespace _3D_graphics
                     if (z > zbuffer[y, x])
                     {
                         zbuffer[y, x] = z;
-                        cbuffer[y, x] = texture[tx_segment[j], ty_segment[j]];
+                        Point t = ToTextureCoords(x, y);
+                        cbuffer[y, x] = CompileColor(texture[t.Y, t.X], f_segment[j], light, Ambient);
                     }
                     j++;
                 }
@@ -1929,129 +1951,7 @@ namespace _3D_graphics
 
         }
 
-
-        private static void FillTrinagleColor(point3 p0, point3 p1, point3 p2, int w, int h, int[,] zbuffer, Color[,] cbuffer)
-        {
-            // p0.y <=p1.y <= p2.y
-
-            int ly = Math.Max(p0.y, 0);
-            int i = ly - p0.y;
-            int uy = Math.Min(p2.y, h - 1);
-            if (ly > uy)
-                return;
-
-            int[] x012 = Interpolate(p0.y, p0.x, p1.y, p1.x);
-            x012 = x012.Take(x012.Length - 1).Concat(Interpolate(p1.y, p1.x, p2.y, p2.x)).ToArray();
-
-            int[] h012 = Interpolate(p0.y, p0.z, p1.y, p1.z);
-            h012 = h012.Take(h012.Length - 1).Concat(Interpolate(p1.y, p1.z, p2.y, p2.z)).ToArray();
-
-            int[] R012 = Interpolate(p0.y, p0.c.R, p1.y, p1.c.R);
-            R012 = R012.Take(R012.Length - 1).Concat(Interpolate(p1.y, p1.c.R, p2.y, p2.c.R)).ToArray();
-
-            int[] G012 = Interpolate(p0.y, p0.c.G, p1.y, p1.c.G);
-            G012 = G012.Take(G012.Length - 1).Concat(Interpolate(p1.y, p1.c.G, p2.y, p2.c.G)).ToArray();
-
-            int[] B012 = Interpolate(p0.y, p0.c.B, p1.y, p1.c.B);
-            B012 = B012.Take(B012.Length - 1).Concat(Interpolate(p1.y, p1.c.B, p2.y, p2.c.B)).ToArray();
-
-
-
-
-            int[] x02 = Interpolate(p0.y, p0.x, p2.y, p2.x);
-            int[] h02 = Interpolate(p0.y, p0.z, p2.y, p2.z);
-
-            int[] R02 = Interpolate(p0.y, p0.c.R, p2.y, p2.c.R);
-            int[] G02 = Interpolate(p0.y, p0.c.G, p2.y, p2.c.G);
-            int[] B02 = Interpolate(p0.y, p0.c.B, p2.y, p2.c.B);
-
-
-
-            int[] x_left, x_right, h_left, h_right;
-            int[] r_left, g_left, b_left;
-            int[] r_right, g_right, b_right;
-
-
-            int m = x012.Length / 2;
-            if (x02[m] < x012[m])
-            {
-                x_left = x02;
-                x_right = x012;
-
-                h_left = h02;
-                h_right = h012;
-
-                r_left = R02;
-                r_right = R012;
-                g_left = G02;
-                g_right = G012;
-                b_left = B02;
-                b_right = B012;
-
-            }
-            else
-            {
-                x_left = x012;
-                x_right = x02;
-
-                h_left = h012;
-                h_right = h02;
-
-                r_left = R012;
-                r_right = R02;
-                g_left = G012;
-                g_right = G02;
-                b_left = B012;
-                b_right = B02;
-
-            }
-
-
-
-
-            for (int y = ly; y <= uy; y++)
-            {
-                int x_l = x_left[i];
-                int x_r = x_right[i];
-
-
-
-
-
-                int lx = Math.Max(x_l, 0);
-                int j = lx - x_l;
-                int ux = Math.Min(x_r, w - 1);
-
-                if (lx > ux)
-                {
-                    i++;
-                    continue;
-                }
-
-                int[] h_segment, r_segment, g_segment, b_segment;
-                if (x_l > x_r)
-                    break;
-                h_segment = Interpolate(x_l, h_left[i], x_r, h_right[i]);
-                r_segment = Interpolate(x_l, r_left[i], x_r, r_right[i]);
-                g_segment = Interpolate(x_l, g_left[i], x_r, g_right[i]);
-                b_segment = Interpolate(x_l, b_left[i], x_r, b_right[i]);
-
-                for (int x = lx; x <= ux; x++)
-                {
-                    int z = h_segment[j];
-                    if (z > zbuffer[y, x])
-                    {
-                        zbuffer[y, x] = z;
-                        cbuffer[y, x] = Color.FromArgb(r_segment[j], g_segment[j], b_segment[j]);
-                    }
-                    j++;
-                }
-                i++;
-            }
-
-        }
-
-
+       
         public static Color[,] TextureToColors(string filepath) {
             Bitmap tex = new Bitmap(filepath);
             Color[,] res = new Color[tex.Height, tex.Width];
@@ -2069,7 +1969,7 @@ namespace _3D_graphics
             byte[] rgbValues = new byte[bytes];
             System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
             tex.UnlockBits(bmpData);
-
+            
             for (int i = 0; i < tex.Height; i++)
             {
                 for (int j = 0; j < tex.Width; j++)
@@ -2226,6 +2126,7 @@ namespace _3D_graphics
 
         }
 
+        public static int color_norm = 255 * 255 * 255;
     }
 
     public struct point3
@@ -2233,23 +2134,17 @@ namespace _3D_graphics
         public int x;
         public int y;
         public int z;
-        public Color c;
+        public float l;
      
 
-        public point3(int _x, int _y, int _z,Color _c) {
+        public point3(int _x, int _y, int _z,float _l) {
             x = _x;
             y = _y;
             z = _z;
-            c = _c;
+            l = _l;
         }
 
-        public point3(int _x, int _y, int _z, Point3D cf)
-        {
-            x = _x;
-            y = _y;
-            z = _z;
-            c = Color.FromArgb((int)(255*cf.x) % 255, (int)(255 * cf.y) % 255, (int)(255 * cf.z) % 255);
-        }
+
 
 
     }
