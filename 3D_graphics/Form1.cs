@@ -1831,7 +1831,7 @@ namespace _3D_graphics
                                       (int)(fval * tex.G * light.G * ambient.G / Lighting.color_norm),
                                       (int)(fval * tex.B * light.B * ambient.B / Lighting.color_norm));*/
 
-            return Color.FromArgb(255, fuse(tex.R, light.R,ambient.R), fuse(tex.G, light.G, ambient.G),fuse(tex.B, light.B,ambient.B));
+            return Color.FromArgb(tex.A, fuse(tex.R, light.R,ambient.R), fuse(tex.G, light.G, ambient.G),fuse(tex.B, light.B,ambient.B));
         }
 
 
