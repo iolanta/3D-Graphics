@@ -1000,6 +1000,30 @@ namespace _3D_graphics
             System.IO.File.WriteAllLines(filename, lines);
         }
 
+        public static void save_figure_obj(Figure fig, string filename)
+        {
+            List<string> lines = new List<string>();
+            Dictionary<int, string> pnts = new Dictionary<int, string>();
+            lines.Add(fig.points.Count().ToString());
+            for (int i = 0; i < fig.points.Count(); ++i)
+            {
+                string ind = "p" + i.ToString();
+                pnts.Add(i, ind);
+                lines.Add(ind + ' ' + fig.points[i].x.ToString() + ' ' + fig.points[i].y.ToString() + ' ' + fig.points[i].z.ToString());
+            }
+            lines.Add(fig.sides.Count().ToString());
+            for (int i = 0; i < fig.sides.Count(); ++i)
+            {
+                string side_points = "";
+                foreach (int s in fig.sides[i].points)
+                {
+                    side_points += pnts[s] + ' ';
+                }
+                lines.Add(side_points);
+            }
+            System.IO.File.WriteAllLines(filename, lines);
+        }
+
         ///
         /// ------------------------STATIC READY FIGURES-----------------------------
         ///
