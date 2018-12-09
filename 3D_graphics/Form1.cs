@@ -636,7 +636,47 @@ namespace _3D_graphics
 
         }
 
+        private void CalculateVertexNormals()
+        {
+            point_normals = new Point3D[points.Count];
+            int[] count_sidesPerPoint = new int[points.Count];
+            for (int i = 0; i < points.Count; i++)
+            {
+                point_normals[i] = new Point3D(0, 0, 0);
+                count_sidesPerPoint[i] = 0;
 
+            }
+
+            foreach(Side s in sides)
+            {
+                s.CalculateSideNormal();
+                // sorry in this project normals are calculated inverted pls fix
+                Point3D Normal = new Point3D(s.Normal.x * -1, s.Normal.y * -1, s.Normal.z * -1); 
+                for (int i = 0; i < s.points.Count; i++)
+                {
+                    int ind = s.points[i];
+                    point_normals[ind].x += Normal.x;
+                    point_normals[ind].y += Normal.y;
+                    point_normals[ind].z += Normal.z;
+                    count_sidesPerPoint[ind] += 1;
+
+                }
+
+
+            }
+            for (int i = 0; i < points.Count;  i++)
+            {
+                if(count_sidesPerPoint[i] != 0)
+                {
+                    point_normals[i].x /= count_sidesPerPoint[i];
+                    point_normals[i].y /= count_sidesPerPoint[i];
+                    point_normals[i].z /= count_sidesPerPoint[i];
+
+                }
+            }
+
+
+        }
 
 
         ///
