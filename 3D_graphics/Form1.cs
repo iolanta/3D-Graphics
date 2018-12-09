@@ -568,6 +568,7 @@ namespace _3D_graphics
         public List<Point3D> points = new List<Point3D>(); // точки 
         public List<Side> sides = new List<Side>(); // стороны
         public float[] lighting;
+        private Point3D[] point_normals;
         public Figure() {
         }
 
@@ -597,7 +598,7 @@ namespace _3D_graphics
             lighting = new float[points.Count];
             List<Side>[] point_sides = new List<Side>[points.Count];
             bool[] point_visible = new bool[points.Count];
-            Point3D[] point_normals = new Point3D[points.Count];
+            point_normals = new Point3D[points.Count];
             foreach (Side s in sides)
             {
                 s.CalculateSideNormal();
