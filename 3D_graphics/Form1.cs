@@ -672,7 +672,7 @@ namespace _3D_graphics
                     point_normals[i].x /= count_sidesPerPoint[i];
                     point_normals[i].y /= count_sidesPerPoint[i];
                     point_normals[i].z /= count_sidesPerPoint[i];
-
+                    point_normals[i] = Point3D.norm(point_normals[i]);
                 }
             }
 
