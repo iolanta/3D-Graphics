@@ -335,7 +335,8 @@ namespace _3D_graphics
             if (saveFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
             string filename = saveFileDialog1.FileName;
-            Figure.save_figure(scene[2], filename);
+            // Figure.save_figure(scene[2], filename);
+            Figure.save_figure_obj(scene[2], filename);
         }
 
         /// <summary>
@@ -1048,6 +1049,7 @@ namespace _3D_graphics
             List<string> f = new List<string>();
 
             Dictionary<int, string> pnts = new Dictionary<int, string>();
+            fig.CalculateVertexNormals();
 
             for (int i = 0; i < fig.points.Count(); ++i)
             {
@@ -1061,12 +1063,13 @@ namespace _3D_graphics
             {
                 string str = "f";
                 foreach (int p in s.points)
-                    str += str + " " + (p + 1).ToString() + "//" + (p + 1).ToString() + " ";
+                    str += " " + (p + 1).ToString() + "//" + (p + 1).ToString() + " ";
 
                 f.Add(str);
             }
 
-            lines.Concat(normals);
+            lines.AddRange(normals);
+            lines.AddRange(f);
             lines.Concat(f);
 
             System.IO.File.WriteAllLines(filename, lines);
